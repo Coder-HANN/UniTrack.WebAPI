@@ -1,0 +1,57 @@
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using UniTrack.Application.Common;
+using UniTrack.Application.DTOs.Event;
+using UniTrack.Application.Feature.Event.Command;
+using UniTrack.Application.Feature.Event.Query;
+
+namespace UniTrack.WebAPI.Controllers.Club
+{
+    [ApiController]
+    [Route("api/club/[controller]")]
+    [ApiExplorerSettings(GroupName = "Club")]
+    public class EventController : ControllerBase
+    {
+        private readonly IMediator mediator;
+        public EventController(IMediator mediator)
+        {
+            this.mediator = mediator;
+        }
+
+        [HttpPost("CreateEvent")]
+        public async Task<ServiceResponse<CreateEventResponseDTO>> CreateEvent([FromBody] CreateEventCommand command)
+        {
+            return await mediator.Send(command);
+        }
+
+        [HttpPost("UpdateEvent")]
+        public async Task<ServiceResponse<UpdateEventResponseDTO>> UpdateEvent([FromBody] UpdateEventCommand command)
+        {
+            return await mediator.Send(command);
+        }
+
+        [HttpDelete("DeleteEvent")]
+        public async Task<ServiceResponse<DeleteEventResponseDTO>> DeleteEvent([FromBody] DeleteEventCommand command)
+        {
+            return await mediator.Send(command);
+        }
+
+        [HttpGet("GetClubEventJoin")]
+        public async Task<ServiceResponse<List<GetClubEventJoinQueryResponseDTO>>> GetClubEventJoin([FromQuery]GetClubEventJoinQuery query)
+        {
+            return await mediator.Send(query);
+        }
+
+        [HttpGet("GetQrKodForEvent")]
+        public async Task<ServiceResponse<string>> GetQrKodForEvent([FromQuery] GetEventQrQuery query)
+        {
+            return await mediator.Send(query);
+        }
+
+        [HttpGet("GetEventCheckInList")]
+        public async Task<ServiceResponse<string>> GetEventCheckInList([FromQuery] GetEventSheetQuery query)
+        {
+            return await mediator.Send(query);
+        }
+    }
+}

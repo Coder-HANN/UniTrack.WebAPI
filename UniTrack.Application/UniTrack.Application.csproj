@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Feature\ActiveDetail\Command\" />
+    <Folder Include="Feature\Auth\Validator\" />
+    <Folder Include="Feature\Ban\Validator\" />
+    <Folder Include="Feature\City\Validator\" />
+    <Folder Include="Feature\ClubTeam\Validator\" />
+    <Folder Include="Feature\Club\Validator\" />
+    <Folder Include="Feature\Comment\Validation\" />
+    <Folder Include="Feature\Contect\Query\" />
+    <Folder Include="Feature\Department\Validator\" />
+    <Folder Include="Feature\Department\Query\" />
+    <Folder Include="Feature\Notification\Validator\" />
+    <Folder Include="Feature\Notification\Query\" />
+    <Folder Include="Feature\Profile\Validator\" />
+    <Folder Include="Feature\University\Validator\" />
+    <Folder Include="Feature\University\Query\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="15.0.1" />
+    <PackageReference Include="Castle.Core" Version="5.2.1" />
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
+    <PackageReference Include="Google.Apis" Version="1.73.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.73.0" />
+    <PackageReference Include="Google.Apis.Sheets.v4" Version="1.72.0.3966" />
+    <PackageReference Include="MediatR" Version="13.0.0" />
+    <PackageReference Include="Microsoft.AspNet.Identity.Core" Version="2.2.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.22" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="9.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="9.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="10.0.1" />
+    <PackageReference Include="Serilog" Version="4.3.0" />
+    <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="9.0.2" />
+    <PackageReference Include="StackExchange.Redis" Version="2.10.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
+    <PackageReference Include="System.Runtime.Caching" Version="9.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\UniTrack.Domain\UniTrack.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

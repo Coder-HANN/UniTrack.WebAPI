@@ -1,0 +1,89 @@
+﻿using Microsoft.AspNetCore.Http;
+using System;
+using System.Linq;
+using System.Security.Claims;
+using UniTrack.Domain.Enums;
+
+
+namespace UniTrack.WebAPI.Middleware
+{
+    public class UserMiddleware
+    {
+        private readonly RequestDelegate _next;
+
+        public UserMiddleware(RequestDelegate next)
+        {
+            _next = next;
+        }
+
+        public async Task InvokeAsync(HttpContext context)
+        {
+            var path = context.Request.Path.Value?.ToLower();
+
+            // Giriş/Kayıt yollarını atla
+            if (path != null && (path.Contains("register") || path.Contains("login")))
+            {
+                Console.WriteLine($"⏭️ UserMiddleware atlandı: {path}");
+            }
+            else // Diğer yollar
+            {
+                Console.WriteLine("🔵 UserMiddleware çalıştı.");
+
+                if (context.User.Identity?.IsAuthenticated == true)
+                {
+                    // userId'yi context.Items'a ekle
+                    var userIdClaim = context.User.Claims.FirstOrDefault(c =>
+                        c.Type.Equals("userId", StringComparison.OrdinalIgnoreCase));
+
+                    if (userIdClaim != null && Guid.TryParse(userIdClaim.Value, out var userId))
+                    {
+                        // Artık Guid tipinde ekleniyor
+                        context.Items["userId"] = userId;
+                        Console.WriteLine($"🟢 UserId context'e eklendi: {userId}");
+                    }
+                    else
+                    {
+                        Console.WriteLine("🟠 UserId claim bulunamadı.");
+                    }
+
+                    // clubId'yi context.Items'a ekle (isteğe bağlı, clubId claim varsa)
+                    var clubIdClaim = context.User.Claims.FirstOrDefault(c =>
+                        c.Type.Equals("clubId", StringComparison.OrdinalIgnoreCase));
+
+                    if (clubIdClaim != null && Guid.TryParse(clubIdClaim.Value, out var clubId))
+                    {
+                        // Artık Guid tipinde ekleniyor
+                        context.Items["clubId"] = clubId;
+                        Console.WriteLine($"🟢 ClubId context'e eklendi: {clubId}");
+                    }
+
+                    var roleClaim = context.User.Claims.FirstOrDefault(c =>
+                        c.Type.Equals(ClaimTypes.Role, StringComparison.OrdinalIgnoreCase));
+
+                    if (roleClaim != null)
+                    {
+                        if (Enum.TryParse<Role>(roleClaim.Value, true, out var role))
+                        {
+                            context.Items["role"] = role;
+                            Console.WriteLine($"🟢 Role context'e eklendi: {role}");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"🟠 Hata: Role claim değeri ({roleClaim.Value}) Domain.Enums.Role tipine dönüştürülemedi.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("🟠 Role claim bulunamadı.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("🔴 Kullanıcı authenticate değil.");
+                }
+            }
+
+            await _next(context);
+        }
+    }
+}

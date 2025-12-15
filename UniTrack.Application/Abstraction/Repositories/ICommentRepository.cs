@@ -1,0 +1,17 @@
+﻿using UniTrack.Domain.Entities;
+
+namespace UniTrack.Application.Abstraction.Repositories
+{
+    public interface ICommentRepository : BaseEntityRepository<Comment>
+    {
+        public Task<Comment> GetCommentIdAsync(Guid commentId);
+        public Task<Comment> GetCommentByEventAndUserIdAsync(Guid commentId, Guid userId);
+        public Task<Comment> GetCommentByClubAndUserIdAsync(Guid commentId, Guid userId);
+        public Task<List<Comment>> GetAllCommentsByClubIdAsync(Guid clubId);
+        public Task<List<Comment>> GetAllCommentByEventIdAsync(Guid eventId);
+        public Task<List<Comment>> GetAllCommentsByUserIdAsync(Guid userId);
+        public Task<float> GetClubAverageRatingAsync(Guid clubId);
+        public Task<float> GetEventAverageRatingAsync(Guid eventId);
+        Task<Dictionary<Guid, (float AverageRating, int Count)>> GetEventsRatingsSummaryAsync(List<Guid> eventIds);
+    }
+}

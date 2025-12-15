@@ -1,0 +1,6 @@
+@UniTrack.WebAPI_HostAddress = http://localhost:5236
+
+GET {{UniTrack.WebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

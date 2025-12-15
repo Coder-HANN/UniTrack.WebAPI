@@ -1,0 +1,92 @@
+﻿using MediatR;
+using UniTrack.Application.Abstraction.Repositories;
+using UniTrack.Application.Abstraction.Repositories.Pagenation;
+using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Common;
+using UniTrack.Application.DTOs.Club;
+using UniTrack.Domain.Entities;
+using UniTrack.Domain.Enums;
+
+namespace UniTrack.Application.Feature.Club.Query
+{
+    public class GetFollowClubQueryHandler : IRequestHandler<GetFollowClubQuery, ServiceResponse<IPagingExecutionResult<GetFollowClubQueryResponseDTO>>>
+    {
+        private readonly ICurrentUserServices currentUserServices;
+        private readonly IClubRepository clubRepository;
+        private readonly BaseEntityRepository<UserClub> baseEntityRepository;
+        public GetFollowClubQueryHandler(
+            ICurrentUserServices currentUserServices,
+            IClubRepository clubRepository,
+            BaseEntityRepository<UserClub> baseEntityRepository)
+        {
+            this.currentUserServices = currentUserServices;
+            this.clubRepository = clubRepository;
+            this.baseEntityRepository = baseEntityRepository;
+        }
+        // TO DO: Kullanıcı panelinde olmalı 
+        public async Task<ServiceResponse<IPagingExecutionResult<GetFollowClubQueryResponseDTO>>> Handle(GetFollowClubQuery request, CancellationToken cancellationToken)
+        {
+            var userId = currentUserServices.CurrentUser();
+            if (userId == null)
+            {
+                return new ServiceResponse<IPagingExecutionResult<GetFollowClubQueryResponseDTO>> {
+                   
+                        IsSuccess = false,
+                        Data = null,
+                        Message = "Unauthorized"
+                    
+                };
+            }
+            var role = currentUserServices.Role();
+            if (role == null || role == Role.Club)
+            {
+                return new ServiceResponse<IPagingExecutionResult<GetFollowClubQueryResponseDTO>>
+                { 
+
+                         IsSuccess = false,
+                         Data = null,
+                         Message = "Yetkisiz kullanıcı"
+                };
+            }
+
+            var clubs = clubRepository.GetAllClubAsync(c => c.UserClubs.Any(cu => cu.UserId == userId)); // TO DO: club kontrolünü düzenle
+
+            if (clubs == null || clubs.Result.Count == 0)
+            {
+                return new ServiceResponse<IPagingExecutionResult<GetFollowClubQueryResponseDTO>> {
+                   
+                        IsSuccess = false,
+                        Data = null,
+                        Message = "No clubs found"
+                    
+                };
+            }
+            var responses = clubs.Result.Select(c => new GetFollowClubQueryResponseDTO
+            {
+                Logo = c.Logo,
+                CoverImage = c.CoverImage,
+                Name = c.Name,
+                Description = c.Description,
+                ContactMail = c.ContectEmail,
+                Followers = c.Follower,
+                President = c.President,
+                Tag = c.Tag
+            });
+
+            var result = await baseEntityRepository.GetPagedResult(
+              responses,
+              pageSize: request.PageSize,
+              pageIndex: request.Page,
+              ordering: q => q.OrderByDescending(x => x.Id),
+              cancellationToken: cancellationToken
+            );
+
+            return new ServiceResponse<IPagingExecutionResult<GetFollowClubQueryResponseDTO>>
+            {
+                IsSuccess = true,
+                Data = result,
+                Message = null
+            };
+        }
+    }
+}
