@@ -120,6 +120,9 @@
   <data name="AlreadyCheckedIn" xml:space="preserve">
     <value>Bu etkinliğe zaten giriş yaptınız.</value>
   </data>
+  <data name="AlreadyFollowingClub" xml:space="preserve">
+    <value>Bu kulübü zaten takip ediyorsunuz</value>
+  </data>
   <data name="AlreadyJoinedEvent" xml:space="preserve">
     <value>Bu etkinliğe zaten katıldınız</value>
   </data>
@@ -219,8 +222,20 @@
   <data name="FieldRequired" xml:space="preserve">
     <value>Bu alan boş bırakılamaz</value>
   </data>
+  <data name="FollowClubSuccess" xml:space="preserve">
+    <value>Kulüp başarıyla takip edildi</value>
+  </data>
+  <data name="InvalidDate" xml:space="preserve">
+    <value>Geçersiz tarih</value>
+  </data>
+  <data name="InvalidEmail" xml:space="preserve">
+    <value> Geçerli bir e-posta adresi giriniz</value>
+  </data>
   <data name="InvalidEmailOrPassword" xml:space="preserve">
     <value>E-posta veya şifre hatalı</value>
+  </data>
+  <data name="InvalidTag" xml:space="preserve">
+    <value>Geçersiz etiket seçimi</value>
   </data>
   <data name="LoginSuccess" xml:space="preserve">
     <value>Giriş başarılı</value>

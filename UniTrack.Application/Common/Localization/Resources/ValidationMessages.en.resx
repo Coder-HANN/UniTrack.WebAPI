@@ -120,6 +120,9 @@
   <data name="AlreadyCheckedIn" xml:space="preserve">
     <value>You are already checked in to this event.</value>
   </data>
+  <data name="AlreadyFollowingClub" xml:space="preserve">
+    <value>You are already following this club</value>
+  </data>
   <data name="AlreadyJoinedEvent" xml:space="preserve">
     <value>You have already joined this event</value>
   </data>
@@ -219,8 +222,20 @@
   <data name="FieldRequired" xml:space="preserve">
     <value>This field cannot be empty.</value>
   </data>
+  <data name="FollowClubSuccess" xml:space="preserve">
+    <value>Club followed successfully</value>
+  </data>
+  <data name="InvalidDate" xml:space="preserve">
+    <value>Invalid date</value>
+  </data>
+  <data name="InvalidEmail" xml:space="preserve">
+    <value>Please enter a valid email address</value>
+  </data>
   <data name="InvalidEmailOrPassword" xml:space="preserve">
     <value>Invalid email or password</value>
+  </data>
+  <data name="InvalidTag" xml:space="preserve">
+    <value>Invalid tag selection</value>
   </data>
   <data name="LoginSuccess" xml:space="preserve">
     <value>Login successful</value>

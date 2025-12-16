@@ -2,7 +2,9 @@
 using MediatR;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 using UniTrack.Domain.Enums;
 
 namespace UniTrack.Application.Feature.Club.Command
@@ -12,14 +14,17 @@ namespace UniTrack.Application.Feature.Club.Command
         private readonly ICurrentUserServices currentUserServices;
         private readonly IClubRepository clubServiceRepsoitory;
         private readonly IMapper mapper;
+        private readonly ILocalizationService localizationService;
         public CreateClubCommandHandler(
             ICurrentUserServices currentUserServices,
             IClubRepository clubServiceRepsoitory,
-            IMapper mapper)
+            IMapper mapper,
+            ILocalizationService localizationService)
         {
             this.currentUserServices = currentUserServices;
             this.clubServiceRepsoitory = clubServiceRepsoitory;
             this.mapper = mapper;
+            this.localizationService = localizationService;
         }
 
         public async Task<ServiceResponse<string>> Handle(CreateClubCommand request, CancellationToken cancellationToken)
@@ -57,7 +62,7 @@ namespace UniTrack.Application.Feature.Club.Command
             {
                 IsSuccess = true,
                 Data = null,
-                Message = "Club created successfully"
+                Message = "kulüp başarıyla oluşturuldu "
             };
         }
     }

@@ -17,7 +17,7 @@ namespace UniTrack.WebAPI.Controllers.Admin
         {
             this.mediator = mediator;
         }
-    
+
         [HttpPost("UserBan")]
         public async Task<ServiceResponse<string>> UserBan([FromBody] BanForUserCommand command)
         {
@@ -39,6 +39,12 @@ namespace UniTrack.WebAPI.Controllers.Admin
         public async Task<ServiceResponse<List<GetBanedClubOrUserQueryResponseDTO>>> UserBanList([FromQuery] GetBanedUserQuery query)
         {
             return await mediator.Send(query);
+        }
+
+        [HttpPost("RemoveBan")]
+        public async Task<ServiceResponse<string>> RemoveBan([FromBody] BanDeleteCommand command)
+        {
+            return await mediator.Send(command);
         }
     }
 }

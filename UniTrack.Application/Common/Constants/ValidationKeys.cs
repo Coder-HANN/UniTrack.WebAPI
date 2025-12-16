@@ -77,6 +77,16 @@
         public const string UserEmailAlreadyExists = "UserEmailAlreadyExists";
         public const string UserRegisterSuccess = "UserRegisterSuccess";
 
+        // Club Created 
+            public const string InvalidEmail = "InvalidEmail";
+            public const string InvalidDate = "InvalidDate";
+            public const string InvalidTag = "InvalidTag";
+
+        
+        
+            public const string AlreadyFollowingClub = "AlreadyFollowingClub";
+            public const string FollowClubSuccess = "FollowClubSuccess";
+        
 
     }
 }

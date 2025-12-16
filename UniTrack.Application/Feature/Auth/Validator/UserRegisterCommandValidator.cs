@@ -10,8 +10,9 @@ namespace UniTrack.Application.Feature.Auth.Validation
         {
             RuleFor(x => x.Email)
                 .NotEmpty()
-                .WithMessage(ValidationKeys.FieldRequired);
-                
+                .WithMessage(ValidationKeys.FieldRequired)
+                .EmailAddress()
+                .WithMessage(ValidationKeys.InvalidEmail);
 
             RuleFor(x => x.Password)
                 .NotEmpty().WithMessage(ValidationKeys.FieldRequired)

@@ -70,6 +70,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You are already following this club.
+        /// </summary>
+        internal static string AlreadyFollowingClub {
+            get {
+                return ResourceManager.GetString("AlreadyFollowingClub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You have already joined this event.
         /// </summary>
         internal static string AlreadyJoinedEvent {
@@ -367,11 +376,47 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Club followed successfully.
+        /// </summary>
+        internal static string FollowClubSuccess {
+            get {
+                return ResourceManager.GetString("FollowClubSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid date.
+        /// </summary>
+        internal static string InvalidDate {
+            get {
+                return ResourceManager.GetString("InvalidDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid email address.
+        /// </summary>
+        internal static string InvalidEmail {
+            get {
+                return ResourceManager.GetString("InvalidEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid email or password.
         /// </summary>
         internal static string InvalidEmailOrPassword {
             get {
                 return ResourceManager.GetString("InvalidEmailOrPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid tag selection.
+        /// </summary>
+        internal static string InvalidTag {
+            get {
+                return ResourceManager.GetString("InvalidTag", resourceCulture);
             }
         }
         

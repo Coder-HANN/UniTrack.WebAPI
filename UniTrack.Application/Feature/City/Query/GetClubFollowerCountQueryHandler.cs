@@ -1,12 +1,9 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 
 namespace UniTrack.Application.Feature.City.Query
 {
@@ -14,12 +11,15 @@ namespace UniTrack.Application.Feature.City.Query
     {
         private readonly ICurrentUserServices currentUserServices;
         private readonly IClubRepository clubRepository;
+        private readonly ILocalizationService localizationService;
         public GetClubFollowerCountQueryHandler(
             ICurrentUserServices currentUserServices,
-            IClubRepository clubRepository)
+            IClubRepository clubRepository,
+            ILocalizationService localizationService)
         {
             this.currentUserServices = currentUserServices;
             this.clubRepository = clubRepository;
+            this.localizationService = localizationService;
         }
         public async Task<ServiceResponse<long>> Handle(GetClubFollowerCountQuery request, CancellationToken cancellationToken)
         {
@@ -30,7 +30,7 @@ namespace UniTrack.Application.Feature.City.Query
                 {
                     IsSuccess = false,
                     Data = 0,
-                    Message = "Unauthorized"
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
                 };
             }
 
