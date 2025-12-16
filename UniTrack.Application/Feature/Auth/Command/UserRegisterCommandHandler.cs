@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using UniTrack.Application.Abstraction.Repositories;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Abstraction.Services.UserHub;
 using UniTrack.Application.Common;
 using UniTrack.Application.Common.Constants;
@@ -40,7 +41,7 @@ namespace UniTrack.Application.Feature.Auth.Command
                 {
                     IsSuccess = false,
                     Data = null,
-                    Message = await localizationService.Get(ValidationKeys.EmailAlreadyExists)
+                    Message = await localizationService.Get(ValidationKeys.UserEmailAlreadyExists)
                 };
             }
 
@@ -62,19 +63,22 @@ namespace UniTrack.Application.Feature.Auth.Command
                 Surname = request.Surname,
                 UniverstiyId = request.UniversityId,
                 DepartmentId = request.DepartmentId,
-                CityId = request.CityId
+                CityId = request.CityId,
+                Gender = request.Gender,
+                BirthDate = request.BirthDate,
+                PhoneNumber = request.PhoneNumber,
+                Graduaiton_Date = request.Graduaiton_Date
             };
 
             await userDetailRepository.AddAsync(userDetail);
 
             await countService.NotifyUserCountUpdatedAsync();
 
-
             return new ServiceResponse<UserRegisterResponseDTO>
             {
                 IsSuccess = true,
                 Data = null,
-                Message = "Hesap oluşturuldu"
+                Message = await localizationService.Get(ValidationKeys.UserRegisterSuccess)
             };
         }
     }
