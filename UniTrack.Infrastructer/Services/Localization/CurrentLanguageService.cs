@@ -21,25 +21,26 @@ namespace UniTrack.Infrastructure.Localization
             this.currentUserServices = currentUserServices;
         }
 
-        public string GetCulture()
+        public async Task<string> GetCultureAsync()
         {
-            // 1️⃣ User profile
             var userId = currentUserServices.CurrentUser();
             if (userId != null)
             {
-                var user = userRepository.GetByIdAsync(userId.Value).Result;
+                var user = await userRepository.GetByIdAsync(userId.Value);
                 if (!string.IsNullOrWhiteSpace(user?.UserDetail.Language))
                     return user.UserDetail.Language;
             }
 
-            // 2️⃣ Accept-Language
             var headerLang = httpContextAccessor.HttpContext?
                 .Request.Headers["Accept-Language"].ToString();
 
             if (!string.IsNullOrEmpty(headerLang))
-                return headerLang.Split(',').First();
+                return headerLang
+                    .Split(',')
+                    .First()
+                    .Split(';')
+                    .First();
 
-            // 3️⃣ Default
             return "tr-TR";
         }
     }

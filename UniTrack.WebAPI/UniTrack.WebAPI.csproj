@@ -10,6 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="obj\UniTrack.Persistence.csproj.EntityFrameworkCore.targets" />
+    <None Include="obj\UniTrack.Persistence.EntityFrameworkCore.targets" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.21" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
       <PrivateAssets>all</PrivateAssets>

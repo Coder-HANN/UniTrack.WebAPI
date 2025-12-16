@@ -2,6 +2,6 @@
 {
     public interface ILocalizationService
     {
-        string Get(string key);
+        Task<string> Get(string key);
     }
 }

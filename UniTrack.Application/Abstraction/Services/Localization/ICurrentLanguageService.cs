@@ -2,6 +2,6 @@
 {
     public interface ICurrentLanguageService
     {
-        string GetCulture();
+        Task<string> GetCultureAsync();
     }
 }

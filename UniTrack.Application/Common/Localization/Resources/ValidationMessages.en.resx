@@ -118,18 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AlreadyCheckedIn" xml:space="preserve">
-    <value>You have already checked in</value>
+    <value />
   </data>
   <data name="CheckInSuccess" xml:space="preserve">
-    <value>Check-in successful</value>
+    <value />
   </data>
   <data name="EventCreatedSuccess" xml:space="preserve">
-    <value>Event created successfully</value>
+    <value />
   </data>
   <data name="EventNotFound" xml:space="preserve">
-    <value>Event not found</value>
+    <value />
   </data>
   <data name="NotAuthorized" xml:space="preserve">
-    <value> You are not authorized</value>
+    <value />
   </data>
 </root>

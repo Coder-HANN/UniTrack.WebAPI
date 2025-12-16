@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Localization;
 using System.Globalization;
 using UniTrack.Application.Abstraction.Services.Localization;
+using UniTrack.Application.Common.Localization.Resources;
 
 namespace UniTrack.Application.Common.Localization
 {
@@ -17,15 +18,11 @@ namespace UniTrack.Application.Common.Localization
             this.currentLanguageService = currentLanguageService;
         }
 
-        public string Get(string key)
+        public async Task<string> Get(string key)
         {
-            var culture = new CultureInfo(currentLanguageService.GetCulture());
-
-            CultureInfo.CurrentCulture = culture;
-            CultureInfo.CurrentUICulture = culture;
-
-            var localizer = factory.Create(typeof(ValidationMessages));
+            var localizer = factory.Create(typeof(Resources.ValidationMessages));
             return localizer[key];
         }
+
     }
 }
