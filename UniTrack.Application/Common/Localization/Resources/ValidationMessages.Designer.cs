@@ -59,5 +59,167 @@ namespace UniTrack.Application.Common.Localization.Resources {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are already checked in to this event..
+        /// </summary>
+        internal static string AlreadyCheckedIn {
+            get {
+                return ResourceManager.GetString("AlreadyCheckedIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Successfully checked in to the event..
+        /// </summary>
+        internal static string CheckInSuccess {
+            get {
+                return ResourceManager.GetString("CheckInSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event city is required..
+        /// </summary>
+        internal static string EventCityRequired {
+            get {
+                return ResourceManager.GetString("EventCityRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event time/clock is required..
+        /// </summary>
+        internal static string EventClockRequired {
+            get {
+                return ResourceManager.GetString("EventClockRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event club is required..
+        /// </summary>
+        internal static string EventClubRequired {
+            get {
+                return ResourceManager.GetString("EventClubRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A new event has been created..
+        /// </summary>
+        internal static string EventCreatedNotification {
+            get {
+                return ResourceManager.GetString("EventCreatedNotification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event created successfully..
+        /// </summary>
+        internal static string EventCreatedSuccess {
+            get {
+                return ResourceManager.GetString("EventCreatedSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event description is required..
+        /// </summary>
+        internal static string EventDescriptionRequired {
+            get {
+                return ResourceManager.GetString("EventDescriptionRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End date must be after the start date..
+        /// </summary>
+        internal static string EventEndDateInvalid {
+            get {
+                return ResourceManager.GetString("EventEndDateInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event location is required..
+        /// </summary>
+        internal static string EventLocationRequired {
+            get {
+                return ResourceManager.GetString("EventLocationRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event not found..
+        /// </summary>
+        internal static string EventNotFound {
+            get {
+                return ResourceManager.GetString("EventNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event quota must be a positive number..
+        /// </summary>
+        internal static string EventQuotaInvalid {
+            get {
+                return ResourceManager.GetString("EventQuotaInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start date cannot be in the past or invalid..
+        /// </summary>
+        internal static string EventStartDateInvalid {
+            get {
+                return ResourceManager.GetString("EventStartDateInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid event status provided..
+        /// </summary>
+        internal static string EventStatusInvalid {
+            get {
+                return ResourceManager.GetString("EventStatusInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to At least one valid event tag is required..
+        /// </summary>
+        internal static string EventTagInvalid {
+            get {
+                return ResourceManager.GetString("EventTagInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event title is required..
+        /// </summary>
+        internal static string EventTitleRequired {
+            get {
+                return ResourceManager.GetString("EventTitleRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event university is required..
+        /// </summary>
+        internal static string EventUniversityRequired {
+            get {
+                return ResourceManager.GetString("EventUniversityRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are not authorized to perform this action..
+        /// </summary>
+        internal static string NotAuthorized {
+            get {
+                return ResourceManager.GetString("NotAuthorized", resourceCulture);
+            }
+        }
     }
 }
