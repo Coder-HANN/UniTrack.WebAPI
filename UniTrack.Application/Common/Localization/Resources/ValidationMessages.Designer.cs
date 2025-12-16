@@ -187,6 +187,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No changes were made to the event.
+        /// </summary>
+        internal static string EventNotModified {
+            get {
+                return ResourceManager.GetString("EventNotModified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Event quota must be a positive number..
         /// </summary>
         internal static string EventQuotaInvalid {

@@ -42,5 +42,7 @@
         public const string UpdateClockInvalid = "UpdateClockInvalid";
         public const string UpdateStatusInvalid = "UpdateStatusInvalid";
         public const string UpdateTagInvalid = "UpdateTagInvalid";
+        public const string EventNotModified = "EventNotModified";
+
     }
 }

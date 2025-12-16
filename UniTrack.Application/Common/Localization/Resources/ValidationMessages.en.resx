@@ -159,6 +159,9 @@
   <data name="EventNotFound" xml:space="preserve">
     <value>Event not found.</value>
   </data>
+  <data name="EventNotModified" xml:space="preserve">
+    <value>No changes were made to the event</value>
+  </data>
   <data name="EventQuotaInvalid" xml:space="preserve">
     <value>Event quota must be a positive number.</value>
   </data>

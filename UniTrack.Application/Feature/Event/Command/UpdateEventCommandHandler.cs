@@ -31,9 +31,9 @@ namespace UniTrack.Application.Feature.Event.Command
         
         public async Task<ServiceResponse<UpdateEventResponseDTO>> Handle(UpdateEventCommand request, CancellationToken cancellationToken)
         {
-            var userId = currentUserServices.CurrentClub();
+            var clubId = currentUserServices.CurrentClub();
 
-            if (userId == null)
+            if (clubId == null)
             {
                 return new ServiceResponse<UpdateEventResponseDTO>
                 {
@@ -91,11 +91,13 @@ namespace UniTrack.Application.Feature.Event.Command
                 isUpdated = true;
             }
 
-            if (request.Image != null && !existingEvent.Image.SequenceEqual(request.Image))
+            if (request.Image != null &&
+            (existingEvent.Image == null || !existingEvent.Image.SequenceEqual(request.Image)))
             {
                 existingEvent.Image = request.Image;
                 isUpdated = true;
             }
+
 
             if (request.Quota > 0 && existingEvent.Quota != request.Quota)
             {
@@ -103,11 +105,12 @@ namespace UniTrack.Application.Feature.Event.Command
                 isUpdated = true;
             }
 
-            if (!string.IsNullOrEmpty(request.Tag.ToString()) && existingEvent.Tag != request.Tag)
+            if (request.Tag != default && existingEvent.Tag != request.Tag)
             {
                 existingEvent.Tag = request.Tag;
                 isUpdated = true;
             }
+
 
             if (!string.IsNullOrEmpty(request.Location) && existingEvent.Location != request.Location)
             {
@@ -127,23 +130,21 @@ namespace UniTrack.Application.Feature.Event.Command
                 isUpdated = true;
             }
 
-            if (isUpdated)
+            if (!isUpdated)
             {
-                await eventRepository.UpdateAsync(existingEvent);
-
-                var message = await localizationService.Get(ValidationKeys.EventUpdatedNotification, existingEvent.Title);
-
-                await notificationService.ClubIsUpdateEventAsync(existingEvent.ClubId,message);
-
-                return new ServiceResponse<UpdateEventResponseDTO>
-                {
-                    IsSuccess = true,
-                    Data = null,
-                    Message = null
-                };
+                return ServiceResponse<UpdateEventResponseDTO>.Success(
+                    await localizationService.Get(ValidationKeys.EventNotModified)
+                );
             }
 
+                await eventRepository.UpdateAsync(existingEvent);
+
+                var message = await localizationService.Get(ValidationKeys.EventUpdatedNotification,existingEvent.Title);
+
+                await notificationService.ClubIsUpdateEventAsync(existingEvent.ClubId, message);
+
             return ServiceResponse<UpdateEventResponseDTO>.Success(await localizationService.Get(ValidationKeys.EventUpdatedSuccess));
+            
         }
     }
 }

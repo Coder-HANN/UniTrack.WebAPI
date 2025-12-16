@@ -159,6 +159,9 @@
   <data name="EventNotFound" xml:space="preserve">
     <value>Etkinlik bulunamadı.</value>
   </data>
+  <data name="EventNotModified" xml:space="preserve">
+    <value>Etkinlikte herhangi bir değişiklik yapılmadı.</value>
+  </data>
   <data name="EventQuotaInvalid" xml:space="preserve">
     <value>Etkinlik kontenjanı pozitif bir sayı olmalıdır.</value>
   </data>
