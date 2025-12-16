@@ -196,6 +196,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You have successfully left the event.
+        /// </summary>
+        internal static string EventLeftSuccess {
+            get {
+                return ResourceManager.GetString("EventLeftSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Event location is required..
         /// </summary>
         internal static string EventLocationRequired {
@@ -318,6 +327,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string NotAuthorized {
             get {
                 return ResourceManager.GetString("NotAuthorized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are not joined to this event.
+        /// </summary>
+        internal static string NotJoinedEvent {
+            get {
+                return ResourceManager.GetString("NotJoinedEvent", resourceCulture);
             }
         }
         

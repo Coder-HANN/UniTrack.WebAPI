@@ -162,6 +162,9 @@
   <data name="EventJoinSuccess" xml:space="preserve">
     <value>Etkinliğe başarıyla katıldınız</value>
   </data>
+  <data name="EventLeftSuccess" xml:space="preserve">
+    <value>Etkinlikten başarıyla ayrıldınız</value>
+  </data>
   <data name="EventLocationRequired" xml:space="preserve">
     <value>Etkinlik konumu zorunludur.</value>
   </data>
@@ -203,6 +206,9 @@
   </data>
   <data name="NotAuthorized" xml:space="preserve">
     <value>Bu işlemi gerçekleştirmeye yetkiniz yok.</value>
+  </data>
+  <data name="NotJoinedEvent" xml:space="preserve">
+    <value>Bu etkinliğe katılımınız bulunmamaktadır</value>
   </data>
   <data name="UpdateClockInvalid" xml:space="preserve">
     <value>Etkinlik saati geçersiz</value>

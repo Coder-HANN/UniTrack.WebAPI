@@ -52,5 +52,10 @@
         public const string EventUniversityOnly = "EventUniversityOnly";
         public const string EventJoinSuccess = "EventJoinSuccess";
 
+        // Left Event
+        public const string NotJoinedEvent = "NotJoinedEvent";
+        public const string EventLeftSuccess = "EventLeftSuccess";
+
+
     }
 }

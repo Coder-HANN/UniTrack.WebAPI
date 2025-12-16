@@ -162,6 +162,9 @@
   <data name="EventJoinSuccess" xml:space="preserve">
     <value>You have successfully joined the event</value>
   </data>
+  <data name="EventLeftSuccess" xml:space="preserve">
+    <value>You have successfully left the event</value>
+  </data>
   <data name="EventLocationRequired" xml:space="preserve">
     <value>Event location is required.</value>
   </data>
@@ -203,6 +206,9 @@
   </data>
   <data name="NotAuthorized" xml:space="preserve">
     <value>You are not authorized to perform this action.</value>
+  </data>
+  <data name="NotJoinedEvent" xml:space="preserve">
+    <value>You are not joined to this event</value>
   </data>
   <data name="UpdateClockInvalid" xml:space="preserve">
     <value>Event time is invalid</value>
