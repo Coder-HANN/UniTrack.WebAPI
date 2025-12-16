@@ -6,7 +6,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using UniTrack.Application.Abstraction.Repositories;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 using UniTrack.Application.DTOs.Auth;
 using UniTrack.Application.Feature.Auth.Command;
 using UniTrack.Domain.Entities;
@@ -19,28 +21,26 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ServiceResponse
     private readonly IPasswordHasher<User> userPasswordHasher;
     private readonly IPasswordHasher<Club> clubPasswordHasher;
     private readonly IConfiguration configuration;
+    private readonly ILocalizationService localizationService;
 
     public LoginCommandHandler(
         IUserRepository userRepository,
         IClubRepository clubRepository,
         IPasswordHasher<User> userPasswordHasher,
         IPasswordHasher<Club> clubPasswordHasher,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        ILocalizationService localizationService)
     {
         this.userRepository = userRepository;
         this.clubRepository = clubRepository;
         this.userPasswordHasher = userPasswordHasher;
         this.clubPasswordHasher = clubPasswordHasher;
         this.configuration = configuration;
+        this.localizationService = localizationService;
     }
 
     public async Task<ServiceResponse<LoginResponseDTO>> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
-        {
-            return new ServiceResponse<LoginResponseDTO> { IsSuccess = false, Message = "Email ve şifre gerekli." };
-        }
-
         // 1. USER KONTROLÜ
         var user = await userRepository.GetByEmailAsync(request.Email);
         if (user != null && user.Role == Role.User)
@@ -59,8 +59,8 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ServiceResponse
                 return new ServiceResponse<LoginResponseDTO>
                 {
                     IsSuccess = true,
-                    Data = new LoginResponseDTO { Token = token, Expiration = DateTime.UtcNow.AddHours(1) },
-                    Message = "Giriş başarılı (User)."
+                    Data = new LoginResponseDTO { Token = token, Expiration = DateTime.UtcNow.AddHours(5) },
+                    Message = await localizationService.Get(ValidationKeys.LoginSuccess)
                 };
             }
         }
@@ -80,8 +80,8 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ServiceResponse
                 return new ServiceResponse<LoginResponseDTO>
                 {
                     IsSuccess = true,
-                    Data = new LoginResponseDTO { Token = token, Expiration = DateTime.UtcNow.AddHours(1) },
-                    Message = "Giriş başarılı (Club)."
+                    Data = new LoginResponseDTO { Token = token, Expiration = DateTime.UtcNow.AddHours(5) },
+                    Message = await localizationService.Get(ValidationKeys.LoginSuccess)
                 };
             }
         }
@@ -99,12 +99,12 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ServiceResponse
                 {
                     IsSuccess = true,
                     Data = new LoginResponseDTO { Token = token, Expiration = DateTime.UtcNow.AddHours(1) },
-                    Message = "Giriş başarılı (Admin)."
+                    Message = await localizationService.Get(ValidationKeys.LoginSuccess)
                 };
             }
         }
 
-        return new ServiceResponse<LoginResponseDTO> { IsSuccess = false, Message = "Email veya şifre hatalı." };
+        return new ServiceResponse<LoginResponseDTO> { IsSuccess = false, Message = await localizationService.Get(ValidationKeys.InvalidEmailOrPassword) };
     }
 
     private string GenerateJwtToken(Guid id, Role role, string email, string name = "", string surname = "")

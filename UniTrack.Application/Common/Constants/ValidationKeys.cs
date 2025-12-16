@@ -56,6 +56,24 @@
         public const string NotJoinedEvent = "NotJoinedEvent";
         public const string EventLeftSuccess = "EventLeftSuccess";
 
+        // Club Register 
+        public const string PresidentEmailRequired = "PresidentEmailRequired";
+        public const string ClubEmailAlreadyExists = "ClubEmailAlreadyExists";
+        public const string VerificationCodeSent = "VerificationCodeSent";
+        public const string ClubRegisterFailed = "ClubRegisterFailed";
+        public const string PresidentEmailMustBeEdu = "PresidentEmailMustBeEdu";
+
+        public const string FieldRequired = "FieldRequired";
+        public const string PresidentEmailInvalid = "PresidentEmailInvalid";
+      
+        public const string PasswordTooShort = "PasswordTooShort";
+        public const string ClubTagInvalid = "ClubTagInvalid";
+
+        // User Register
+        public const string LoginSuccess = "LoginSuccess";
+        public const string InvalidEmailOrPassword = "InvalidEmailOrPassword";
+
+
 
     }
 }

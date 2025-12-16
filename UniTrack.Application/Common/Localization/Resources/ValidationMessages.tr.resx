@@ -126,6 +126,15 @@
   <data name="CheckInSuccess" xml:space="preserve">
     <value>Etkinliğe başarılı bir şekilde giriş yapıldı.</value>
   </data>
+  <data name="ClubEmailAlreadyExists" xml:space="preserve">
+    <value>Bu e-posta adresi zaten kullanımda</value>
+  </data>
+  <data name="ClubRegisterFailed" xml:space="preserve">
+    <value>Kulüp kaydı sırasında bir hata oluştu</value>
+  </data>
+  <data name="ClubTagInvalid" xml:space="preserve">
+    <value>Geçersiz kulüp etiketi</value>
+  </data>
   <data name="EventCityRequired" xml:space="preserve">
     <value>Etkinlik şehri zorunludur.</value>
   </data>
@@ -204,11 +213,32 @@
   <data name="EventUpdatedSuccess" xml:space="preserve">
     <value>Etkinlik başarıyla güncellendi.</value>
   </data>
+  <data name="FieldRequired" xml:space="preserve">
+    <value>Bu alan boş bırakılamaz</value>
+  </data>
+  <data name="InvalidEmailOrPassword" xml:space="preserve">
+    <value>E-posta veya şifre hatalı</value>
+  </data>
+  <data name="LoginSuccess" xml:space="preserve">
+    <value>Giriş başarılı</value>
+  </data>
   <data name="NotAuthorized" xml:space="preserve">
     <value>Bu işlemi gerçekleştirmeye yetkiniz yok.</value>
   </data>
   <data name="NotJoinedEvent" xml:space="preserve">
     <value>Bu etkinliğe katılımınız bulunmamaktadır</value>
+  </data>
+  <data name="PasswordTooShort" xml:space="preserve">
+    <value>Şifre en az 6 karakter olmalıdır</value>
+  </data>
+  <data name="PresidentEmailInvalid" xml:space="preserve">
+    <value>Geçerli bir e-posta adresi giriniz</value>
+  </data>
+  <data name="PresidentEmailMustBeEdu" xml:space="preserve">
+    <value>Başkan e-posta adresi edu.tr uzantılı olmalıdır</value>
+  </data>
+  <data name="PresidentEmailRequired" xml:space="preserve">
+    <value>Kulüp başkanı e-posta adresi boş bırakılamaz</value>
   </data>
   <data name="UpdateClockInvalid" xml:space="preserve">
     <value>Etkinlik saati geçersiz</value>
@@ -236,5 +266,8 @@
   </data>
   <data name="UpdateTitleInvalid" xml:space="preserve">
     <value>Başlık 3 ile 150 karakter arasında olmalıdır</value>
+  </data>
+  <data name="VerificationCodeSent" xml:space="preserve">
+    <value>Doğrulama kodu e-posta adresinize gönderildi</value>
   </data>
 </root>

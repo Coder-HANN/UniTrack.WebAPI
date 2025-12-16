@@ -1,9 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using UniTrack.Application.Abstraction.Repositories;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Abstraction.Services.Transaction;
 using UniTrack.Application.Abstraction.Services.VerificationCode;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 using UniTrack.Application.DTOs.Auth;
 using UniTrack.Domain.Enums;
 
@@ -11,50 +13,44 @@ namespace UniTrack.Application.Feature.Auth.Command
 {
     public class ClubRegisterCommandHandler : IRequestHandler<ClubRegisterCommand, ServiceResponse<ClubRegisterResponseDTO>>
     {
-        private readonly IClubRepository _clubRepository;
-        private readonly IPasswordHasher<Domain.Entities.Club> _passwordHasher;
-        private readonly IVerificationCodeService _codeService;
-        private readonly ITransactionService _transactionService;
+        private readonly IClubRepository clubRepository;
+        private readonly IPasswordHasher<Domain.Entities.Club> passwordHasher;
+        private readonly IVerificationCodeService codeService;
+        private readonly ITransactionService transactionService;
+        private readonly ILocalizationService localizationService;
 
         public ClubRegisterCommandHandler(
             IClubRepository clubRepository,
             IPasswordHasher<Domain.Entities.Club> passwordHasher,
             IVerificationCodeService codeService,
-            ITransactionService transactionService)
+            ITransactionService transactionService,
+            ILocalizationService localizationService)
         {
-            _clubRepository = clubRepository;
-            _passwordHasher = passwordHasher;
-            _codeService = codeService;
-            _transactionService = transactionService;
+            this.clubRepository = clubRepository;
+            this.passwordHasher = passwordHasher;
+            this.codeService = codeService;
+            this.transactionService = transactionService;
+            this.localizationService = localizationService;
         }
 
-        public async Task<ServiceResponse<ClubRegisterResponseDTO>> Handle(ClubRegisterCommand request, CancellationToken cancellationToken)
+        public async Task<ServiceResponse<ClubRegisterResponseDTO>> Handle(ClubRegisterCommand request,CancellationToken cancellationToken)
         {
-           
             if (string.IsNullOrWhiteSpace(request.PresidentEmail))
             {
-                return new ServiceResponse<ClubRegisterResponseDTO>
-                {
-                    IsSuccess = false,
-                    Message = "Başkan e-posta adresi boş bırakılamaz."
-                };
+                return ServiceResponse<ClubRegisterResponseDTO>.Fail(await localizationService.Get(ValidationKeys.PresidentEmailRequired));
             }
 
-            var existingClub = await _clubRepository.GetByEmailAsync(request.PresidentEmail);
+            var existingClub =await clubRepository.GetByEmailAndVerifyAsync(request.PresidentEmail);
+
             if (existingClub != null)
             {
-                return new ServiceResponse<ClubRegisterResponseDTO>
-                {
-                    IsSuccess = false,
-                    Message = "Bu e-posta adresi zaten kullanımda."
-                };
+                return ServiceResponse<ClubRegisterResponseDTO>.Fail(await localizationService.Get(ValidationKeys.ClubEmailAlreadyExists));
             }
 
-            // 2. Transaction Başlat
-            _transactionService.Begin();
+            transactionService.Begin();
+
             try
             {
-                // 3. Entity Oluşturma
                 var club = new Domain.Entities.Club
                 {
                     Name = request.ClubName,
@@ -65,43 +61,27 @@ namespace UniTrack.Application.Feature.Auth.Command
                     CityId = request.CityId,
                     Tag = request.Tag,
                     Role = Role.Club,
-                    Description = request.ClubName + " Resmi Hesabı",
+                    Description = request.ClubName,
                     Follower = 0,
                     IsVerified = false
                 };
 
-                // 4. Şifreleme (Best Practice: 'null' yerine 'club' nesnesini veriyoruz)
-                club.Password = _passwordHasher.HashPassword(club, request.Password);
+                club.Password =passwordHasher.HashPassword(club, request.Password);
 
-                // 5. Veritabanına Ekleme
-                await _clubRepository.AddAsync(club);
+                await clubRepository.AddAsync(club);
 
-                // 6. Kod Üretme ve Mail Gönderme (Tek Satırda)
-                // Handler artık mail içeriğiyle veya kodun nasıl üretildiğiyle ilgilenmez.
-                // Sadece "Kulüp Kaydı için kod gönder" emrini verir.
-                await _codeService.GenerateAndSendCodeAsync(request.PresidentEmail, VerificationType.ClubRegistration);
+                await codeService.GenerateAndSendCodeAsync(request.PresidentEmail,VerificationType.ClubRegistration);
 
-                // 7. İşlemi Tamamla
-                _transactionService.Commit();
+                transactionService.Commit();
 
-                return new ServiceResponse<ClubRegisterResponseDTO>
-                {
-                    IsSuccess = true,
-                    Message = "Kayıt başarılı. Doğrulama kodu gönderildi.",
-                    Data = new ClubRegisterResponseDTO { ClubId = club.Id }
-                };
+                return ServiceResponse<ClubRegisterResponseDTO>.Success(await localizationService.Get(ValidationKeys.VerificationCodeSent),
+                    new ClubRegisterResponseDTO { ClubId = club.Id });
             }
-            catch (Exception ex)
+            catch
             {
-                _transactionService.Rollback();
-                // Loglama yapılabilir (örn: _logger.LogError(ex...))
+                transactionService.Rollback();
 
-                return new ServiceResponse<ClubRegisterResponseDTO>
-                {
-                    IsSuccess = false,
-                    Message = "Bir hata oluştu: " + ex.Message,
-                    Data = null
-                };
+                return ServiceResponse<ClubRegisterResponseDTO>.Fail(await localizationService.Get(ValidationKeys.ClubRegisterFailed));
             }
         }
     }

@@ -88,6 +88,33 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This email address is already in use.
+        /// </summary>
+        internal static string ClubEmailAlreadyExists {
+            get {
+                return ResourceManager.GetString("ClubEmailAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred during club registration.
+        /// </summary>
+        internal static string ClubRegisterFailed {
+            get {
+                return ResourceManager.GetString("ClubRegisterFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid club tag.
+        /// </summary>
+        internal static string ClubTagInvalid {
+            get {
+                return ResourceManager.GetString("ClubTagInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Event city is required..
         /// </summary>
         internal static string EventCityRequired {
@@ -322,6 +349,33 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This field cannot be empty..
+        /// </summary>
+        internal static string FieldRequired {
+            get {
+                return ResourceManager.GetString("FieldRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid email or password.
+        /// </summary>
+        internal static string InvalidEmailOrPassword {
+            get {
+                return ResourceManager.GetString("InvalidEmailOrPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Login successful.
+        /// </summary>
+        internal static string LoginSuccess {
+            get {
+                return ResourceManager.GetString("LoginSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You are not authorized to perform this action..
         /// </summary>
         internal static string NotAuthorized {
@@ -336,6 +390,42 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string NotJoinedEvent {
             get {
                 return ResourceManager.GetString("NotJoinedEvent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password must be at least 6 characters.
+        /// </summary>
+        internal static string PasswordTooShort {
+            get {
+                return ResourceManager.GetString("PasswordTooShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid email address.
+        /// </summary>
+        internal static string PresidentEmailInvalid {
+            get {
+                return ResourceManager.GetString("PresidentEmailInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to President email must be an edu.tr address.
+        /// </summary>
+        internal static string PresidentEmailMustBeEdu {
+            get {
+                return ResourceManager.GetString("PresidentEmailMustBeEdu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to President email address cannot be empty.
+        /// </summary>
+        internal static string PresidentEmailRequired {
+            get {
+                return ResourceManager.GetString("PresidentEmailRequired", resourceCulture);
             }
         }
         
@@ -417,6 +507,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string UpdateTitleInvalid {
             get {
                 return ResourceManager.GetString("UpdateTitleInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Verification code has been sent to your email.
+        /// </summary>
+        internal static string VerificationCodeSent {
+            get {
+                return ResourceManager.GetString("VerificationCodeSent", resourceCulture);
             }
         }
     }

@@ -41,6 +41,11 @@ namespace UniTrack.Persistence.Repositories
             return dbSet.ToListAsync();
         }
 
+        public Task<Club> GetByEmailAndVerifyAsync(string presidentEmail)
+        {
+           return dbSet.FirstOrDefaultAsync(c => c.PresidentMail == presidentEmail && c.IsVerified == true);
+        }
+
         public Task<Club> GetByEmailAsync(string email)
         {
             return dbSet.FirstOrDefaultAsync(c => c.PresidentMail == email);
