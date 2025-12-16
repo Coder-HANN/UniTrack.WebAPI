@@ -133,6 +133,24 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Club team deleted successfully..
+        /// </summary>
+        internal static string ClubTeamDeletedSuccess {
+            get {
+                return ResourceManager.GetString("ClubTeamDeletedSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Club team not found or you are not authorized to delete it..
+        /// </summary>
+        internal static string ClubTeamNotFound {
+            get {
+                return ResourceManager.GetString("ClubTeamNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This email address is already in use.
         /// </summary>
         internal static string EmailAlreadyExists {

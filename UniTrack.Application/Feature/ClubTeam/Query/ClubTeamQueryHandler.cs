@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using UniTrack.Application.Abstraction.Repositories;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 using UniTrack.Application.DTOs.ClubTeam;
 
 namespace UniTrack.Application.Feature.ClubTeam.Query
@@ -8,9 +10,11 @@ namespace UniTrack.Application.Feature.ClubTeam.Query
     public class ClubTeamQueryHandler : IRequestHandler<ClubTeamQuery, ServiceResponse<List<ClubTeamResponseDTO>>>
     {
         private readonly IClubTeamRepository clubTeamRepository;
-        public ClubTeamQueryHandler(IClubTeamRepository clubTeamRepository)
+        private readonly ILocalizationService localizationService;
+        public ClubTeamQueryHandler(IClubTeamRepository clubTeamRepository, ILocalizationService localizationService)
         {
             this.clubTeamRepository = clubTeamRepository;
+            this.localizationService = localizationService;
         }
 
         public async Task<ServiceResponse<List<ClubTeamResponseDTO>>> Handle(ClubTeamQuery request, CancellationToken cancellationToken)
@@ -23,7 +27,7 @@ namespace UniTrack.Application.Feature.ClubTeam.Query
                 {
                     IsSuccess = false,
                     Data = null,
-                    Message = "Yönetim kurulu bulunamadı."
+                    Message = await localizationService.Get(ValidationKeys.ClubTeamNotFound)
                 };
             }
 

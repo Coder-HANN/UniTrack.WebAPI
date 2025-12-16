@@ -141,6 +141,12 @@
   <data name="ClubTeamCreatedSuccess" xml:space="preserve">
     <value>Kulüp ekibi başarıyla oluşturuldu.</value>
   </data>
+  <data name="ClubTeamDeletedSuccess" xml:space="preserve">
+    <value>Kulüp ekibi başarıyla silindi.</value>
+  </data>
+  <data name="ClubTeamNotFound" xml:space="preserve">
+    <value>Kulüp ekibi bulunamadı veya silme yetkiniz yok.</value>
+  </data>
   <data name="EmailAlreadyExists" xml:space="preserve">
     <value>Bu e-posta adresi zaten kullanımda</value>
   </data>

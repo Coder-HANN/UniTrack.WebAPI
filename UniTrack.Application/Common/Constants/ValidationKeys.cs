@@ -91,6 +91,9 @@
         public const string UserMustFollowClub = "UserMustFollowClub";
         public const string ClubTeamCreatedSuccess = "ClubTeamCreatedSuccess";
 
+        public const string ClubTeamNotFound = "ClubTeamNotFound";
+        public const string ClubTeamDeletedSuccess = "ClubTeamDeletedSuccess";
+
 
     }
 }

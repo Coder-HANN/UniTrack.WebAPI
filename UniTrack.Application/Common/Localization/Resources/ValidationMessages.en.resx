@@ -141,6 +141,12 @@
   <data name="ClubTeamCreatedSuccess" xml:space="preserve">
     <value>Club team created successfully.</value>
   </data>
+  <data name="ClubTeamDeletedSuccess" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ClubTeamNotFound" xml:space="preserve">
+    <value />
+  </data>
   <data name="EmailAlreadyExists" xml:space="preserve">
     <value>This email address is already in use</value>
   </data>
