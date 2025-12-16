@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
@@ -12,7 +14,6 @@ using UniTrack.Application.Abstraction.Services.Notification;
 using UniTrack.Application.Abstraction.Services.Transaction;
 using UniTrack.Application.Abstraction.Services.UserHub;
 using UniTrack.Application.Abstraction.Services.VerificationCode;
-using UniTrack.Application.Common.Localization;
 using UniTrack.Application.Feature.Auth.Command;
 using UniTrack.Domain.Entities;
 using UniTrack.Infrastructure.Localization;
@@ -140,6 +141,17 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+var supportedCultures = new[] { "tr-TR", "en-US" };
+
+var localizationOptions = new RequestLocalizationOptions()
+{
+    DefaultRequestCulture = new RequestCulture("tr-TR"),
+    SupportedCultures = supportedCultures.Select(c => new CultureInfo(c)).ToList(),
+    SupportedUICultures = supportedCultures.Select(c => new CultureInfo(c)).ToList()
+};
+
+app.UseRequestLocalization(localizationOptions);
+
 // 3. MİDDLEWARE SIRALAMASI (KESİN DOĞRU HALİ)
 app.UseAuthentication();
 app.UseAuthorization();
@@ -147,6 +159,7 @@ app.UseMiddleware<AdvancedLoggingMiddleware>(); // Loglama Authentication'dan so
 
 app.UseMiddleware<BanMiddleware>();
 app.UseMiddleware<UserMiddleware>();
+app.UseMiddleware<ValidationExceptionMiddleware>();
 
 app.UseEndpoints(endpoints =>
 {

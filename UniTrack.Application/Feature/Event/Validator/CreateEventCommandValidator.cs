@@ -7,58 +7,58 @@ namespace UniTrack.Application.Feature.Event.Command
     public class CreateEventCommandValidator
         : AbstractValidator<CreateEventCommand>
     {
-        public CreateEventCommandValidator(ILocalizationService localization)
+        public CreateEventCommandValidator()
         {
             RuleFor(x => x.Title)
                 .NotEmpty()
                 .MaximumLength(150)
-                .WithMessage(localization.Get(ValidationKeys.EventTitleRequired));
+                .WithMessage(ValidationKeys.EventTitleRequired);
 
             RuleFor(x => x.Description)
                 .NotEmpty()
                 .MaximumLength(1000)
-                .WithMessage(localization.Get(ValidationKeys.EventDescriptionRequired));
+                .WithMessage(ValidationKeys.EventDescriptionRequired);
 
             RuleFor(x => x.StartDate)
                 .Must(BeFutureDate)
-                .WithMessage(localization.Get(ValidationKeys.EventStartDateInvalid));
+                .WithMessage(ValidationKeys.EventStartDateInvalid);
 
             RuleFor(x => x.EndDate)
                 .GreaterThan(x => x.StartDate)
-                .WithMessage(localization.Get(ValidationKeys.EventEndDateInvalid));
+                .WithMessage(ValidationKeys.EventEndDateInvalid);
 
             RuleFor(x => x.Clock)
                 .Must(c => c != default)
-                .WithMessage(localization.Get(ValidationKeys.EventClockRequired));
+                .WithMessage(ValidationKeys.EventClockRequired);
 
             RuleFor(x => x.Tag)
                 .IsInEnum()
-                .WithMessage(localization.Get(ValidationKeys.EventTagInvalid));
+                .WithMessage(ValidationKeys.EventTagInvalid);
 
             RuleFor(x => x.Quota)
                 .GreaterThan(0)
-                .WithMessage(localization.Get(ValidationKeys.EventQuotaInvalid));
+                .WithMessage(ValidationKeys.EventQuotaInvalid);
 
             RuleFor(x => x.Location)
                 .NotEmpty()
                 .MaximumLength(200)
-                .WithMessage(localization.Get(ValidationKeys.EventLocationRequired));
+                .WithMessage(ValidationKeys.EventLocationRequired);
 
             RuleFor(x => x.Status)
                 .IsInEnum()
-                .WithMessage(localization.Get(ValidationKeys.EventStatusInvalid));
+                .WithMessage(ValidationKeys.EventStatusInvalid);
 
             RuleFor(x => x.ClubId)
                 .NotEmpty()
-                .WithMessage(localization.Get(ValidationKeys.EventClubRequired));
+                .WithMessage(ValidationKeys.EventClubRequired);
 
             RuleFor(x => x.CityId)
                 .GreaterThan(0)
-                .WithMessage(localization.Get(ValidationKeys.EventCityRequired));
+                .WithMessage(ValidationKeys.EventCityRequired);
 
             RuleFor(x => x.UniversityId)
                 .NotEmpty()
-                .WithMessage(localization.Get(ValidationKeys.EventUniversityRequired));
+                .WithMessage(ValidationKeys.EventUniversityRequired);
         }
 
         private bool BeFutureDate(DateTime date)

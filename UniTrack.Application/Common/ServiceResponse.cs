@@ -7,12 +7,12 @@
         public string Message { get; set; }
 
 
-        public static ServiceResponse<T> Fail(string errorCode, string message)
+        public static ServiceResponse<T> Fail(string message)
         {
             return new ServiceResponse<T>
             {
                 IsSuccess = false,
-                ErrorCode = errorCode,
+                Data = default,
                 Message = message
             };
         }

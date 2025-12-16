@@ -10,7 +10,7 @@ namespace UniTrack.Application.Feature.Event.Command
         {
             RuleFor(x => x.EventId)
                 .NotEmpty()
-                .WithMessage(localization.Get(ValidationKeys.EventIdRequired));
+                .WithMessage(ValidationKeys.EventIdRequired);
         }
     }
 }

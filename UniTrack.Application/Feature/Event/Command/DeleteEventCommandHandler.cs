@@ -36,21 +36,21 @@ namespace UniTrack.Application.Feature.Event.Command
             var clubId = currentUserServices.CurrentClub();
             if (userId == null && clubId == null)
             {
-                return ServiceResponse<DeleteEventResponseDTO>.Fail(localization.Get(ValidationKeys.NotAuthorized));
+                return ServiceResponse<DeleteEventResponseDTO>.Fail(await localization.Get(ValidationKeys.NotAuthorized));
             }
 
             var role = currentUserServices.Role();
 
             if (role == null || role == Role.User)
             {
-                return ServiceResponse<DeleteEventResponseDTO>.Fail(localization.Get(ValidationKeys.NotAuthorized));
+                return ServiceResponse<DeleteEventResponseDTO>.Fail(await localization.Get(ValidationKeys.NotAuthorized));
             }
 
             var existingEvent = eventRepository.GetAsync(e => e.Id == request.EventId);
 
             if (existingEvent == null)
             {
-                return ServiceResponse<DeleteEventResponseDTO>.Fail(localization.Get(ValidationKeys.EventNotFound));
+                return ServiceResponse<DeleteEventResponseDTO>.Fail(await localization.Get(ValidationKeys.EventNotFound));
             }
 
             existingEvent.Result.IsDeleted = true;
@@ -58,9 +58,9 @@ namespace UniTrack.Application.Feature.Event.Command
             await eventRepository.UpdateAsync(existingEvent.Result);
 
 
-            await notificationService.ClubIsDeleteEventAsync(clubId.Value,localization.Get(ValidationKeys.EventDeletedNotification,existingEvent.Result.Title));
+            await notificationService.ClubIsDeleteEventAsync(clubId.Value,await localization.Get(ValidationKeys.EventDeletedNotification, existingEvent.Result.Title));
 
-            return ServiceResponse<DeleteEventResponseDTO>.Success(localization.Get(ValidationKeys.EventDeletedSuccess));
+            return ServiceResponse<DeleteEventResponseDTO>.Success(await localization.Get(ValidationKeys.EventDeletedSuccess));
         }
     }
 }

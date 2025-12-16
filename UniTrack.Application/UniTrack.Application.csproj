@@ -52,6 +52,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Common\Localization\Resources\ValidationMessages.en.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ValidationMessages.en.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Common\Localization\Resources\ValidationMessages.tr.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ValidationMessages.tr.resx</DependentUpon>
+    </Compile>
     <Compile Update="Common\Localization\Resources\ValidationMessages.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -61,14 +71,17 @@
 
   <ItemGroup>
     <EmbeddedResource Update="Common\Localization\Resources\ValidationMessages.en.resx">
-      <Generator></Generator>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ValidationMessages.en.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Common\Localization\Resources\ValidationMessages.tr.resx">
-      <Generator></Generator>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ValidationMessages.tr.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Common\Localization\Resources\ValidationMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ValidationMessages.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>UniTrack.Application.Common.Localization.Resources</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
 

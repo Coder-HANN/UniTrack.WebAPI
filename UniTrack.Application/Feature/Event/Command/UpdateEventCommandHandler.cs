@@ -135,12 +135,7 @@ namespace UniTrack.Application.Feature.Event.Command
                     Data = null,
                     Message = "Event updated successfully"
                 };
-
-                
-                
             }
-
-            
 
             return null;
         }

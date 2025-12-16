@@ -44,7 +44,7 @@ namespace UniTrack.Application.Feature.Event.Command.EventCheckInCommandHandler
 
             if (eventEntity == null)
             {
-                return ServiceResponse<string>.Fail(localization.Get(ValidationKeys.EventNotFound));
+                return ServiceResponse<string>.Fail(await localization.Get(ValidationKeys.EventNotFound));
             }
             var eventUser = eventUserRepository.GetEventUserCheckInAsync(userId.Value, request.EventCheckInId);
             if (eventUser != null)
@@ -63,7 +63,7 @@ namespace UniTrack.Application.Feature.Event.Command.EventCheckInCommandHandler
                 CheckedInAt = DateTime.UtcNow
             });
 
-            return ServiceResponse<string>.Success(localization.Get(ValidationKeys.CheckInSuccess));
+            return ServiceResponse<string>.Success(await localization.Get(ValidationKeys.CheckInSuccess));
         }
     }
 }

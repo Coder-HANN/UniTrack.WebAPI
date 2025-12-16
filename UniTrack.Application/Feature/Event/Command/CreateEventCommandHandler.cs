@@ -53,8 +53,7 @@ namespace UniTrack.Application.Feature.Event.Command
 
             if (userId == null && clubId == null || role == null || role == Role.User)
             {
-                return ServiceResponse<CreateEventResponseDTO>.Fail(
-                     localization.Get(ValidationKeys.NotAuthorized));
+                return ServiceResponse<CreateEventResponseDTO>.Fail(await localization.Get(ValidationKeys.NotAuthorized));
             }
 
             var newEvent = mapper.Map<Domain.Entities.Event>(request);
@@ -92,12 +91,13 @@ namespace UniTrack.Application.Feature.Event.Command
             // En az biri başarıyla oluşturulup entity'ye atanmışsa (null değilse) DB'yi güncelliyoruz.
                 await eventRepository.UpdateAsync(createdEvent);
 
+            var message = await localization.Get(ValidationKeys.EventCreatedNotification,createdEvent.Title,createdEvent.Club.Name);
 
             // 7. BİLDİRİM GÖNDERME
-            await notificationProducer.ClubIsCreateEventAsync(clubId.Value,localization.Get(ValidationKeys.EventCreatedNotification,createdEvent.Title,createdEvent.Club.Name));
+            await notificationProducer.ClubIsCreateEventAsync(clubId.Value,message);
 
             // 8. BAŞARI YANITI
-            return ServiceResponse<CreateEventResponseDTO>.Success(localization.Get(ValidationKeys.EventCreatedSuccess));
+            return ServiceResponse<CreateEventResponseDTO>.Success(await localization.Get(ValidationKeys.EventCreatedSuccess));
         }
     }
 }
