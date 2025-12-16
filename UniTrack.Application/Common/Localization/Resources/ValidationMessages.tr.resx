@@ -186,4 +186,31 @@
   <data name="NotAuthorized" xml:space="preserve">
     <value>Bu işlemi gerçekleştirmeye yetkiniz yok.</value>
   </data>
+  <data name="UpdateClockInvalid" xml:space="preserve">
+    <value>Etkinlik saati geçersiz</value>
+  </data>
+  <data name="UpdateDescriptionInvalid" xml:space="preserve">
+    <value>Açıklama 10 ile 1000 karakter arasında olmalıdır</value>
+  </data>
+  <data name="UpdateEndDateInvalid" xml:space="preserve">
+    <value>Bitiş tarihi başlangıçtan sonra olmalıdır</value>
+  </data>
+  <data name="UpdateLocationInvalid" xml:space="preserve">
+    <value>Konum 3 ile 200 karakter arasında olmalıdır</value>
+  </data>
+  <data name="UpdateQuotaInvalid" xml:space="preserve">
+    <value>Kontenjan 0'dan büyük olmalıdır</value>
+  </data>
+  <data name="UpdateStartDateInvalid" xml:space="preserve">
+    <value>Başlangıç tarihi gelecekte olmalıdır</value>
+  </data>
+  <data name="UpdateStatusInvalid" xml:space="preserve">
+    <value>Etkinlik durumu geçersiz</value>
+  </data>
+  <data name="UpdateTagInvalid" xml:space="preserve">
+    <value>Etkinlik etiketi geçersiz</value>
+  </data>
+  <data name="UpdateTitleInvalid" xml:space="preserve">
+    <value>Başlık 3 ile 150 karakter arasında olmalıdır</value>
+  </data>
 </root>

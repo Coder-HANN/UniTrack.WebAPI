@@ -186,4 +186,31 @@
   <data name="NotAuthorized" xml:space="preserve">
     <value>You are not authorized to perform this action.</value>
   </data>
+  <data name="UpdateClockInvalid" xml:space="preserve">
+    <value>Event time is invalid</value>
+  </data>
+  <data name="UpdateDescriptionInvalid" xml:space="preserve">
+    <value>Description must be between 10 and 1000 characters</value>
+  </data>
+  <data name="UpdateEndDateInvalid" xml:space="preserve">
+    <value>End date must be later than start date</value>
+  </data>
+  <data name="UpdateLocationInvalid" xml:space="preserve">
+    <value>Location must be between 3 and 200 characters</value>
+  </data>
+  <data name="UpdateQuotaInvalid" xml:space="preserve">
+    <value>Quota must be greater than 0</value>
+  </data>
+  <data name="UpdateStartDateInvalid" xml:space="preserve">
+    <value>Start date must be in the future</value>
+  </data>
+  <data name="UpdateStatusInvalid" xml:space="preserve">
+    <value>Event status is invalid</value>
+  </data>
+  <data name="UpdateTagInvalid" xml:space="preserve">
+    <value>Event tag is invalid</value>
+  </data>
+  <data name="UpdateTitleInvalid" xml:space="preserve">
+    <value>Title must be between 3 and 150 characters</value>
+  </data>
 </root>

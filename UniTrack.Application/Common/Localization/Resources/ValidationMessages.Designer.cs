@@ -266,5 +266,86 @@ namespace UniTrack.Application.Common.Localization.Resources {
                 return ResourceManager.GetString("NotAuthorized", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event time is invalid.
+        /// </summary>
+        internal static string UpdateClockInvalid {
+            get {
+                return ResourceManager.GetString("UpdateClockInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description must be between 10 and 1000 characters.
+        /// </summary>
+        internal static string UpdateDescriptionInvalid {
+            get {
+                return ResourceManager.GetString("UpdateDescriptionInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End date must be later than start date.
+        /// </summary>
+        internal static string UpdateEndDateInvalid {
+            get {
+                return ResourceManager.GetString("UpdateEndDateInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Location must be between 3 and 200 characters.
+        /// </summary>
+        internal static string UpdateLocationInvalid {
+            get {
+                return ResourceManager.GetString("UpdateLocationInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quota must be greater than 0.
+        /// </summary>
+        internal static string UpdateQuotaInvalid {
+            get {
+                return ResourceManager.GetString("UpdateQuotaInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start date must be in the future.
+        /// </summary>
+        internal static string UpdateStartDateInvalid {
+            get {
+                return ResourceManager.GetString("UpdateStartDateInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event status is invalid.
+        /// </summary>
+        internal static string UpdateStatusInvalid {
+            get {
+                return ResourceManager.GetString("UpdateStatusInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event tag is invalid.
+        /// </summary>
+        internal static string UpdateTagInvalid {
+            get {
+                return ResourceManager.GetString("UpdateTagInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Title must be between 3 and 150 characters.
+        /// </summary>
+        internal static string UpdateTitleInvalid {
+            get {
+                return ResourceManager.GetString("UpdateTitleInvalid", resourceCulture);
+            }
+        }
     }
 }

@@ -33,5 +33,14 @@
         // Update Event
         public const string EventUpdatedSuccess = "EventUpdatedSuccess";
         public const string EventUpdatedNotification = "EventUpdatedNotification";
+        public const string UpdateTitleInvalid = "UpdateTitleInvalid";
+        public const string UpdateDescriptionInvalid = "UpdateDescriptionInvalid";
+        public const string UpdateStartDateInvalid = "UpdateStartDateInvalid";
+        public const string UpdateEndDateInvalid = "UpdateEndDateInvalid";
+        public const string UpdateQuotaInvalid = "UpdateQuotaInvalid";
+        public const string UpdateLocationInvalid = "UpdateLocationInvalid";
+        public const string UpdateClockInvalid = "UpdateClockInvalid";
+        public const string UpdateStatusInvalid = "UpdateStatusInvalid";
+        public const string UpdateTagInvalid = "UpdateTagInvalid";
     }
 }

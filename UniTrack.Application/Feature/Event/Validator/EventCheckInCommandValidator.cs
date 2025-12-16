@@ -9,7 +9,6 @@ namespace UniTrack.Application.Feature.Event.Command
         {
             RuleFor(x => x.EventCheckInId)
                 .NotEmpty();
-                
         }
     }
 }
