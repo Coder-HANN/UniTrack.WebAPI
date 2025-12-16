@@ -1,72 +1,61 @@
 ﻿using MediatR;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 using UniTrack.Domain.Enums;
 
 namespace UniTrack.Application.Feature.Club.Command
 {
-    public class UnfollowCommandHandler : IRequestHandler<UnfollowClubCommand, ServiceResponse<string>>
+    public class UnfollowCommandHandler: IRequestHandler<UnfollowClubCommand, ServiceResponse<string>>
     {
         private readonly ICurrentUserServices currentUserServices;
-        private readonly IUserClubRepository UserClubRepository;
-        private readonly IClubRepository clubRepository;    
+        private readonly IUserClubRepository userClubRepository;
+        private readonly IClubRepository clubRepository;
+        private readonly ILocalizationService localizationService;
+
         public UnfollowCommandHandler(
             ICurrentUserServices currentUserServices,
-            IUserClubRepository UserClubRepository,
-            IClubRepository clubRepository)
+            IUserClubRepository userClubRepository,
+            IClubRepository clubRepository,
+            ILocalizationService localizationService)
         {
             this.currentUserServices = currentUserServices;
-            this.UserClubRepository = UserClubRepository;
+            this.userClubRepository = userClubRepository;
             this.clubRepository = clubRepository;
+            this.localizationService = localizationService;
         }
-        public async Task<ServiceResponse<string>> Handle(UnfollowClubCommand request, CancellationToken cancellationToken)
+
+        public async Task<ServiceResponse<string>> Handle(UnfollowClubCommand request,CancellationToken cancellationToken)
         {
             var userId = currentUserServices.CurrentUser();
-            if (userId == null)
-            {
-                return new ServiceResponse<string>
-                {
-                    IsSuccess = false,
-                    Data = null,
-                    Message = "Unauthorized"
-                };
-            }
             var role = currentUserServices.Role();
-            if (role == null || role == Role.Club)
+
+            if (userId == null || role == null || role == Role.Club)
             {
-                return new ServiceResponse<string>
-                {
-                    IsSuccess = false,
-                    Data = null,
-                    Message = "Yetkisiz kullanıcı"
-                };
+                return ServiceResponse<string>.Fail(await localizationService.Get(ValidationKeys.NotAuthorized));
             }
 
-            var UserClub = await UserClubRepository.GetAsync(cu => cu.ClubId == request.ClubId && cu.UserId == userId.Value && cu.IsFollowing == true);
-            if (UserClub == null)
+            var userClub = await userClubRepository.GetAsync(cu =>
+                cu.ClubId == request.ClubId &&
+                cu.UserId == userId.Value &&
+                cu.IsFollowing);
+
+            if (userClub == null)
             {
-                return new ServiceResponse<string>
-                {
-                    IsSuccess = false,
-                    Data = null,
-                    Message = "You are not following this club"
-                };
+                return ServiceResponse<string>.Fail(await localizationService.Get(ValidationKeys.NotFollowingClub));
             }
-            await UserClubRepository.DeleteAsync(UserClub);
 
-            var add = await clubRepository.GetAsync(c => c.Id == request.ClubId);
+            await userClubRepository.DeleteAsync(userClub);
 
-            add.Follower = add.Follower - 1;
+            var club = await clubRepository.GetAsync(c => c.Id == request.ClubId);
 
-            await clubRepository.UpdateAsync(add);
+            club.Follower--;
+            
+            await clubRepository.UpdateAsync(club);
 
-            return new ServiceResponse<string>
-            {
-                IsSuccess = true,
-                Data = null,
-                Message = "Successfully unfollowed the club"
-            };
+            return ServiceResponse<string>.Success(await localizationService.Get(ValidationKeys.UnfollowClubSuccess));
         }
     }
 }

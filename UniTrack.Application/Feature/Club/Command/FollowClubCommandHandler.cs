@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 using UniTrack.Domain.Entities;
 using UniTrack.Domain.Enums;
 
@@ -12,75 +14,56 @@ namespace UniTrack.Application.Feature.Club.Command
         private readonly ICurrentUserServices currentUserServices;
         private readonly IUserClubRepository UserClubRepository;
         private readonly IClubRepository clubRepository;
+        private readonly ILocalizationService localizationService;
 
         public FollowClubCommandHandler(ICurrentUserServices currentUserServices,
             IUserClubRepository UserClubRepository,
-            IClubRepository clubRepository)
+            IClubRepository clubRepository,
+            ILocalizationService localizationService)
         {
             this.currentUserServices = currentUserServices;
             this.UserClubRepository = UserClubRepository;
             this.clubRepository = clubRepository;
+            this.localizationService = localizationService;
         }
 
         public async Task<ServiceResponse<string>> Handle(FollowClubCommand request, CancellationToken cancellationToken)
         {
             var userId = currentUserServices.CurrentUser();
-
-            if (userId == null)
-            {
-                return new ServiceResponse<string>
-                {
-                    IsSuccess = false,
-                    Data = null,
-                    Message = "Unauthorized"
-                };
-            }
-
             var role = currentUserServices.Role();
 
-            if (role == null || role == Role.Club )
+            if (userId == null || role == null || role == Role.Club)
             {
-                return new ServiceResponse<string>
-                {
-                    IsSuccess = false,
-                    Data = null,
-                    Message = "Yetkisiz kullanıcı"
-                };
+                return ServiceResponse<string>.Fail(
+                    await localizationService.Get(ValidationKeys.NotAuthorized));
             }
 
-            var existingEntry = await UserClubRepository.GetAsync(cu => cu.ClubId == request.ClubId && cu.UserId == userId.Value);
-            
+            var existingEntry = await UserClubRepository
+                .GetAsync(cu => cu.ClubId == request.ClubId && cu.UserId == userId.Value);
+
             if (existingEntry != null)
             {
-                return new ServiceResponse<string>
-                {
-                    IsSuccess = false,
-                    Data = null,
-                    Message = "You are already following this club"
-                };
+                return ServiceResponse<string>.Fail(
+                    await localizationService.Get(ValidationKeys.AlreadyFollowingClub));
             }
 
-            var UserClub = new UserClub
+            var userClub = new UserClub
             {
                 ClubId = request.ClubId,
                 UserId = userId.Value,
                 IsFollowing = true
             };
 
-            await UserClubRepository.AddAsync(UserClub);
+            await UserClubRepository.AddAsync(userClub);
 
-            var add = await clubRepository.GetAsync(c => c.Id == request.ClubId);
+            var club = await clubRepository.GetAsync(c => c.Id == request.ClubId);
+            club.Follower++;
+            await clubRepository.UpdateAsync(club);
 
-            add.Follower = add.Follower + 1;
-
-            await clubRepository.UpdateAsync(add);
-
-            return new ServiceResponse<string>
-            {
-                IsSuccess = true,
-                Data = null,
-                Message = "Kayıt başarılı"
-            };
+            return ServiceResponse<string>.Success(
+                await localizationService.Get(ValidationKeys.FollowClubSuccess));
         }
+
     }
+}
 }

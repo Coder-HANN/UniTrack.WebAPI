@@ -82,11 +82,15 @@
             public const string InvalidDate = "InvalidDate";
             public const string InvalidTag = "InvalidTag";
 
-        
-        
-            public const string AlreadyFollowingClub = "AlreadyFollowingClub";
-            public const string FollowClubSuccess = "FollowClubSuccess";
-        
+        public const string NotFollowingClub = "NotFollowingClub";
+        public const string UnfollowClubSuccess = "UnfollowClubSuccess";
+
+        public const string AlreadyFollowingClub = "AlreadyFollowingClub";
+        public const string FollowClubSuccess = "FollowClubSuccess";
+      
+        public const string UserMustFollowClub = "UserMustFollowClub";
+        public const string ClubTeamCreatedSuccess = "ClubTeamCreatedSuccess";
+
 
     }
 }

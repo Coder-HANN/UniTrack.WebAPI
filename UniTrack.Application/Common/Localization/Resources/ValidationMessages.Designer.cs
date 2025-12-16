@@ -124,6 +124,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Club team created successfully..
+        /// </summary>
+        internal static string ClubTeamCreatedSuccess {
+            get {
+                return ResourceManager.GetString("ClubTeamCreatedSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This email address is already in use.
         /// </summary>
         internal static string EmailAlreadyExists {
@@ -439,6 +448,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You are not following this club.
+        /// </summary>
+        internal static string NotFollowingClub {
+            get {
+                return ResourceManager.GetString("NotFollowingClub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You are not joined to this event.
         /// </summary>
         internal static string NotJoinedEvent {
@@ -480,6 +498,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string PresidentEmailRequired {
             get {
                 return ResourceManager.GetString("PresidentEmailRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Successfully unfollowed the club.
+        /// </summary>
+        internal static string UnfollowClubSuccess {
+            get {
+                return ResourceManager.GetString("UnfollowClubSuccess", resourceCulture);
             }
         }
         
@@ -561,6 +588,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string UpdateTitleInvalid {
             get {
                 return ResourceManager.GetString("UpdateTitleInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The user must follow the club..
+        /// </summary>
+        internal static string UserMustFollowClub {
+            get {
+                return ResourceManager.GetString("UserMustFollowClub", resourceCulture);
             }
         }
         

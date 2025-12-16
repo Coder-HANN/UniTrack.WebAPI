@@ -138,6 +138,9 @@
   <data name="ClubTagInvalid" xml:space="preserve">
     <value>Geçersiz kulüp etiketi</value>
   </data>
+  <data name="ClubTeamCreatedSuccess" xml:space="preserve">
+    <value>Kulüp ekibi başarıyla oluşturuldu.</value>
+  </data>
   <data name="EmailAlreadyExists" xml:space="preserve">
     <value>Bu e-posta adresi zaten kullanımda</value>
   </data>
@@ -243,6 +246,9 @@
   <data name="NotAuthorized" xml:space="preserve">
     <value>Bu işlemi gerçekleştirmeye yetkiniz yok.</value>
   </data>
+  <data name="NotFollowingClub" xml:space="preserve">
+    <value>Bu kulübü takip etmiyorsunuz</value>
+  </data>
   <data name="NotJoinedEvent" xml:space="preserve">
     <value>Bu etkinliğe katılımınız bulunmamaktadır</value>
   </data>
@@ -257,6 +263,9 @@
   </data>
   <data name="PresidentEmailRequired" xml:space="preserve">
     <value>Kulüp başkanı e-posta adresi boş bırakılamaz</value>
+  </data>
+  <data name="UnfollowClubSuccess" xml:space="preserve">
+    <value>Kulüp takibi bırakıldı</value>
   </data>
   <data name="UpdateClockInvalid" xml:space="preserve">
     <value>Etkinlik saati geçersiz</value>
@@ -284,6 +293,9 @@
   </data>
   <data name="UpdateTitleInvalid" xml:space="preserve">
     <value>Başlık 3 ile 150 karakter arasında olmalıdır</value>
+  </data>
+  <data name="UserMustFollowClub" xml:space="preserve">
+    <value>Kullanıcının kulübü takip etmesi gerekmektedir.</value>
   </data>
   <data name="UserRegisterSuccess" xml:space="preserve">
     <value>Hesap başarıyla oluşturuldu</value>
