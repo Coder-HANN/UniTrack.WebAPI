@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Abstraction.Services.Notification;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 using UniTrack.Application.DTOs.Event;
 using UniTrack.Domain.Enums;
 
@@ -13,15 +15,18 @@ namespace UniTrack.Application.Feature.Event.Command
         private readonly ICurrentUserServices currentUserServices;
         private readonly IEventRepository eventRepository;
         private readonly INotificationService notificationService;
+        private readonly ILocalizationService localizationService;
 
         public UpdateEventCommandHandler(
             ICurrentUserServices currentUserServices,
             IEventRepository eventRepository,
-            INotificationService notificationService)
+            INotificationService notificationService,
+            ILocalizationService localizationService)
         {
             this.currentUserServices = currentUserServices;
             this.eventRepository = eventRepository;
             this.notificationService = notificationService;
+            this.localizationService = localizationService;
         }
         
         public async Task<ServiceResponse<UpdateEventResponseDTO>> Handle(UpdateEventCommand request, CancellationToken cancellationToken)
@@ -34,7 +39,7 @@ namespace UniTrack.Application.Feature.Event.Command
                 {
                     IsSuccess = false,
                     Data = null,
-                    Message = "Unauthorized"
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
                 };
             }
             var role = currentUserServices.Role();
@@ -44,7 +49,7 @@ namespace UniTrack.Application.Feature.Event.Command
                 {
                     IsSuccess = false,
                     Data = null,
-                    Message = "Yetkisiz kullanıcı"
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
                 };
             }
 
@@ -56,7 +61,7 @@ namespace UniTrack.Application.Feature.Event.Command
                 {
                     IsSuccess = false,
                     Data = null,
-                    Message = "Event not found"
+                    Message = await localizationService.Get(ValidationKeys.EventNotFound)
                 };
             }
 
@@ -121,23 +126,24 @@ namespace UniTrack.Application.Feature.Event.Command
                 existingEvent.Status = request.Status;
                 isUpdated = true;
             }
-          
 
             if (isUpdated)
             {
                 await eventRepository.UpdateAsync(existingEvent);
 
-                await notificationService.ClubIsUpdateEventAsync(existingEvent.ClubId,$"Katılmış olduğunuz '{existingEvent.Title}' etkinliği güncellendi.");
+                var message = await localizationService.Get(ValidationKeys.EventUpdatedNotification, existingEvent.Title);
+
+                await notificationService.ClubIsUpdateEventAsync(existingEvent.ClubId,message);
 
                 return new ServiceResponse<UpdateEventResponseDTO>
                 {
                     IsSuccess = true,
                     Data = null,
-                    Message = "Event updated successfully"
+                    Message = null
                 };
             }
 
-            return null;
+            return ServiceResponse<UpdateEventResponseDTO>.Success(await localizationService.Get(ValidationKeys.EventUpdatedSuccess));
         }
     }
 }
