@@ -70,6 +70,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You have already joined this event.
+        /// </summary>
+        internal static string AlreadyJoinedEvent {
+            get {
+                return ResourceManager.GetString("AlreadyJoinedEvent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Successfully checked in to the event..
         /// </summary>
         internal static string CheckInSuccess {
@@ -160,11 +169,29 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This event has already ended.
+        /// </summary>
+        internal static string EventExpired {
+            get {
+                return ResourceManager.GetString("EventExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Event name is required for deletion..
         /// </summary>
         internal static string EventIdRequired {
             get {
                 return ResourceManager.GetString("EventIdRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have successfully joined the event.
+        /// </summary>
+        internal static string EventJoinSuccess {
+            get {
+                return ResourceManager.GetString("EventJoinSuccess", resourceCulture);
             }
         }
         
@@ -192,6 +219,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string EventNotModified {
             get {
                 return ResourceManager.GetString("EventNotModified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The event quota is full.
+        /// </summary>
+        internal static string EventQuotaFull {
+            get {
+                return ResourceManager.GetString("EventQuotaFull", resourceCulture);
             }
         }
         
@@ -237,6 +273,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string EventTitleRequired {
             get {
                 return ResourceManager.GetString("EventTitleRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This event is only available to students of the same university.
+        /// </summary>
+        internal static string EventUniversityOnly {
+            get {
+                return ResourceManager.GetString("EventUniversityOnly", resourceCulture);
             }
         }
         

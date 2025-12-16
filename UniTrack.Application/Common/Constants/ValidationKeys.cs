@@ -44,5 +44,13 @@
         public const string UpdateTagInvalid = "UpdateTagInvalid";
         public const string EventNotModified = "EventNotModified";
 
+        // Joiner Event
+
+        public const string AlreadyJoinedEvent = "AlreadyJoinedEvent";
+        public const string EventExpired = "EventExpired";
+        public const string EventQuotaFull = "EventQuotaFull";
+        public const string EventUniversityOnly = "EventUniversityOnly";
+        public const string EventJoinSuccess = "EventJoinSuccess";
+
     }
 }

@@ -120,6 +120,9 @@
   <data name="AlreadyCheckedIn" xml:space="preserve">
     <value>Bu etkinliğe zaten giriş yaptınız.</value>
   </data>
+  <data name="AlreadyJoinedEvent" xml:space="preserve">
+    <value>Bu etkinliğe zaten katıldınız</value>
+  </data>
   <data name="CheckInSuccess" xml:space="preserve">
     <value>Etkinliğe başarılı bir şekilde giriş yapıldı.</value>
   </data>
@@ -150,8 +153,14 @@
   <data name="EventEndDateInvalid" xml:space="preserve">
     <value>Bitiş tarihi, başlangıç tarihinden sonra olmalıdır.</value>
   </data>
+  <data name="EventExpired" xml:space="preserve">
+    <value>Etkinliğin süresi dolmuştur</value>
+  </data>
   <data name="EventIdRequired" xml:space="preserve">
     <value>Silme işlemi için etkinlik adı zorunludur.</value>
+  </data>
+  <data name="EventJoinSuccess" xml:space="preserve">
+    <value>Etkinliğe başarıyla katıldınız</value>
   </data>
   <data name="EventLocationRequired" xml:space="preserve">
     <value>Etkinlik konumu zorunludur.</value>
@@ -161,6 +170,9 @@
   </data>
   <data name="EventNotModified" xml:space="preserve">
     <value>Etkinlikte herhangi bir değişiklik yapılmadı.</value>
+  </data>
+  <data name="EventQuotaFull" xml:space="preserve">
+    <value>Etkinlik kontenjanı dolmuştur</value>
   </data>
   <data name="EventQuotaInvalid" xml:space="preserve">
     <value>Etkinlik kontenjanı pozitif bir sayı olmalıdır.</value>
@@ -176,6 +188,9 @@
   </data>
   <data name="EventTitleRequired" xml:space="preserve">
     <value>Etkinlik başlığı zorunludur.</value>
+  </data>
+  <data name="EventUniversityOnly" xml:space="preserve">
+    <value>Bu etkinlik yalnızca aynı üniversite öğrencilerine özeldir</value>
   </data>
   <data name="EventUniversityRequired" xml:space="preserve">
     <value>Etkinlik üniversitesi zorunludur.</value>

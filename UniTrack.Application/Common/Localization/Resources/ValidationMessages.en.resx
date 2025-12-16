@@ -120,6 +120,9 @@
   <data name="AlreadyCheckedIn" xml:space="preserve">
     <value>You are already checked in to this event.</value>
   </data>
+  <data name="AlreadyJoinedEvent" xml:space="preserve">
+    <value>You have already joined this event</value>
+  </data>
   <data name="CheckInSuccess" xml:space="preserve">
     <value>Successfully checked in to the event.</value>
   </data>
@@ -150,8 +153,14 @@
   <data name="EventEndDateInvalid" xml:space="preserve">
     <value>End date must be after the start date.</value>
   </data>
+  <data name="EventExpired" xml:space="preserve">
+    <value>This event has already ended</value>
+  </data>
   <data name="EventIdRequired" xml:space="preserve">
     <value>Event name is required for deletion.</value>
+  </data>
+  <data name="EventJoinSuccess" xml:space="preserve">
+    <value>You have successfully joined the event</value>
   </data>
   <data name="EventLocationRequired" xml:space="preserve">
     <value>Event location is required.</value>
@@ -161,6 +170,9 @@
   </data>
   <data name="EventNotModified" xml:space="preserve">
     <value>No changes were made to the event</value>
+  </data>
+  <data name="EventQuotaFull" xml:space="preserve">
+    <value>The event quota is full</value>
   </data>
   <data name="EventQuotaInvalid" xml:space="preserve">
     <value>Event quota must be a positive number.</value>
@@ -176,6 +188,9 @@
   </data>
   <data name="EventTitleRequired" xml:space="preserve">
     <value>Event title is required.</value>
+  </data>
+  <data name="EventUniversityOnly" xml:space="preserve">
+    <value>This event is only available to students of the same university</value>
   </data>
   <data name="EventUniversityRequired" xml:space="preserve">
     <value>Event university is required.</value>
