@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
 
 namespace UniTrack.Application.Feature.ActiveDetail.Query
@@ -9,10 +10,12 @@ namespace UniTrack.Application.Feature.ActiveDetail.Query
     {
         private readonly IUserRepository userRepository;
         private readonly ICurrentUserServices currentUserServices;
-        public GetActiveUsersFor90DaysQueryHandler(IUserRepository userRepository, ICurrentUserServices currentUserServices)
+        private readonly ILocalizationService localizationService;
+        public GetActiveUsersFor90DaysQueryHandler(IUserRepository userRepository, ICurrentUserServices currentUserServices, ILocalizationService localizationService)
         {
             this.userRepository = userRepository;
             this.currentUserServices = currentUserServices;
+            this.localizationService = localizationService;
         }
         public async Task<ServiceResponse<long>> Handle(GetActiveUsersFor90DaysQuery request, CancellationToken cancellationToken)
         {
@@ -23,7 +26,7 @@ namespace UniTrack.Application.Feature.ActiveDetail.Query
                 {
                     IsSuccess = false,
                     Data = 0,
-                    Message = "Unauthorized"
+                    Message = await localizationService.Get(Common.Constants.ValidationKeys.NotAuthorized)
                 };
             }
 

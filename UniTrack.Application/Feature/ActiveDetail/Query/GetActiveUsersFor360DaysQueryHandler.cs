@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
 
 namespace UniTrack.Application.Feature.ActiveDetail.Query
@@ -9,12 +10,15 @@ namespace UniTrack.Application.Feature.ActiveDetail.Query
     {
         private readonly ICurrentUserServices currentUserServices;
         private readonly IUserRepository userRepository;
+        private readonly ILocalizationService localizationService;
         public GetActiveUsersFor360DaysQueryHandler(
             ICurrentUserServices currentUserServices,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            ILocalizationService localizationService)
         {
             this.currentUserServices = currentUserServices;
             this.userRepository = userRepository;
+            this.localizationService = localizationService;
         }
         public async Task<ServiceResponse<long>> Handle(GetActiveUsersFor360DaysQuery request, CancellationToken cancellationToken)
         {
@@ -25,7 +29,7 @@ namespace UniTrack.Application.Feature.ActiveDetail.Query
                 {
                     IsSuccess = false,
                     Data = 0,
-                    Message = "Yetkisiz kullanıcı"
+                    Message = await localizationService.Get(Common.Constants.ValidationKeys.NotAuthorized)
                 };
             }
             var activeUserCount = await userRepository.Get360DaysActiveUsersCountAsync();

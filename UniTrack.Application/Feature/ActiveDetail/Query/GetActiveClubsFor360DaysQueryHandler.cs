@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 using UniTrack.Domain.Enums;
 
 namespace UniTrack.Application.Feature.ActiveDetail.Query
@@ -10,13 +12,16 @@ namespace UniTrack.Application.Feature.ActiveDetail.Query
     {
         private readonly ICurrentUserServices currentUserServices;
         private readonly IClubRepository clubRepository;
+        private readonly ILocalizationService localizationService;
 
         public GetActiveClubsFor360DaysQueryHandler(
             ICurrentUserServices currentUserServices,
-            IClubRepository clubRepository)
+            IClubRepository clubRepository,
+            ILocalizationService localizationService)
         {
             this.currentUserServices = currentUserServices;
             this.clubRepository = clubRepository;
+            this.localizationService = localizationService;
         }
 
         public async Task<ServiceResponse<long>> Handle(GetActiveClubsFor360DaysQuery request, CancellationToken cancellationToken)
@@ -28,7 +33,7 @@ namespace UniTrack.Application.Feature.ActiveDetail.Query
                 {
                     IsSuccess = false,
                     Data = 0,
-                    Message = "Yetkisiz kullanıcı. Yalnızca Admin rolüne sahip kullanıcılar bu veriyi sorgulayabilir."
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
                 };
             }
 
@@ -40,7 +45,7 @@ namespace UniTrack.Application.Feature.ActiveDetail.Query
                 {
                     IsSuccess = true,
                     Data = 0,
-                    Message = "Son 360 günde aktif kulüp bulunamadı."
+                    Message = null
                 };
             }
 
@@ -48,7 +53,7 @@ namespace UniTrack.Application.Feature.ActiveDetail.Query
             {
                 IsSuccess = true,
                 Data = activeClubs,
-                Message = $"Son 360 günde {activeClubs} aktif kulüp bulundu."
+                Message = null
             };
         }
     }

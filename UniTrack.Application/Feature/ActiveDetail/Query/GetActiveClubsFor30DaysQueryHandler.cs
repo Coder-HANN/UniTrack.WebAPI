@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 using UniTrack.Domain.Enums;
 
 namespace UniTrack.Application.Feature.ActiveDetail.Query
@@ -10,13 +12,16 @@ namespace UniTrack.Application.Feature.ActiveDetail.Query
     {
         private readonly ICurrentUserServices currentUserServices;
         private readonly IClubRepository clubRepository; 
+        private readonly ILocalizationService localization;
 
         public GetActiveClubsFor30DaysQueryHandler(
             ICurrentUserServices currentUserServices,
-            IClubRepository clubRepository)
+            IClubRepository clubRepository,
+            ILocalizationService localization)
         {
             this.currentUserServices = currentUserServices;
             this.clubRepository = clubRepository;
+            this.localization = localization;
         }
 
         public async Task<ServiceResponse<long>> Handle(GetActiveClubsFor30DaysQuery request, CancellationToken cancellationToken)
@@ -28,19 +33,19 @@ namespace UniTrack.Application.Feature.ActiveDetail.Query
                 {
                     IsSuccess = false,
                     Data = 0,
-                    Message = "Yetkisiz kullanıcı"
+                    Message = await localization.Get(ValidationKeys.NotAuthorized)
                 };
             }
 
             var activeClubs = await clubRepository.Get30DaysActiveClubsCountAsync();
 
-            if (activeClubs <= 0)
+            if (activeClubs == 0)
             {
                 return new ServiceResponse<long>
                 {
                     IsSuccess = false,
                     Data = 0,
-                    Message = "Son 30 günde aktif kulüp bulunamadı."
+                    Message = null
                 };
             }
 
@@ -48,7 +53,7 @@ namespace UniTrack.Application.Feature.ActiveDetail.Query
             {
                 IsSuccess = true,
                 Data = activeClubs,
-                Message = $"Son 30 günde {activeClubs} aktif kulüp bulundu."
+                Message = null
             };
         }
     }

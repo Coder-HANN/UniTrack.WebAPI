@@ -15,7 +15,7 @@ namespace UniTrack.Application.Feature.ActiveDetail.Query
         {
             
             var activeUserCount = await userRepository.CountAsync();
-            if (activeUserCount == null)
+            if (activeUserCount == 0)
             {
                 return new ServiceResponse<long>
                 {
