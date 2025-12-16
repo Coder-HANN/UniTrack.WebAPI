@@ -135,6 +135,9 @@
   <data name="ClubTagInvalid" xml:space="preserve">
     <value>Geçersiz kulüp etiketi</value>
   </data>
+  <data name="EmailAlreadyExists" xml:space="preserve">
+    <value>Bu e-posta adresi zaten kullanımda</value>
+  </data>
   <data name="EventCityRequired" xml:space="preserve">
     <value>Etkinlik şehri zorunludur.</value>
   </data>
@@ -266,6 +269,9 @@
   </data>
   <data name="UpdateTitleInvalid" xml:space="preserve">
     <value>Başlık 3 ile 150 karakter arasında olmalıdır</value>
+  </data>
+  <data name="UserRegisterSuccess" xml:space="preserve">
+    <value>Hesap başarıyla oluşturuldu</value>
   </data>
   <data name="VerificationCodeSent" xml:space="preserve">
     <value>Doğrulama kodu e-posta adresinize gönderildi</value>

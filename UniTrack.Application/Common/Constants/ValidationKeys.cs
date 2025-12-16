@@ -69,10 +69,13 @@
         public const string PasswordTooShort = "PasswordTooShort";
         public const string ClubTagInvalid = "ClubTagInvalid";
 
-        // User Register
+        // User Login
         public const string LoginSuccess = "LoginSuccess";
         public const string InvalidEmailOrPassword = "InvalidEmailOrPassword";
 
+        // User Register
+        public const string UserEmailAlreadyExists = "UserEmailAlreadyExists";
+        public const string UserRegisterSuccess = "UserRegisterSuccess";
 
 
     }

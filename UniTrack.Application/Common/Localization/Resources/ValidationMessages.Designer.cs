@@ -115,6 +115,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This email address is already in use.
+        /// </summary>
+        internal static string EmailAlreadyExists {
+            get {
+                return ResourceManager.GetString("EmailAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Event city is required..
         /// </summary>
         internal static string EventCityRequired {
@@ -507,6 +516,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string UpdateTitleInvalid {
             get {
                 return ResourceManager.GetString("UpdateTitleInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account has been created successfully.
+        /// </summary>
+        internal static string UserRegisterSuccess {
+            get {
+                return ResourceManager.GetString("UserRegisterSuccess", resourceCulture);
             }
         }
         

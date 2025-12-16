@@ -1,12 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using UniTrack.Application.Abstraction.Repositories;
+using UniTrack.Application.Abstraction.Services.UserHub;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 using UniTrack.Application.DTOs.Auth;
 using UniTrack.Domain.Entities;
 using UniTrack.Domain.Enums;
-using Microsoft.AspNetCore.SignalR; 
-using UniTrack.Application.Abstraction.Services.UserHub;
 
 namespace UniTrack.Application.Feature.Auth.Command
 {
@@ -16,17 +16,20 @@ namespace UniTrack.Application.Feature.Auth.Command
         private readonly IUserDetailRepository userDetailRepository;
         private readonly IPasswordHasher<User> passwordHash;
         private readonly IUserRegisterCountService countService;
+        private readonly ILocalizationService localizationService;
 
         public UserRegisterCommandHandler(
             IUserRepository userRepository,
             IPasswordHasher<User> passwordHash,
             IUserDetailRepository userDetailRepository,
-            IUserRegisterCountService countService)
+            IUserRegisterCountService countService,
+            ILocalizationService localizationService)
         {
             this.userRepository = userRepository;
             this.passwordHash = passwordHash;
             this.userDetailRepository = userDetailRepository;
             this.countService = countService;
+            this.localizationService = localizationService;
         }
         public async Task<ServiceResponse<UserRegisterResponseDTO>> Handle(UserRegisterCommand request, CancellationToken cancellationToken)
         {
@@ -37,7 +40,7 @@ namespace UniTrack.Application.Feature.Auth.Command
                 {
                     IsSuccess = false,
                     Data = null,
-                    Message = "Email already in use"
+                    Message = await localizationService.Get(ValidationKeys.EmailAlreadyExists)
                 };
             }
 

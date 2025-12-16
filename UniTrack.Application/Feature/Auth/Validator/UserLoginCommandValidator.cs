@@ -5,9 +5,9 @@ using UniTrack.Application.Feature.Auth.Command;
 
 namespace UniTrack.Application.Feature.Auth.Validator
 {
-    public class UserRegisterCommandValidator : AbstractValidator<UserRegisterCommand>
+    public class UserLoginCommandValidator : AbstractValidator<UserRegisterCommand>
     {
-        public UserRegisterCommandValidator(ILocalizationService localizationService) 
+        public UserLoginCommandValidator(ILocalizationService localizationService) 
         {
             RuleFor(x => x.Email)
                 .NotEmpty()
