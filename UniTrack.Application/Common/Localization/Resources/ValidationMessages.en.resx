@@ -138,11 +138,20 @@
   <data name="EventCreatedSuccess" xml:space="preserve">
     <value>Event created successfully.</value>
   </data>
+  <data name="EventDeletedNotification" xml:space="preserve">
+    <value>'{0}' event has been deleted.</value>
+  </data>
+  <data name="EventDeletedSuccess" xml:space="preserve">
+    <value>Event deleted successfully.</value>
+  </data>
   <data name="EventDescriptionRequired" xml:space="preserve">
     <value>Event description is required.</value>
   </data>
   <data name="EventEndDateInvalid" xml:space="preserve">
     <value>End date must be after the start date.</value>
+  </data>
+  <data name="EventIdRequired" xml:space="preserve">
+    <value>Event name is required for deletion.</value>
   </data>
   <data name="EventLocationRequired" xml:space="preserve">
     <value>Event location is required.</value>
@@ -167,6 +176,12 @@
   </data>
   <data name="EventUniversityRequired" xml:space="preserve">
     <value>Event university is required.</value>
+  </data>
+  <data name="EventUpdatedNotification" xml:space="preserve">
+    <value>The event '{0}' you joined has been updated.</value>
+  </data>
+  <data name="EventUpdatedSuccess" xml:space="preserve">
+    <value>Event updated successfully.</value>
   </data>
   <data name="NotAuthorized" xml:space="preserve">
     <value>You are not authorized to perform this action.</value>

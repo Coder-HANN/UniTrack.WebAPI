@@ -124,6 +124,24 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; event has been deleted..
+        /// </summary>
+        internal static string EventDeletedNotification {
+            get {
+                return ResourceManager.GetString("EventDeletedNotification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event deleted successfully..
+        /// </summary>
+        internal static string EventDeletedSuccess {
+            get {
+                return ResourceManager.GetString("EventDeletedSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Event description is required..
         /// </summary>
         internal static string EventDescriptionRequired {
@@ -138,6 +156,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string EventEndDateInvalid {
             get {
                 return ResourceManager.GetString("EventEndDateInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event name is required for deletion..
+        /// </summary>
+        internal static string EventIdRequired {
+            get {
+                return ResourceManager.GetString("EventIdRequired", resourceCulture);
             }
         }
         
@@ -210,6 +237,24 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string EventUniversityRequired {
             get {
                 return ResourceManager.GetString("EventUniversityRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The event &apos;{0}&apos; you joined has been updated..
+        /// </summary>
+        internal static string EventUpdatedNotification {
+            get {
+                return ResourceManager.GetString("EventUpdatedNotification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event updated successfully..
+        /// </summary>
+        internal static string EventUpdatedSuccess {
+            get {
+                return ResourceManager.GetString("EventUpdatedSuccess", resourceCulture);
             }
         }
         

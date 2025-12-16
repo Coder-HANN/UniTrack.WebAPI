@@ -1,5 +1,4 @@
-﻿using FluentValidation.Resources;
-using MediatR;
+﻿using MediatR;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
 using UniTrack.Application.Abstraction.Services.Localization;

@@ -18,7 +18,6 @@ namespace UniTrack.Application.Feature.Event.Command.EventCheckInCommandHandler
         private readonly IEventUserRepository eventUserRepository;
         private readonly ILocalizationService localization; // Lokalizasyon servisi
 
-        // DI ile bağımlılıkları alıyoruz...
         public EventCheckInCommandHandler(IEventRepository eventRepository,
             IUserRepository userRepository,
             IParticipantSheetRepository sheetRepository,

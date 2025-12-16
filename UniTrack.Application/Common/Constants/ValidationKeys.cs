@@ -27,9 +27,11 @@
 
         // Delete Event
         public const string EventIdRequired = "EventIdRequired";
-
         public const string EventDeletedSuccess = "EventDeletedSuccess";
         public const string EventDeletedNotification = "EventDeletedNotification";
 
+        // Update Event
+        public const string EventUpdatedSuccess = "EventUpdatedSuccess";
+        public const string EventUpdatedNotification = "EventUpdatedNotification";
     }
 }

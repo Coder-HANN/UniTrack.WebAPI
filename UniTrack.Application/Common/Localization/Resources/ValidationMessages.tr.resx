@@ -138,11 +138,20 @@
   <data name="EventCreatedSuccess" xml:space="preserve">
     <value>Etkinlik başarıyla oluşturuldu.</value>
   </data>
+  <data name="EventDeletedNotification" xml:space="preserve">
+    <value>'{0}' etkinliği başarıyla silindi.</value>
+  </data>
+  <data name="EventDeletedSuccess" xml:space="preserve">
+    <value>Etkinlik başarıyla silindi.</value>
+  </data>
   <data name="EventDescriptionRequired" xml:space="preserve">
     <value>Etkinlik açıklaması zorunludur.</value>
   </data>
   <data name="EventEndDateInvalid" xml:space="preserve">
     <value>Bitiş tarihi, başlangıç tarihinden sonra olmalıdır.</value>
+  </data>
+  <data name="EventIdRequired" xml:space="preserve">
+    <value>Silme işlemi için etkinlik adı zorunludur.</value>
   </data>
   <data name="EventLocationRequired" xml:space="preserve">
     <value>Etkinlik konumu zorunludur.</value>
@@ -167,6 +176,12 @@
   </data>
   <data name="EventUniversityRequired" xml:space="preserve">
     <value>Etkinlik üniversitesi zorunludur.</value>
+  </data>
+  <data name="EventUpdatedNotification" xml:space="preserve">
+    <value>Katılmış olduğunuz '{0}' etkinliği güncellendi.</value>
+  </data>
+  <data name="EventUpdatedSuccess" xml:space="preserve">
+    <value>Etkinlik başarıyla güncellendi.</value>
   </data>
   <data name="NotAuthorized" xml:space="preserve">
     <value>Bu işlemi gerçekleştirmeye yetkiniz yok.</value>
