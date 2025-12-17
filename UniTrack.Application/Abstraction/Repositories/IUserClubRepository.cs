@@ -2,7 +2,7 @@
 
 namespace UniTrack.Application.Abstraction.Repositories
 {
-    public interface IUserClubRepository : BaseEntityRepository<UserClub>
+    public interface IUserClubRepository : IBaseEntityRepository<UserClub>
     {
         Task<List<UserClub>> GetClubFollowersAsync(Guid clubId);
 		Task<UserClub> GetClubFollowersByUserIdAsync(Guid value, Guid userDetailId);

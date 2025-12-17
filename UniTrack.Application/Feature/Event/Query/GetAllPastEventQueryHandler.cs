@@ -10,11 +10,11 @@ namespace UniTrack.Application.Feature.Event.Query
     public class GetAllPastEventQueryHandler : IRequestHandler<GetAllPastEventQuery, ServiceResponse<IPagingExecutionResult<List<GetAllPastEventQueryResponseDTO>>>>
     {
         private readonly ICurrentUserServices currentUserServices;
-        private readonly BaseEntityRepository<Domain.Entities.Event> pagingBaseService;
+        private readonly IBaseEntityRepository<Domain.Entities.Event> pagingBaseService;
         private readonly IEventRepository eventRepository;
         public GetAllPastEventQueryHandler(
             ICurrentUserServices currentUserServices,
-            BaseEntityRepository<Domain.Entities.Event> pagingBaseService,
+            IBaseEntityRepository<Domain.Entities.Event> pagingBaseService,
             IEventRepository eventRepository)
         {
             this.currentUserServices = currentUserServices;

@@ -2,7 +2,7 @@
 
 namespace UniTrack.Application.Abstraction.Repositories
 {
-    public interface IUniversityRepository : BaseEntityRepository<University>
+    public interface IUniversityRepository : IBaseEntityRepository<University>
     {
         public Task<University> GetByIdAsync(Guid id);
     }

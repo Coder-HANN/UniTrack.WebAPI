@@ -3,7 +3,7 @@ using UniTrack.Domain.Entities;
 
 namespace UniTrack.Application.Abstraction.Repositories
 {
-    public interface IEventRepository : BaseEntityRepository<Event>
+    public interface IEventRepository : IBaseEntityRepository<Event>
     {
          public Task<Event> GetByIdAsync(Guid Id);
          Task<List<Event>> GetAllClubEventAsync(Expression<Func<Event, bool>> expression);

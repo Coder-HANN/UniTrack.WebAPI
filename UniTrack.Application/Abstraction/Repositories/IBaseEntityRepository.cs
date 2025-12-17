@@ -3,7 +3,7 @@ using UniTrack.Application.Abstraction.Repositories.Pagenation;
 
 namespace UniTrack.Application.Abstraction.Repositories
 {
-    public interface BaseEntityRepository<T> where T : class
+    public interface IBaseEntityRepository<T> where T : class
     {
         // Yeni kayıt ekle
         Task<T> AddAsync(T entity);

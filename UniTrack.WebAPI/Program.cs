@@ -67,7 +67,7 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
 builder.Services.AddScoped<INotificationService, NotificationService>();
 
 // Repositories
-builder.Services.AddScoped(typeof(UniTrack.Application.Abstraction.Repositories.BaseEntityRepository<>), typeof(UniTrack.Persistence.Repositories.BaseEntityRepository<>));
+builder.Services.AddScoped(typeof(IBaseEntityRepository<>), typeof(BaseEntityRepository<>));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserDetailRepository, UserDetailRepository>();
 builder.Services.AddScoped<IClubRepository, ClubEntityRepository>();

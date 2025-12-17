@@ -3,7 +3,7 @@ using UniTrack.Domain.Enums;
 
 namespace UniTrack.Application.Abstraction.Repositories
 {
-    public interface IBanRepository : BaseEntityRepository<Ban>
+    public interface IBanRepository : IBaseEntityRepository<Ban>
     {
         Task<Ban> GetByIdAsync(Guid banId);
         Task<bool> IsBannedAsync(Guid id, Role role);

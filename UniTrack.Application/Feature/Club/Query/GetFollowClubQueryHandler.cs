@@ -15,12 +15,12 @@ namespace UniTrack.Application.Feature.Club.Query
     {
         private readonly ICurrentUserServices currentUserServices;
         private readonly IClubRepository clubRepository;
-        private readonly BaseEntityRepository<UserClub> baseEntityRepository;
+        private readonly IBaseEntityRepository<UserClub> baseEntityRepository;
         private readonly ILocalizationService localizationService;
         public GetFollowClubQueryHandler(
             ICurrentUserServices currentUserServices,
             IClubRepository clubRepository,
-            BaseEntityRepository<UserClub> baseEntityRepository,
+            IBaseEntityRepository<UserClub> baseEntityRepository,
             ILocalizationService localizationService)
         {
             this.currentUserServices = currentUserServices;

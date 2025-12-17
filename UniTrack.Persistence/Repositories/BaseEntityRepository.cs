@@ -7,7 +7,7 @@ using UniTrack.Persistence.Repositories.Pagenation;
 
 namespace UniTrack.Persistence.Repositories
 {
-    public class BaseEntityRepository<T> : Application.Abstraction.Repositories.BaseEntityRepository<T> where T : class
+    public class BaseEntityRepository<T> : Application.Abstraction.Repositories.IBaseEntityRepository<T> where T : class
     {
         protected readonly UniTrackDbContext context;
         protected DbSet<T> dbSet;

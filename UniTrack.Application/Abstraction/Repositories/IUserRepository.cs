@@ -2,7 +2,7 @@
 
 namespace UniTrack.Application.Abstraction.Repositories
 {
-    public interface IUserRepository : BaseEntityRepository<User>
+    public interface IUserRepository : IBaseEntityRepository<User>
     {
         Task<long> CountAsync();
         Task<User> GetByEmailAsync(string email);

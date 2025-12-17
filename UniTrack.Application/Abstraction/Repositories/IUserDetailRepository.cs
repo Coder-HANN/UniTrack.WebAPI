@@ -2,7 +2,7 @@
 
 namespace UniTrack.Application.Abstraction.Repositories
 {
-    public interface IUserDetailRepository : BaseEntityRepository<UserDetail>
+    public interface IUserDetailRepository : IBaseEntityRepository<UserDetail>
     {
     }
 }

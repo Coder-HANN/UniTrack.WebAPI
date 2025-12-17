@@ -3,7 +3,7 @@ using UniTrack.Domain.Entities;
 
 namespace UniTrack.Application.Abstraction.Repositories
 {
-    public interface IClubRepository : BaseEntityRepository<Club>
+    public interface IClubRepository : IBaseEntityRepository<Club>
     {
         Task<List<Club>> GetAllClubAsync(Expression<Func<Club,bool>> expression);
         Task<Club> GetByEmailAsync(string email);

@@ -2,7 +2,7 @@
 
 namespace UniTrack.Application.Abstraction.Repositories
 {
-    public interface IEventUserRepository : BaseEntityRepository<EventUser>
+    public interface IEventUserRepository : IBaseEntityRepository<EventUser>
     {
         public Task<List<EventUser>> GetClubEventJoinsByClubIdAsync(Guid eventId);
         public Task<EventUser> GetEventoinUserIdAsync(Guid eventId);

@@ -2,7 +2,7 @@
 
 namespace UniTrack.Application.Abstraction.Repositories
 {
-    public interface INotificationRepository : BaseEntityRepository<Notification>
+    public interface INotificationRepository : IBaseEntityRepository<Notification>
     {
         // 1. Kulübü takip eden ve bildirimi açık olan kullanıcıları çeker (UserClub kullanır)
         Task<List<Guid>> GetUsersWithNotificationOpenForClubAsync(Guid clubId);

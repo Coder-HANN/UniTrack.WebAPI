@@ -11,12 +11,12 @@ namespace UniTrack.Application.Feature.Event.Query
     {
         private readonly ICurrentUserServices currentUserServices;
         private readonly IEventRepository eventRepository;
-        private readonly BaseEntityRepository<Domain.Entities.Event> baseEntityRepository;
+        private readonly IBaseEntityRepository<Domain.Entities.Event> baseEntityRepository;
 
         public GetAllEventQueryHandler(
             ICurrentUserServices currentUserServices,
             IEventRepository eventRepository,
-            BaseEntityRepository<Domain.Entities.Event> baseEntityRepository)
+            IBaseEntityRepository<Domain.Entities.Event> baseEntityRepository)
         {
             this.currentUserServices = currentUserServices;
             this.eventRepository = eventRepository;
