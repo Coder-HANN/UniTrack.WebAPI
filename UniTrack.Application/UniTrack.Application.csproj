@@ -11,7 +11,6 @@
     <Folder Include="Feature\Ban\Validator\" />
     <Folder Include="Feature\City\Validator\" />
     <Folder Include="Feature\ClubTeam\Validator\" />
-    <Folder Include="Feature\Comment\Validation\" />
     <Folder Include="Feature\Contect\Query\" />
     <Folder Include="Feature\Department\Validator\" />
     <Folder Include="Feature\Department\Query\" />

@@ -120,6 +120,9 @@
   <data name="AlreadyCheckedIn" xml:space="preserve">
     <value>You are already checked in to this event.</value>
   </data>
+  <data name="AlreadyCommented" xml:space="preserve">
+    <value>You have already commented on this event.</value>
+  </data>
   <data name="AlreadyFollowingClub" xml:space="preserve">
     <value>You are already following this club</value>
   </data>
@@ -146,6 +149,9 @@
   </data>
   <data name="ClubTeamNotFound" xml:space="preserve">
     <value>Club team not found or you are not authorized to delete it.</value>
+  </data>
+  <data name="CommentCreatedSuccess" xml:space="preserve">
+    <value>Comment added successfully.</value>
   </data>
   <data name="EmailAlreadyExists" xml:space="preserve">
     <value>This email address is already in use</value>
@@ -191,6 +197,9 @@
   </data>
   <data name="EventLocationRequired" xml:space="preserve">
     <value>Event location is required.</value>
+  </data>
+  <data name="EventNotFinished" xml:space="preserve">
+    <value>Event has not ended yet.</value>
   </data>
   <data name="EventNotFound" xml:space="preserve">
     <value>Event not found.</value>
@@ -261,6 +270,9 @@
   <data name="PasswordTooShort" xml:space="preserve">
     <value>Password must be at least 6 characters</value>
   </data>
+  <data name="PointInvalid" xml:space="preserve">
+    <value>Point must be between 1 and 5.</value>
+  </data>
   <data name="PresidentEmailInvalid" xml:space="preserve">
     <value>Please enter a valid email address</value>
   </data>
@@ -302,6 +314,9 @@
   </data>
   <data name="UserMustFollowClub" xml:space="preserve">
     <value>The user must follow the club.</value>
+  </data>
+  <data name="UserNotJoinedEvent" xml:space="preserve">
+    <value>You must join the event before commenting.</value>
   </data>
   <data name="UserRegisterSuccess" xml:space="preserve">
     <value>Account has been created successfully</value>

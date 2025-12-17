@@ -21,7 +21,7 @@ namespace UniTrack.Application.Feature.Comment.Command
         {
             
             var role = currentUserServices.Role();
-            if (role == null || role == Role.Club || role == Role.User)
+            if (role != Role.Admin)
             {
                 return new ServiceResponse<string>
                 {

@@ -70,6 +70,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You have already commented on this event..
+        /// </summary>
+        internal static string AlreadyCommented {
+            get {
+                return ResourceManager.GetString("AlreadyCommented", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You are already following this club.
         /// </summary>
         internal static string AlreadyFollowingClub {
@@ -147,6 +156,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string ClubTeamNotFound {
             get {
                 return ResourceManager.GetString("ClubTeamNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Comment added successfully..
+        /// </summary>
+        internal static string CommentCreatedSuccess {
+            get {
+                return ResourceManager.GetString("CommentCreatedSuccess", resourceCulture);
             }
         }
         
@@ -282,6 +300,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string EventLocationRequired {
             get {
                 return ResourceManager.GetString("EventLocationRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event has not ended yet..
+        /// </summary>
+        internal static string EventNotFinished {
+            get {
+                return ResourceManager.GetString("EventNotFinished", resourceCulture);
             }
         }
         
@@ -493,6 +520,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Point must be between 1 and 5..
+        /// </summary>
+        internal static string PointInvalid {
+            get {
+                return ResourceManager.GetString("PointInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please enter a valid email address.
         /// </summary>
         internal static string PresidentEmailInvalid {
@@ -615,6 +651,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string UserMustFollowClub {
             get {
                 return ResourceManager.GetString("UserMustFollowClub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must join the event before commenting..
+        /// </summary>
+        internal static string UserNotJoinedEvent {
+            get {
+                return ResourceManager.GetString("UserNotJoinedEvent", resourceCulture);
             }
         }
         

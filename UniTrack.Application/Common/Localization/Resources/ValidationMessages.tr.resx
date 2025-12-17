@@ -120,6 +120,9 @@
   <data name="AlreadyCheckedIn" xml:space="preserve">
     <value>Bu etkinliğe zaten giriş yaptınız.</value>
   </data>
+  <data name="AlreadyCommented" xml:space="preserve">
+    <value>Bu etkinlik için zaten yorum yaptınız.</value>
+  </data>
   <data name="AlreadyFollowingClub" xml:space="preserve">
     <value>Bu kulübü zaten takip ediyorsunuz</value>
   </data>
@@ -146,6 +149,9 @@
   </data>
   <data name="ClubTeamNotFound" xml:space="preserve">
     <value>Kulüp ekibi bulunamadı veya silme yetkiniz yok.</value>
+  </data>
+  <data name="CommentCreatedSuccess" xml:space="preserve">
+    <value>Yorum başarıyla eklendi.</value>
   </data>
   <data name="EmailAlreadyExists" xml:space="preserve">
     <value>Bu e-posta adresi zaten kullanımda</value>
@@ -191,6 +197,9 @@
   </data>
   <data name="EventLocationRequired" xml:space="preserve">
     <value>Etkinlik konumu zorunludur.</value>
+  </data>
+  <data name="EventNotFinished" xml:space="preserve">
+    <value>Etkinlik henüz sona ermedi.</value>
   </data>
   <data name="EventNotFound" xml:space="preserve">
     <value>Etkinlik bulunamadı.</value>
@@ -261,6 +270,9 @@
   <data name="PasswordTooShort" xml:space="preserve">
     <value>Şifre en az 6 karakter olmalıdır</value>
   </data>
+  <data name="PointInvalid" xml:space="preserve">
+    <value>Puan 1 ile 5 arasında olmalıdır.</value>
+  </data>
   <data name="PresidentEmailInvalid" xml:space="preserve">
     <value>Geçerli bir e-posta adresi giriniz</value>
   </data>
@@ -302,6 +314,9 @@
   </data>
   <data name="UserMustFollowClub" xml:space="preserve">
     <value>Kullanıcının kulübü takip etmesi gerekmektedir.</value>
+  </data>
+  <data name="UserNotJoinedEvent" xml:space="preserve">
+    <value>Etkinliğe katılmadan yorum yapamazsınız.</value>
   </data>
   <data name="UserRegisterSuccess" xml:space="preserve">
     <value>Hesap başarıyla oluşturuldu</value>

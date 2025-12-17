@@ -93,6 +93,13 @@
 
         public const string ClubTeamNotFound = "ClubTeamNotFound";
         public const string ClubTeamDeletedSuccess = "ClubTeamDeletedSuccess";
+        // Create Command 
+
+        public const string EventNotFinished = "EventNotFinished";
+        public const string AlreadyCommented = "AlreadyCommented";
+        public const string UserNotJoinedEvent = "UserNotJoinedEvent";
+        public const string CommentCreatedSuccess = "CommentCreatedSuccess";
+        public const string PointInvalid = "PointInvalid";
 
 
     }
