@@ -6,7 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 using UniTrack.Application.DTOs.Profile;
 using UniTrack.Domain.Enums;
 
@@ -17,14 +19,17 @@ namespace UniTrack.Application.Feature.Profile.Command
         private readonly ICurrentUserServices currentUserServices;
         private readonly IClubRepository clubRepository;
         private readonly IUserRepository userRepository;
+        private readonly ILocalizationService localizationService;
         public ClubProfileUpdateCommandHandler(
             ICurrentUserServices currentUserServices,
             IClubRepository clubRepository,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            ILocalizationService localizationService)
         {
             this.currentUserServices = currentUserServices;
             this.clubRepository = clubRepository;
             this.userRepository = userRepository;
+            this.localizationService = localizationService;
         }
         public async Task<ServiceResponse<ClubProfileUpdateResponseDTO>> Handle(ClubProfileUpdateCommand request, CancellationToken cancellationToken)
         {
@@ -35,7 +40,7 @@ namespace UniTrack.Application.Feature.Profile.Command
                 {
                     IsSuccess = false,
                     Data = null,
-                    Message = "Unauthorized"
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
                 };
             }
             var role = currentUserServices.Role();
@@ -45,7 +50,7 @@ namespace UniTrack.Application.Feature.Profile.Command
                 {
                     IsSuccess = false,
                     Data = null,
-                    Message = "Yetkisiz kullanıcı"
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
                 };
             }
 
@@ -58,7 +63,7 @@ namespace UniTrack.Application.Feature.Profile.Command
                 {
                     IsSuccess = false,
                     Data = null,
-                    Message = "Club not found"
+                    Message = await localizationService.Get(ValidationKeys.ClubNotFound)
                 };
             }
 
@@ -172,7 +177,7 @@ namespace UniTrack.Application.Feature.Profile.Command
                 {
                     IsSuccess = false,
                     Data = null,
-                    Message = "Bu e-posta zaten kullanılıyor."
+                    Message =  await localizationService.Get(ValidationKeys.EmailAlreadyUsed)
                 };
             }
 
@@ -182,7 +187,7 @@ namespace UniTrack.Application.Feature.Profile.Command
             {
                 IsSuccess = true,
                 Data = null,
-                Message = "İşlem başarılı"
+                Message = await localizationService.Get(ValidationKeys.ProfileUpdatedSuccessfully)
             };
         }
     }

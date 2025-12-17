@@ -1,12 +1,9 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 
 namespace UniTrack.Application.Feature.Notification.Command
 {
@@ -14,12 +11,15 @@ namespace UniTrack.Application.Feature.Notification.Command
     {
         private readonly ICurrentUserServices currentUserServices;
         private readonly IUserClubRepository userClubRepository;
+        private readonly ILocalizationService localizationService;
         public OpenNotificationForClubCommandHandler(
             ICurrentUserServices currentUserServices,
-            IUserClubRepository userClubRepository)
+            IUserClubRepository userClubRepository,
+            ILocalizationService localizationService)
         {
             this.currentUserServices = currentUserServices;
             this.userClubRepository = userClubRepository;
+            this.localizationService = localizationService;
         }
         public async  Task<ServiceResponse<string>> Handle(OpenNotificationForClubCommand request, CancellationToken cancellationToken)
         {
@@ -30,17 +30,19 @@ namespace UniTrack.Application.Feature.Notification.Command
                 return new ServiceResponse<string>
                 {
                     IsSuccess = false,
-                    Message = "User not found",
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized),
                     Data = null
                 };
             }
+
             var userClub = await userClubRepository.GetUserIdInClubAsync(request.ClubId, userId.Value);
+
             if(userClub == null)
             {
                 return new ServiceResponse<string>
                 {
                     IsSuccess = false,
-                    Message = "Önce kulübü talip ediniz.",
+                    Message = await localizationService.Get(ValidationKeys.UserMustFollowClub),
                     Data = null
                 };
             }
@@ -50,7 +52,7 @@ namespace UniTrack.Application.Feature.Notification.Command
                 return new ServiceResponse<string>
                 {
                     IsSuccess = false,
-                    Message = "Notification already opened for this club",
+                    Message = await localizationService.Get(ValidationKeys.NotificationAlreadyOpened),
                     Data = null
                 };
             }
@@ -61,7 +63,7 @@ namespace UniTrack.Application.Feature.Notification.Command
             return new ServiceResponse<string>
             {
                 IsSuccess = true,
-                Message = "Notification opened for the club successfully",
+                Message = await localizationService.Get(ValidationKeys.NotificationOpenedSuccess),
                 Data = null
             };
 

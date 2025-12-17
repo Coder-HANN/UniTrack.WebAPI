@@ -135,6 +135,9 @@
   <data name="ClubEmailAlreadyExists" xml:space="preserve">
     <value>Bu e-posta adresi zaten kullanımda</value>
   </data>
+  <data name="ClubNotFound" xml:space="preserve">
+    <value />
+  </data>
   <data name="ClubRegisterFailed" xml:space="preserve">
     <value>Kulüp kaydı sırasında bir hata oluştu</value>
   </data>
@@ -162,8 +165,23 @@
   <data name="ContactMessageSent" xml:space="preserve">
     <value>Mesajınız başarıyla gönderildi. En kısa sürede size geri dönüş yapacağız.</value>
   </data>
+  <data name="DepartmentAlreadyExists" xml:space="preserve">
+    <value>Bu isimde bir bölüm zaten mevcut.</value>
+  </data>
+  <data name="DepartmentCreatedSuccessfully" xml:space="preserve">
+    <value>Bölüm başarıyla oluşturuldu.</value>
+  </data>
+  <data name="DepartmentDeletedSuccessfully" xml:space="preserve">
+    <value>Departman başarıyla silindi.</value>
+  </data>
+  <data name="DepartmentNotFound" xml:space="preserve">
+    <value>Bölüm bulunamadı.</value>
+  </data>
   <data name="EmailAlreadyExists" xml:space="preserve">
     <value>Bu e-posta adresi zaten kullanımda</value>
+  </data>
+  <data name="EmailAlreadyUsed" xml:space="preserve">
+    <value>Bu e-posta adresi zaten kullanılıyor.</value>
   </data>
   <data name="EventCityRequired" xml:space="preserve">
     <value>Etkinlik şehri zorunludur.</value>
@@ -267,14 +285,32 @@
   <data name="LoginSuccess" xml:space="preserve">
     <value>Giriş başarılı</value>
   </data>
+  <data name="MaxLength100" xml:space="preserve">
+    <value>En fazla 100 karakter olabilir.</value>
+  </data>
   <data name="MaxLengthExceeded" xml:space="preserve">
     <value />
+  </data>
+  <data name="MinLength2" xml:space="preserve">
+    <value>En az 2 karakter olmalıdır.</value>
   </data>
   <data name="NotAuthorized" xml:space="preserve">
     <value>Bu işlemi gerçekleştirmeye yetkiniz yok.</value>
   </data>
   <data name="NotFollowingClub" xml:space="preserve">
     <value>Bu kulübü takip etmiyorsunuz</value>
+  </data>
+  <data name="NotificationAlreadyClosed" xml:space="preserve">
+    <value>Bu kulüp için bildirimler zaten kapalı.</value>
+  </data>
+  <data name="NotificationAlreadyOpened" xml:space="preserve">
+    <value>Bu kulüp için bildirimler zaten açık.</value>
+  </data>
+  <data name="NotificationClosedSuccess" xml:space="preserve">
+    <value>Kulüp bildirimleri başarıyla kapatıldı.</value>
+  </data>
+  <data name="NotificationOpenedSuccess" xml:space="preserve">
+    <value>Kulüp bildirimleri başarıyla açıldı.</value>
   </data>
   <data name="NotJoinedEvent" xml:space="preserve">
     <value>Bu etkinliğe katılımınız bulunmamaktadır</value>
@@ -294,11 +330,17 @@
   <data name="PresidentEmailRequired" xml:space="preserve">
     <value>Kulüp başkanı e-posta adresi boş bırakılamaz</value>
   </data>
+  <data name="ProfileUpdatedSuccessfully" xml:space="preserve">
+    <value>Profil başarıyla güncellendi.</value>
+  </data>
   <data name="SupportEmailNotConfigured" xml:space="preserve">
     <value>Destek e-posta adresi yapılandırılmamış.</value>
   </data>
   <data name="UnfollowClubSuccess" xml:space="preserve">
     <value>Kulüp takibi bırakıldı</value>
+  </data>
+  <data name="UniversityCreatedSuccesses" xml:space="preserve">
+    <value>Üniversite başarıyla oluşturuldu.</value>
   </data>
   <data name="UpdateClockInvalid" xml:space="preserve">
     <value>Etkinlik saati geçersiz</value>
@@ -329,6 +371,9 @@
   </data>
   <data name="UserMustFollowClub" xml:space="preserve">
     <value>Kullanıcının kulübü takip etmesi gerekmektedir.</value>
+  </data>
+  <data name="UserNotFollowingClub" xml:space="preserve">
+    <value>Önce kulübü takip etmelisiniz.</value>
   </data>
   <data name="UserNotJoinedEvent" xml:space="preserve">
     <value>Etkinliğe katılmadan yorum yapamazsınız.</value>

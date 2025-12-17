@@ -135,6 +135,9 @@
   <data name="ClubEmailAlreadyExists" xml:space="preserve">
     <value>This email address is already in use</value>
   </data>
+  <data name="ClubNotFound" xml:space="preserve">
+    <value>Club is not found.</value>
+  </data>
   <data name="ClubRegisterFailed" xml:space="preserve">
     <value>An error occurred during club registration</value>
   </data>
@@ -162,8 +165,23 @@
   <data name="ContactMessageSent" xml:space="preserve">
     <value>Your message has been sent successfully. We will get back to you as soon as possible.</value>
   </data>
+  <data name="DepartmentAlreadyExists" xml:space="preserve">
+    <value>A department with this name already exists.</value>
+  </data>
+  <data name="DepartmentCreatedSuccessfully" xml:space="preserve">
+    <value>Department created successfully.</value>
+  </data>
+  <data name="DepartmentDeletedSuccessfully" xml:space="preserve">
+    <value>Department is deleted successfully.</value>
+  </data>
+  <data name="DepartmentNotFound" xml:space="preserve">
+    <value>Department not found.</value>
+  </data>
   <data name="EmailAlreadyExists" xml:space="preserve">
     <value>This email address is already in use</value>
+  </data>
+  <data name="EmailAlreadyUsed" xml:space="preserve">
+    <value>This email address is already in use.</value>
   </data>
   <data name="EventCityRequired" xml:space="preserve">
     <value>Event city is required.</value>
@@ -267,14 +285,32 @@
   <data name="LoginSuccess" xml:space="preserve">
     <value>Login successful</value>
   </data>
+  <data name="MaxLength100" xml:space="preserve">
+    <value>Must be at most 100 characters.</value>
+  </data>
   <data name="MaxLengthExceeded" xml:space="preserve">
     <value> </value>
+  </data>
+  <data name="MinLength2" xml:space="preserve">
+    <value>Must be at least 2 characters.</value>
   </data>
   <data name="NotAuthorized" xml:space="preserve">
     <value>You are not authorized to perform this action.</value>
   </data>
   <data name="NotFollowingClub" xml:space="preserve">
     <value>You are not following this club</value>
+  </data>
+  <data name="NotificationAlreadyClosed" xml:space="preserve">
+    <value>Notifications are already closed for this club.</value>
+  </data>
+  <data name="NotificationAlreadyOpened" xml:space="preserve">
+    <value>Notifications are already enabled for this club.</value>
+  </data>
+  <data name="NotificationClosedSuccess" xml:space="preserve">
+    <value>Club notifications have been successfully closed.</value>
+  </data>
+  <data name="NotificationOpenedSuccess" xml:space="preserve">
+    <value>Club notifications have been successfully enabled.</value>
   </data>
   <data name="NotJoinedEvent" xml:space="preserve">
     <value>You are not joined to this event</value>
@@ -294,11 +330,17 @@
   <data name="PresidentEmailRequired" xml:space="preserve">
     <value>President email address cannot be empty</value>
   </data>
+  <data name="ProfileUpdatedSuccessfully" xml:space="preserve">
+    <value>Profile updated successfully.</value>
+  </data>
   <data name="SupportEmailNotConfigured" xml:space="preserve">
     <value>Support email address is not configured.</value>
   </data>
   <data name="UnfollowClubSuccess" xml:space="preserve">
     <value>Successfully unfollowed the club</value>
+  </data>
+  <data name="UniversityCreatedSuccesses" xml:space="preserve">
+    <value>University is created successes.</value>
   </data>
   <data name="UpdateClockInvalid" xml:space="preserve">
     <value>Event time is invalid</value>
@@ -329,6 +371,9 @@
   </data>
   <data name="UserMustFollowClub" xml:space="preserve">
     <value>The user must follow the club.</value>
+  </data>
+  <data name="UserNotFollowingClub" xml:space="preserve">
+    <value>You must follow the club first.</value>
   </data>
   <data name="UserNotJoinedEvent" xml:space="preserve">
     <value>You must join the event before commenting.</value>

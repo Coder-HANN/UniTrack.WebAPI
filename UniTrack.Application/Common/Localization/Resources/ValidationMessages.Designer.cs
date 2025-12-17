@@ -115,6 +115,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Club is not found..
+        /// </summary>
+        internal static string ClubNotFound {
+            get {
+                return ResourceManager.GetString("ClubNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An error occurred during club registration.
         /// </summary>
         internal static string ClubRegisterFailed {
@@ -196,11 +205,56 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A department with this name already exists..
+        /// </summary>
+        internal static string DepartmentAlreadyExists {
+            get {
+                return ResourceManager.GetString("DepartmentAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Department created successfully..
+        /// </summary>
+        internal static string DepartmentCreatedSuccessfully {
+            get {
+                return ResourceManager.GetString("DepartmentCreatedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Department is deleted successfully..
+        /// </summary>
+        internal static string DepartmentDeletedSuccessfully {
+            get {
+                return ResourceManager.GetString("DepartmentDeletedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Department not found..
+        /// </summary>
+        internal static string DepartmentNotFound {
+            get {
+                return ResourceManager.GetString("DepartmentNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This email address is already in use.
         /// </summary>
         internal static string EmailAlreadyExists {
             get {
                 return ResourceManager.GetString("EmailAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This email address is already in use..
+        /// </summary>
+        internal static string EmailAlreadyUsed {
+            get {
+                return ResourceManager.GetString("EmailAlreadyUsed", resourceCulture);
             }
         }
         
@@ -511,11 +565,29 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Must be at most 100 characters..
+        /// </summary>
+        internal static string MaxLength100 {
+            get {
+                return ResourceManager.GetString("MaxLength100", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  .
         /// </summary>
         internal static string MaxLengthExceeded {
             get {
                 return ResourceManager.GetString("MaxLengthExceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Must be at least 2 characters..
+        /// </summary>
+        internal static string MinLength2 {
+            get {
+                return ResourceManager.GetString("MinLength2", resourceCulture);
             }
         }
         
@@ -534,6 +606,42 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string NotFollowingClub {
             get {
                 return ResourceManager.GetString("NotFollowingClub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notifications are already closed for this club..
+        /// </summary>
+        internal static string NotificationAlreadyClosed {
+            get {
+                return ResourceManager.GetString("NotificationAlreadyClosed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notifications are already enabled for this club..
+        /// </summary>
+        internal static string NotificationAlreadyOpened {
+            get {
+                return ResourceManager.GetString("NotificationAlreadyOpened", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Club notifications have been successfully closed..
+        /// </summary>
+        internal static string NotificationClosedSuccess {
+            get {
+                return ResourceManager.GetString("NotificationClosedSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Club notifications have been successfully enabled..
+        /// </summary>
+        internal static string NotificationOpenedSuccess {
+            get {
+                return ResourceManager.GetString("NotificationOpenedSuccess", resourceCulture);
             }
         }
         
@@ -592,6 +700,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Profile updated successfully..
+        /// </summary>
+        internal static string ProfileUpdatedSuccessfully {
+            get {
+                return ResourceManager.GetString("ProfileUpdatedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Support email address is not configured..
         /// </summary>
         internal static string SupportEmailNotConfigured {
@@ -606,6 +723,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string UnfollowClubSuccess {
             get {
                 return ResourceManager.GetString("UnfollowClubSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to University is created successes..
+        /// </summary>
+        internal static string UniversityCreatedSuccesses {
+            get {
+                return ResourceManager.GetString("UniversityCreatedSuccesses", resourceCulture);
             }
         }
         
@@ -696,6 +822,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string UserMustFollowClub {
             get {
                 return ResourceManager.GetString("UserMustFollowClub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must follow the club first..
+        /// </summary>
+        internal static string UserNotFollowingClub {
+            get {
+                return ResourceManager.GetString("UserNotFollowingClub", resourceCulture);
             }
         }
         

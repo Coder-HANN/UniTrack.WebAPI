@@ -1,10 +1,4 @@
 ﻿using MediatR;
-using MediatR.Registration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UniTrack.Application.Common;
 
 namespace UniTrack.Application.Feature.Profile.Command
@@ -17,3 +11,4 @@ namespace UniTrack.Application.Feature.Profile.Command
         }
     }
 }
+// TO DO: Implement forget password functionality

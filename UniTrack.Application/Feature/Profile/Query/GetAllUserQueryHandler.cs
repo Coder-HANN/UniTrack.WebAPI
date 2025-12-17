@@ -1,14 +1,9 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
-using UniTrack.Application.DTOs.Ban;
-using UniTrack.Application.DTOs.Event;
+using UniTrack.Application.Common.Constants;
 using UniTrack.Application.DTOs.Profile;
 using UniTrack.Domain.Enums;
 
@@ -18,13 +13,16 @@ namespace UniTrack.Application.Feature.Profile.Query
     {
         private readonly ICurrentUserServices currentUserServices;
         private readonly IUserRepository userRepository;
-        
+        private readonly ILocalizationService localizationService;
+
         public GetAllUserQueryHandler(
             ICurrentUserServices currentUserServices,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            ILocalizationService localizationService)
         {
             this.currentUserServices = currentUserServices;
             this.userRepository = userRepository;
+            this.localizationService = localizationService;
         }
         public async Task<ServiceResponse<List<GetAllUserQueryResponseDTO>>> Handle(GetAllUserQuery request, CancellationToken cancellationToken)
         {
@@ -35,8 +33,8 @@ namespace UniTrack.Application.Feature.Profile.Query
                     
                         IsSuccess = false,
                         Data = null,
-                        Message = "Unauthorized"
-                    
+                        Message = await localizationService.Get(ValidationKeys.NotAuthorized)
+
                 };
             }
 
@@ -49,8 +47,8 @@ namespace UniTrack.Application.Feature.Profile.Query
                     
                          IsSuccess = false,
                          Data = null,
-                         Message = "Yetkisiz kullanıcı"
-                     
+                         Message = await localizationService.Get(ValidationKeys.NotAuthorized)
+
                  };
             }
 
@@ -60,7 +58,7 @@ namespace UniTrack.Application.Feature.Profile.Query
                 return new ServiceResponse<List<GetAllUserQueryResponseDTO>> {
                         IsSuccess = false,
                         Data = null,
-                        Message = "No users found"
+                        Message = "Kullanıcı bulunamadı."
                 };
             }
 
@@ -80,7 +78,7 @@ namespace UniTrack.Application.Feature.Profile.Query
             {
                 IsSuccess = true,
                 Data = responses,
-                Message = "Toplam kullanıcı sayısı: " + responses.Count
+                Message = "Toplam kullanıcı sayısı: " + responses.Count.ToString()
             };
         }
     }

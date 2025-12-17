@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 using UniTrack.Domain.Enums;
 
 namespace UniTrack.Application.Feature.Department.Command
@@ -10,9 +12,11 @@ namespace UniTrack.Application.Feature.Department.Command
     {
         private readonly ICurrentUserServices currentUserServices;
         private readonly IDepartmentRepository departmentRepository;
+        private readonly ILocalizationService localizationService;
         public DeleteDepartmentCommandHandler(
             ICurrentUserServices currentUserServices,
-            IDepartmentRepository departmentRepository)
+            IDepartmentRepository departmentRepository,
+            ILocalizationService localizationService)
         {
             this.currentUserServices = currentUserServices;
             this.departmentRepository = departmentRepository;
@@ -27,7 +31,7 @@ namespace UniTrack.Application.Feature.Department.Command
                 return new ServiceResponse<string>
                 {
                     IsSuccess = false,
-                    Message = "Kullanıcı bulunamadı."
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
                 };
             }
             var role = currentUserServices.Role();
@@ -37,7 +41,7 @@ namespace UniTrack.Application.Feature.Department.Command
                 return new ServiceResponse<string>
                 {
                     IsSuccess = false,
-                    Message = "Bu işlemi gerçekleştirmek için yetkiniz yok."
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
                 };
             }
 
@@ -48,7 +52,7 @@ namespace UniTrack.Application.Feature.Department.Command
                 return new ServiceResponse<string>
                 {
                     IsSuccess = false,
-                    Message = "Bölüm bulunamadı."
+                    Message = await localizationService.Get(ValidationKeys.DepartmentNotFound)
                 };
             }
 
@@ -57,7 +61,7 @@ namespace UniTrack.Application.Feature.Department.Command
             return new ServiceResponse<string>
             {
                 IsSuccess = true,
-                Message = "Bölüm başarıyla silindi."
+                Message = await localizationService.Get(ValidationKeys.DepartmentDeletedSuccessfully)
             };
         }
     }

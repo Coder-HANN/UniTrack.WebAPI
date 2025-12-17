@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 using UniTrack.Domain.Enums;
 
 namespace UniTrack.Application.Feature.University.Command
@@ -10,12 +12,15 @@ namespace UniTrack.Application.Feature.University.Command
     {
         private readonly ICurrentUserServices currentUserServices;
         private readonly IUniversityRepository universityRepository;
+        private readonly ILocalizationService localizationService;
         public CreateUniversityCommandHandler(
             ICurrentUserServices currentUserServices,
-            IUniversityRepository universityRepository)
+            IUniversityRepository universityRepository,
+            ILocalizationService localizationService)
         {
             this.currentUserServices = currentUserServices;
             this.universityRepository = universityRepository;
+            this.localizationService = localizationService;
         }
         public async Task<ServiceResponse<string>> Handle(CreateUniversityCommand request, CancellationToken cancellationToken)
         {
@@ -27,7 +32,7 @@ namespace UniTrack.Application.Feature.University.Command
                 {
                     IsSuccess = false,
                     Data = null,
-                    Message = "Unauthorized"
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
                 };
             }
 
@@ -39,7 +44,7 @@ namespace UniTrack.Application.Feature.University.Command
                 {
                     IsSuccess = false,
                     Data = null,
-                    Message = "Yetkisiz kullanıcı"
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
                 };
             }
 
@@ -53,7 +58,7 @@ namespace UniTrack.Application.Feature.University.Command
             {
                 IsSuccess = true,
                 Data = null,
-                Message = "University created successfully"
+                Message = await localizationService.Get(ValidationKeys.UniversityCreatedSuccesses)
             };
         }
     }

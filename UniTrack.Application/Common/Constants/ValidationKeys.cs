@@ -108,5 +108,28 @@
 
         public const string ContactMessageSent = "ContactMessageSent";
         public const string SupportEmailNotConfigured = "SupportEmailNotConfigured";
+
+        // Departman
+        public const string DepartmentAlreadyExists = "DepartmentAlreadyExists";
+        public const string DepartmentCreatedSuccessfully = "DepartmentCreatedSuccessfully";
+        public const string MinLength2 = "MinLength2";
+        public const string MaxLength100 = "MaxLength100";
+
+        public const string DepartmentNotFound = "DepartmentNotFound";
+        public const string DepartmentDeletedSuccessfully = "DepartmentDeletedSuccessfully";
+
+
+        public const string UserNotFollowingClub = "UserNotFollowingClub";
+        public const string NotificationAlreadyClosed = "NotificationAlreadyClosed";
+        public const string NotificationClosedSuccess = "NotificationClosedSuccess";
+
+        public const string NotificationAlreadyOpened = "NotificationAlreadyOpened";
+        public const string NotificationOpenedSuccess = "NotificationOpenedSuccess";
+
+        public const string ClubNotFound = "ClubNotFound";
+        public const string EmailAlreadyUsed = "EmailAlreadyUsed";
+        public const string ProfileUpdatedSuccessfully = "ProfileUpdatedSuccessfully";
+
+        public const string UniversityCreatedSuccesses = "UniversityCreatedSuccesses";
     }
 }
