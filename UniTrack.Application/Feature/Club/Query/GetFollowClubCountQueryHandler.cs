@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 
 namespace UniTrack.Application.Feature.Club.Query
 {
@@ -9,12 +11,15 @@ namespace UniTrack.Application.Feature.Club.Query
     {
         private readonly ICurrentUserServices currentUserServices;
         private readonly IUserClubRepository userClubRepository;
+        private readonly ILocalizationService localizationService;
         public GetFollowClubCountQueryHandler(
             ICurrentUserServices currentUserServices,
-            IUserClubRepository userClubRepository)
+            IUserClubRepository userClubRepository,
+            LocalizationService localizationService)
         {
             this.currentUserServices = currentUserServices;
             this.userClubRepository = userClubRepository;
+            this.localizationService = localizationService;
         }
         public async Task<ServiceResponse<int>> Handle(GetFollowClubCountQuery request, CancellationToken cancellationToken)
         {
@@ -25,7 +30,7 @@ namespace UniTrack.Application.Feature.Club.Query
                 {
                     IsSuccess = false,
                     Data = 0,
-                    Message = "Unauthorized"
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
                 };
             }
 
@@ -35,7 +40,7 @@ namespace UniTrack.Application.Feature.Club.Query
             {
                 IsSuccess = true,
                 Data =  followClubCount,
-                Message = "Followed club count retrieved successfully"
+                Message = null
             };
 
         }

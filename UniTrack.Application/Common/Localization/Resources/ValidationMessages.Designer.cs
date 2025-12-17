@@ -106,11 +106,29 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Club is created successes..
+        /// </summary>
+        internal static string ClubCreatedSuccess {
+            get {
+                return ResourceManager.GetString("ClubCreatedSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This email address is already in use.
         /// </summary>
         internal static string ClubEmailAlreadyExists {
             get {
                 return ResourceManager.GetString("ClubEmailAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No clubs found..
+        /// </summary>
+        internal static string ClubFansNotFound {
+            get {
+                return ResourceManager.GetString("ClubFansNotFound", resourceCulture);
             }
         }
         

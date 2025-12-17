@@ -2,7 +2,9 @@
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Repositories.Pagenation;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 using UniTrack.Application.DTOs.Club;
 
 namespace UniTrack.Application.Feature.Club.Query
@@ -12,15 +14,18 @@ namespace UniTrack.Application.Feature.Club.Query
         private readonly ICurrentUserServices currentUserServices;
         private readonly IClubRepository clubRepository;
         private readonly BaseEntityRepository<Domain.Entities.Club> baseEntityRepository;
+        private readonly ILocalizationService localizationService;
 
         public GetAllClubQueryHandler(
             ICurrentUserServices currentUserServices,
             IClubRepository clubRepository,
-            BaseEntityRepository<Domain.Entities.Club> baseEntityRepository)
+            BaseEntityRepository<Domain.Entities.Club> baseEntityRepository,
+            ILocalizationService localizationService)
         {
             this.currentUserServices = currentUserServices;
             this.clubRepository = clubRepository;
             this.baseEntityRepository = baseEntityRepository;
+            this.localizationService = localizationService;
         }
 
         public async Task<ServiceResponse<IPagingExecutionResult<GetAllClubQueryResponseDTO>>> Handle(GetAllClubQuery request, CancellationToken cancellationToken)
@@ -29,13 +34,14 @@ namespace UniTrack.Application.Feature.Club.Query
             var clubId = currentUserServices.CurrentClub();
             if (userId == null && clubId == null)
             {
-                return new ServiceResponse<IPagingExecutionResult<GetAllClubQueryResponseDTO>> {
+                return new ServiceResponse<IPagingExecutionResult<GetAllClubQueryResponseDTO>>
+                {
 
-                    
-                        IsSuccess = false,
-                        Data = null,
-                        Message = "Unauthorized"
-                    
+
+                    IsSuccess = false,
+                    Data = null,
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
+
                 };
             }
 
@@ -47,7 +53,7 @@ namespace UniTrack.Application.Feature.Club.Query
                     
                         IsSuccess = false,
                         Data = null,
-                        Message = "No clubs found"
+                        Message = await localizationService.Get(ValidationKeys.ClubFansNotFound)
                     
                 };
             }

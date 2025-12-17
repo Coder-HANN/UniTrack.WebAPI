@@ -1,9 +1,4 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Common;
 
@@ -19,7 +14,7 @@ namespace UniTrack.Application.Feature.Club.Query
         public async Task<ServiceResponse<long>> Handle(GetAllClubCountQuery request, CancellationToken cancellationToken)
         {
             var count = await clubRepository.GetClubCountAsync();
-            if (count <= 0 || count == null)
+            if (count == 0 || count == null)
             {
                 return new ServiceResponse<long>
                 {

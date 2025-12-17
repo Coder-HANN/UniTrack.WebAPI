@@ -2,7 +2,7 @@
 {
     public class GetClubIsFollowerQueryResponseDTO
     {
-        public byte? Image { get; set; } // pp
+        public byte? Image { get; set; } 
         public string Name { get; set; }
         public string Surname { get; set; }
         public Guid UniversityId { get; set; }

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using UniTrack.Application.Common;
 using UniTrack.Application.DTOs.Club;
 using UniTrack.Application.DTOs.Profile;
-using UniTrack.Application.Feature.City.Query;
 using UniTrack.Application.Feature.Club.Command;
 using UniTrack.Application.Feature.Club.Query;
 using UniTrack.Application.Feature.ClubTeam.Command;

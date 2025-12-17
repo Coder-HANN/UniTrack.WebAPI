@@ -132,8 +132,14 @@
   <data name="CheckInSuccess" xml:space="preserve">
     <value>Successfully checked in to the event.</value>
   </data>
+  <data name="ClubCreatedSuccess" xml:space="preserve">
+    <value>Club is created successes.</value>
+  </data>
   <data name="ClubEmailAlreadyExists" xml:space="preserve">
     <value>This email address is already in use</value>
+  </data>
+  <data name="ClubFansNotFound" xml:space="preserve">
+    <value>No clubs found.</value>
   </data>
   <data name="ClubNotFound" xml:space="preserve">
     <value>Club is not found.</value>

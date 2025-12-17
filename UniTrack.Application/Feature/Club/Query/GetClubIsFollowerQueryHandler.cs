@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 using UniTrack.Application.DTOs.Club;
 using UniTrack.Domain.Enums;
 
@@ -11,14 +13,17 @@ namespace UniTrack.Application.Feature.Club.Query
     {
         private readonly IUserClubRepository UserClubRepository;
         private readonly ICurrentUserServices currentUserServices;
+        private readonly ILocalizationService localizationService;
 
         public GetClubIsFollowerQueryHandler(
             IUserClubRepository clubRepository,
-            ICurrentUserServices currentUserService
+            ICurrentUserServices currentUserService,
+            ILocalizationService localizationService
             )
         {
             this.UserClubRepository = clubRepository;
             this.currentUserServices = currentUserService;
+            this.localizationService = localizationService;
         }
         // Kulübü takip eden kullanıcıları getir
         public async Task<ServiceResponse<List<GetClubIsFollowerQueryResponseDTO>>> Handle(GetClubIsFollowerQuery request, CancellationToken cancellationToken)
@@ -31,7 +36,7 @@ namespace UniTrack.Application.Feature.Club.Query
                    
                         IsSuccess = false,
                         Data = null,
-                        Message = "Unauthorized"
+                        Message = await localizationService.Get(ValidationKeys.NotAuthorized)
                     
                 };
             }
@@ -43,9 +48,9 @@ namespace UniTrack.Application.Feature.Club.Query
                         
                         IsSuccess = false,
                         Data = null,
-                        Message = "Yetkisiz kullanıcı"
-                        
-                    
+                        Message = await localizationService.Get(ValidationKeys.NotAuthorized)
+
+
                 };
             }
 
@@ -59,9 +64,9 @@ namespace UniTrack.Application.Feature.Club.Query
                         
                         IsSuccess = false,
                         Data = null,
-                        Message = "No followers found for this club"
-                        
-                    
+                        Message = await localizationService.Get(ValidationKeys.ClubFansNotFound)
+
+
                 };
             }
 
@@ -70,7 +75,7 @@ namespace UniTrack.Application.Feature.Club.Query
                
                     Name = fc.User.UserDetail.Name,
                     Surname = fc.User.UserDetail.Surname,
-                    Department = fc.User.UserDetail.Department.ToString(),
+                    Department = fc.User.UserDetail.Department.Name,
                     UniversityId = fc.User.UserDetail.UniverstiyId,
                     Image = fc.User.UserDetail.ProfileImage  // Kontrol et
             }).ToList();

@@ -142,6 +142,9 @@
 
         public const string ClubVerifiedSuccess = "ClubVerifiedSuccess";
         public const string VerificationCodeInvalidOrExpired = "VerificationCodeInvalidOrExpired";
+        public const string ClubCreatedSuccess = "ClubCreatedSuccess";
+
+        public const string ClubFansNotFound = "ClubFansNotFound";
 
     }
 }

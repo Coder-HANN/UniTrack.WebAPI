@@ -37,7 +37,7 @@ namespace UniTrack.Application.Feature.Club.Command
                 {
                     IsSuccess = false,
                     Data = null,
-                    Message = "Unauthorized"
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
                 };
             }
             
@@ -50,7 +50,7 @@ namespace UniTrack.Application.Feature.Club.Command
                 {
                     IsSuccess = false,
                     Data = null,
-                    Message = "Yetkisiz kullanıcı"
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
                 };
             }
 
@@ -62,7 +62,7 @@ namespace UniTrack.Application.Feature.Club.Command
             {
                 IsSuccess = true,
                 Data = null,
-                Message = "kulüp başarıyla oluşturuldu "
+                Message = await localizationService.Get(ValidationKeys.ClubCreatedSuccess)
             };
         }
     }

@@ -9,6 +9,7 @@
   <ItemGroup>
     <Folder Include="Feature\ActiveDetail\Command\" />
     <Folder Include="Feature\Ban\Validator\" />
+    <Folder Include="Feature\City\Query\" />
     <Folder Include="Feature\City\Validator\" />
     <Folder Include="Feature\ClubTeam\Validator\" />
     <Folder Include="Feature\Contect\Query\" />

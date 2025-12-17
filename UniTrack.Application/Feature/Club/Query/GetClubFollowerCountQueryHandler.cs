@@ -5,7 +5,7 @@ using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
 using UniTrack.Application.Common.Constants;
 
-namespace UniTrack.Application.Feature.City.Query
+namespace UniTrack.Application.Feature.Club.Query
 {
     public class GetClubFollowerCountQueryHandler : IRequestHandler<GetClubFollowerCountQuery, ServiceResponse<long>>
     {

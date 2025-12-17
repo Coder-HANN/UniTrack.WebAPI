@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 
 namespace UniTrack.Application.Feature.Club.Query
 {
@@ -9,10 +11,12 @@ namespace UniTrack.Application.Feature.Club.Query
     {
         private readonly IEventUserRepository eventUserRepository;
         private readonly ICurrentUserServices currentUserService;
-        public GetClubAllEventJoinerCountQueryHandler(IEventUserRepository eventUserRepository, ICurrentUserServices currentUserService)
+        private readonly ILocalizationService localizationService;
+        public GetClubAllEventJoinerCountQueryHandler(IEventUserRepository eventUserRepository, ICurrentUserServices currentUserService, ILocalizationService localizationService)
         {
             this.eventUserRepository = eventUserRepository;
             this.currentUserService = currentUserService;
+            this.localizationService = localizationService;
         }
         public async Task<ServiceResponse<int>> Handle(GetClubAllEventJoinerCountQuery request, CancellationToken cancellationToken)
         {
@@ -23,7 +27,7 @@ namespace UniTrack.Application.Feature.Club.Query
                 return new ServiceResponse<int>
                 {
                     IsSuccess = false,
-                    Message = "You are not authorized to access this club's data.",
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized),
                     Data = 0
                 };
             }
@@ -35,7 +39,7 @@ namespace UniTrack.Application.Feature.Club.Query
                 return new ServiceResponse<int>
                 {
                     IsSuccess = false,
-                    Message = "No joiners found for the club's events.",
+                    Message = null,
                     Data = 0
                 };
             }
@@ -43,7 +47,7 @@ namespace UniTrack.Application.Feature.Club.Query
             return new ServiceResponse<int>
             {
                 IsSuccess = true,
-                Message = "Total joiner count retrieved successfully.",
+                Message = null,
                 Data = joinerCount
             };
         }

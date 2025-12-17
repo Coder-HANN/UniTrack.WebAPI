@@ -132,8 +132,14 @@
   <data name="CheckInSuccess" xml:space="preserve">
     <value>Etkinliğe başarılı bir şekilde giriş yapıldı.</value>
   </data>
+  <data name="ClubCreatedSuccess" xml:space="preserve">
+    <value>Kulüp başarıyla oluşturuldu.</value>
+  </data>
   <data name="ClubEmailAlreadyExists" xml:space="preserve">
     <value>Bu e-posta adresi zaten kullanımda</value>
+  </data>
+  <data name="ClubFansNotFound" xml:space="preserve">
+    <value>Kulüp takipçisi bulunamadı.</value>
   </data>
   <data name="ClubNotFound" xml:space="preserve">
     <value>Kulüp bulunamadı.</value>
