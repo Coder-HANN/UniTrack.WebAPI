@@ -103,6 +103,10 @@
         public const string CommentDeleted = "CommentDeleted";
         public const string CommentNotFound = "CommentNotFound";
 
+        // Bize ulaşın
+        public const string MaxLengthExceeded = "MaxLengthExceeded";
 
+        public const string ContactMessageSent = "ContactMessageSent";
+        public const string SupportEmailNotConfigured = "SupportEmailNotConfigured";
     }
 }

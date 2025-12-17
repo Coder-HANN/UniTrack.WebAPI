@@ -159,6 +159,9 @@
   <data name="CommentNotFound" xml:space="preserve">
     <value>Yorum bulunamadı</value>
   </data>
+  <data name="ContactMessageSent" xml:space="preserve">
+    <value>Mesajınız başarıyla gönderildi. En kısa sürede size geri dönüş yapacağız.</value>
+  </data>
   <data name="EmailAlreadyExists" xml:space="preserve">
     <value>Bu e-posta adresi zaten kullanımda</value>
   </data>
@@ -264,6 +267,9 @@
   <data name="LoginSuccess" xml:space="preserve">
     <value>Giriş başarılı</value>
   </data>
+  <data name="MaxLengthExceeded" xml:space="preserve">
+    <value />
+  </data>
   <data name="NotAuthorized" xml:space="preserve">
     <value>Bu işlemi gerçekleştirmeye yetkiniz yok.</value>
   </data>
@@ -287,6 +293,9 @@
   </data>
   <data name="PresidentEmailRequired" xml:space="preserve">
     <value>Kulüp başkanı e-posta adresi boş bırakılamaz</value>
+  </data>
+  <data name="SupportEmailNotConfigured" xml:space="preserve">
+    <value>Destek e-posta adresi yapılandırılmamış.</value>
   </data>
   <data name="UnfollowClubSuccess" xml:space="preserve">
     <value>Kulüp takibi bırakıldı</value>

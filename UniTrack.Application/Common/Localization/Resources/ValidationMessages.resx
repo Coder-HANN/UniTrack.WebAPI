@@ -159,6 +159,9 @@
   <data name="CommentNotFound" xml:space="preserve">
     <value>Comment not found.</value>
   </data>
+  <data name="ContactMessageSent" xml:space="preserve">
+    <value>Your message has been sent successfully. We will get back to you as soon as possible.</value>
+  </data>
   <data name="EmailAlreadyExists" xml:space="preserve">
     <value>This email address is already in use</value>
   </data>
@@ -264,6 +267,9 @@
   <data name="LoginSuccess" xml:space="preserve">
     <value>Login successful</value>
   </data>
+  <data name="MaxLengthExceeded" xml:space="preserve">
+    <value> </value>
+  </data>
   <data name="NotAuthorized" xml:space="preserve">
     <value>You are not authorized to perform this action.</value>
   </data>
@@ -287,6 +293,9 @@
   </data>
   <data name="PresidentEmailRequired" xml:space="preserve">
     <value>President email address cannot be empty</value>
+  </data>
+  <data name="SupportEmailNotConfigured" xml:space="preserve">
+    <value>Support email address is not configured.</value>
   </data>
   <data name="UnfollowClubSuccess" xml:space="preserve">
     <value>Successfully unfollowed the club</value>

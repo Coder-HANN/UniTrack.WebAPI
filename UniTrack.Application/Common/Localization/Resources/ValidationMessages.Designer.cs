@@ -187,6 +187,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your message has been sent successfully. We will get back to you as soon as possible..
+        /// </summary>
+        internal static string ContactMessageSent {
+            get {
+                return ResourceManager.GetString("ContactMessageSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This email address is already in use.
         /// </summary>
         internal static string EmailAlreadyExists {
@@ -502,6 +511,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  .
+        /// </summary>
+        internal static string MaxLengthExceeded {
+            get {
+                return ResourceManager.GetString("MaxLengthExceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You are not authorized to perform this action..
         /// </summary>
         internal static string NotAuthorized {
@@ -570,6 +588,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string PresidentEmailRequired {
             get {
                 return ResourceManager.GetString("PresidentEmailRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Support email address is not configured..
+        /// </summary>
+        internal static string SupportEmailNotConfigured {
+            get {
+                return ResourceManager.GetString("SupportEmailNotConfigured", resourceCulture);
             }
         }
         
