@@ -15,7 +15,7 @@ namespace UniTrack.Application.Feature.Club.Query
         public GetFollowClubCountQueryHandler(
             ICurrentUserServices currentUserServices,
             IUserClubRepository userClubRepository,
-            LocalizationService localizationService)
+            ILocalizationService localizationService)
         {
             this.currentUserServices = currentUserServices;
             this.userClubRepository = userClubRepository;

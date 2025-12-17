@@ -2,6 +2,6 @@
 {
     public class ShowCommentForClubResponseDTO
     {
-        public float Point { get; set; }
+        public double Point { get; set; }
     }
 }

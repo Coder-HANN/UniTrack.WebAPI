@@ -27,7 +27,7 @@ namespace UniTrack.Application.Feature.Comment.Command
             var responseDto = new ShowCommentForClubResponseDTO
             {
                 
-                Point = (float)Math.Round(calculatedAverage, 1)
+                Point = calculatedAverage
             };
 
             return new ServiceResponse<ShowCommentForClubResponseDTO>
