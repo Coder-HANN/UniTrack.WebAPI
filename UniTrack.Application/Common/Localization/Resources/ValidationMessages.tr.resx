@@ -156,6 +156,9 @@
   <data name="CommentDeleted" xml:space="preserve">
     <value>Yorum başarıyla silindi.</value>
   </data>
+  <data name="CommentNotFound" xml:space="preserve">
+    <value>Yorum bulunamadı</value>
+  </data>
   <data name="EmailAlreadyExists" xml:space="preserve">
     <value>Bu e-posta adresi zaten kullanımda</value>
   </data>

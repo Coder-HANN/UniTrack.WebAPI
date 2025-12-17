@@ -101,6 +101,7 @@
         public const string CommentCreatedSuccess = "CommentCreatedSuccess";
         public const string PointInvalid = "PointInvalid";
         public const string CommentDeleted = "CommentDeleted";
+        public const string CommentNotFound = "CommentNotFound";
 
 
     }

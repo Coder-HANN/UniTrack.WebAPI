@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 using UniTrack.Application.DTOs.Comment;
 
 namespace UniTrack.Application.Feature.Comment.Query
@@ -10,9 +12,11 @@ namespace UniTrack.Application.Feature.Comment.Query
     {
         private readonly ICurrentUserServices currentUserServices;
         private readonly ICommentRepository commentRepository;
+        private readonly ILocalizationService localizationService;
         public GetAllCommentForEventQueryHandler(
             ICurrentUserServices currentUserServices,
-            ICommentRepository commentRepository)
+            ICommentRepository commentRepository,
+            ILocalizationService localizationService)
         {
             this.currentUserServices = currentUserServices;
             this.commentRepository = commentRepository;
@@ -26,8 +30,8 @@ namespace UniTrack.Application.Feature.Comment.Query
                     
                         IsSuccess = false,
                         Data = null,
-                        Message = "Unauthorized"
-                    
+                        Message = await localizationService.Get(ValidationKeys.NotAuthorized)
+
                 };
             }
             var comments = await commentRepository.GetAllCommentByEventIdAsync(request.EventId);
@@ -37,8 +41,8 @@ namespace UniTrack.Application.Feature.Comment.Query
                     
                         IsSuccess = false,
                         Data = null,
-                        Message = "No comments found"
-                    
+                        Message = await localizationService.Get(ValidationKeys.CommentNotFound)
+
                 };
             }
 
@@ -55,8 +59,7 @@ namespace UniTrack.Application.Feature.Comment.Query
                 
                     IsSuccess = true,
                     Data = responses,
-                    Message = "Comments retrieved successfully"
-                
+                    Message = null
             };
         }
     }

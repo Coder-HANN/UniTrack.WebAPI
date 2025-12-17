@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 using UniTrack.Application.DTOs.Comment;
 using UniTrack.Domain.Enums;
 
@@ -11,13 +13,16 @@ namespace UniTrack.Application.Feature.Comment.Query
     {
         private readonly ICurrentUserServices currentUserServices;
         private readonly ICommentRepository commentRepository;
+        private readonly ILocalizationService localizationService;
 
         public GetAllCommentByUserQueryHandler(
             ICurrentUserServices currentUserServices,
-            ICommentRepository commentRepository)
+            ICommentRepository commentRepository,
+            ILocalizationService localizationService)
         {
             this.currentUserServices = currentUserServices;
             this.commentRepository = commentRepository;
+            this.localizationService = localizationService;
         }
 
         public async Task<ServiceResponse<List<GetAllCommentByUserQueryResponseDTO>>> Handle(GetAllCommentByUserQuery request, CancellationToken cancellationToken)
@@ -30,7 +35,7 @@ namespace UniTrack.Application.Feature.Comment.Query
 
                     IsSuccess = false,
                     Data = null,
-                    Message = "Geçersiz kulllanıcı"
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
                 };
             }
 
@@ -42,7 +47,7 @@ namespace UniTrack.Application.Feature.Comment.Query
                 { 
                      IsSuccess = false,
                      Data = null,
-                     Message = "Yetkisiz kullanıcı"
+                     Message = await localizationService.Get(ValidationKeys.NotAuthorized)
                 };
             }
 
@@ -56,8 +61,7 @@ namespace UniTrack.Application.Feature.Comment.Query
 
                     IsSuccess = false,
                     Data = null,
-                    Message = "Yorum yok"
-                
+                    Message = await localizationService.Get(ValidationKeys.CommentNotFound)
                 };
             }
 
@@ -76,8 +80,7 @@ namespace UniTrack.Application.Feature.Comment.Query
             { 
                 IsSuccess = true,
                 Data = responses,
-                Message = "Yorumlar getirildi"
-            
+                Message = null
             };
         }
     }
