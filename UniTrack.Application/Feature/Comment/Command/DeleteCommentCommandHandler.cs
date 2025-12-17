@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 using UniTrack.Domain.Enums;
 
 namespace UniTrack.Application.Feature.Comment.Command
@@ -10,11 +12,14 @@ namespace UniTrack.Application.Feature.Comment.Command
     {
         private readonly ICurrentUserServices currentUserServices;
         private readonly ICommentRepository commentRepository;
+        private readonly ILocalizationService localizationService;
         public DeleteCommentCommandHandler(ICurrentUserServices currentUserServices,
-            ICommentRepository commentRepository)
+            ICommentRepository commentRepository,
+            ILocalizationService localizationService)
         {
             this.currentUserServices = currentUserServices;
             this.commentRepository = commentRepository;
+            this.localizationService = localizationService;
         }
 
         public async Task<ServiceResponse<string>> Handle(DeleteCommentCommand request, CancellationToken cancellationToken)
@@ -27,7 +32,7 @@ namespace UniTrack.Application.Feature.Comment.Command
                 {
                     IsSuccess = false,
                     Data = null,
-                    Message = "Yetkisiz kullanıcı"
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
                 };
             }
 
@@ -38,7 +43,7 @@ namespace UniTrack.Application.Feature.Comment.Command
             return new ServiceResponse<string>
             {
                 IsSuccess = true,
-                Message = "Comment deleted successfully",
+                Message = await localizationService.Get(ValidationKeys.CommentDeleted),
                 Data = null
             };
         }

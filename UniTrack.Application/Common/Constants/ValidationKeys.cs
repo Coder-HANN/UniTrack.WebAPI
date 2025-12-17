@@ -100,6 +100,7 @@
         public const string UserNotJoinedEvent = "UserNotJoinedEvent";
         public const string CommentCreatedSuccess = "CommentCreatedSuccess";
         public const string PointInvalid = "PointInvalid";
+        public const string CommentDeleted = "CommentDeleted";
 
 
     }

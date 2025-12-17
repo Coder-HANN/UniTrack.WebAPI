@@ -153,6 +153,9 @@
   <data name="CommentCreatedSuccess" xml:space="preserve">
     <value>Comment added successfully.</value>
   </data>
+  <data name="CommentDeleted" xml:space="preserve">
+    <value>Comment deleted successfully.</value>
+  </data>
   <data name="EmailAlreadyExists" xml:space="preserve">
     <value>This email address is already in use</value>
   </data>

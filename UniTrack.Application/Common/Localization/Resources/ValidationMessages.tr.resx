@@ -153,6 +153,9 @@
   <data name="CommentCreatedSuccess" xml:space="preserve">
     <value>Yorum başarıyla eklendi.</value>
   </data>
+  <data name="CommentDeleted" xml:space="preserve">
+    <value>Yorum başarıyla silindi.</value>
+  </data>
   <data name="EmailAlreadyExists" xml:space="preserve">
     <value>Bu e-posta adresi zaten kullanımda</value>
   </data>

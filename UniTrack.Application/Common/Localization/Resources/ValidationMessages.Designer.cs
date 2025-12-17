@@ -169,6 +169,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Comment deleted successfully..
+        /// </summary>
+        internal static string CommentDeleted {
+            get {
+                return ResourceManager.GetString("CommentDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This email address is already in use.
         /// </summary>
         internal static string EmailAlreadyExists {

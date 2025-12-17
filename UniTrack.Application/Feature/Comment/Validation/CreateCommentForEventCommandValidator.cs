@@ -14,7 +14,7 @@ namespace UniTrack.Application.Feature.Comment.Validator
 
             RuleFor(x => x.Point)
                 .InclusiveBetween(1, 5)
-                .WithMessage(ValidationKeys.Po);
+                .WithMessage(ValidationKeys.PointInvalid);
 
             RuleFor(x => x.Descripiton)
                 .NotEmpty()
