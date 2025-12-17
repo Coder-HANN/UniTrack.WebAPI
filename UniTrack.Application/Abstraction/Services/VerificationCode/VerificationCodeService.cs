@@ -26,7 +26,7 @@ namespace UniTrack.Infrastructure.Services // Sizin namespace'iniz farklı olabi
 
             // 4. Mail Gönder (Simülasyon)
             Console.WriteLine($"Mail gönderildi: {email} - Kod: {code} - Tip: {type}");
-            // await _emailService.SendEmailAsync(email, "Doğrulama Kodu", code);
+             // await emailService.SendEmailAsync(email, "Doğrulama Kodu", code);
         }
 
         public bool ValidateCode(string email, string code, VerificationType type)

@@ -138,6 +138,12 @@
   <data name="ClubNotFound" xml:space="preserve">
     <value>Club is not found.</value>
   </data>
+  <data name="ClubNotFoundByEmail" xml:space="preserve">
+    <value>No club found with this email address.</value>
+  </data>
+  <data name="ClubPasswordResetSuccess" xml:space="preserve">
+    <value>Club password has been updated successfully.</value>
+  </data>
   <data name="ClubRegisterFailed" xml:space="preserve">
     <value>An error occurred during club registration</value>
   </data>
@@ -152,6 +158,9 @@
   </data>
   <data name="ClubTeamNotFound" xml:space="preserve">
     <value>Club team not found or you are not authorized to delete it.</value>
+  </data>
+  <data name="ClubVerifiedSuccess" xml:space="preserve">
+    <value>The club has been successfully verified.</value>
   </data>
   <data name="CommentCreatedSuccess" xml:space="preserve">
     <value>Comment added successfully.</value>
@@ -279,6 +288,9 @@
   <data name="InvalidEmailOrPassword" xml:space="preserve">
     <value>Invalid email or password</value>
   </data>
+  <data name="InvalidOrExpiredCode" xml:space="preserve">
+    <value>The code is invalid or has expired.</value>
+  </data>
   <data name="InvalidTag" xml:space="preserve">
     <value>Invalid tag selection</value>
   </data>
@@ -315,6 +327,9 @@
   <data name="NotJoinedEvent" xml:space="preserve">
     <value>You are not joined to this event</value>
   </data>
+  <data name="PasswordChangedSuccess" xml:space="preserve">
+    <value>Your password has been changed successfully.</value>
+  </data>
   <data name="PasswordTooShort" xml:space="preserve">
     <value>Password must be at least 6 characters</value>
   </data>
@@ -341,6 +356,12 @@
   </data>
   <data name="UniversityCreatedSuccesses" xml:space="preserve">
     <value>University is created successes.</value>
+  </data>
+  <data name="UniversityDeletedSuccessfully" xml:space="preserve">
+    <value>University deleted successfully.</value>
+  </data>
+  <data name="UniversityNotFound" xml:space="preserve">
+    <value>University not found.</value>
   </data>
   <data name="UpdateClockInvalid" xml:space="preserve">
     <value>Event time is invalid</value>
@@ -375,11 +396,17 @@
   <data name="UserNotFollowingClub" xml:space="preserve">
     <value>You must follow the club first.</value>
   </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>User not found.</value>
+  </data>
   <data name="UserNotJoinedEvent" xml:space="preserve">
     <value>You must join the event before commenting.</value>
   </data>
   <data name="UserRegisterSuccess" xml:space="preserve">
     <value>Account has been created successfully</value>
+  </data>
+  <data name="VerificationCodeInvalidOrExpired" xml:space="preserve">
+    <value>The code is invalid or has expired.</value>
   </data>
   <data name="VerificationCodeSent" xml:space="preserve">
     <value>Verification code has been sent to your email</value>

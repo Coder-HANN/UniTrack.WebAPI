@@ -124,6 +124,24 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No club found with this email address..
+        /// </summary>
+        internal static string ClubNotFoundByEmail {
+            get {
+                return ResourceManager.GetString("ClubNotFoundByEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Club password has been updated successfully..
+        /// </summary>
+        internal static string ClubPasswordResetSuccess {
+            get {
+                return ResourceManager.GetString("ClubPasswordResetSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An error occurred during club registration.
         /// </summary>
         internal static string ClubRegisterFailed {
@@ -165,6 +183,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string ClubTeamNotFound {
             get {
                 return ResourceManager.GetString("ClubTeamNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The club has been successfully verified..
+        /// </summary>
+        internal static string ClubVerifiedSuccess {
+            get {
+                return ResourceManager.GetString("ClubVerifiedSuccess", resourceCulture);
             }
         }
         
@@ -547,6 +574,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The code is invalid or has expired..
+        /// </summary>
+        internal static string InvalidOrExpiredCode {
+            get {
+                return ResourceManager.GetString("InvalidOrExpiredCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid tag selection.
         /// </summary>
         internal static string InvalidTag {
@@ -655,6 +691,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your password has been changed successfully..
+        /// </summary>
+        internal static string PasswordChangedSuccess {
+            get {
+                return ResourceManager.GetString("PasswordChangedSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password must be at least 6 characters.
         /// </summary>
         internal static string PasswordTooShort {
@@ -732,6 +777,24 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string UniversityCreatedSuccesses {
             get {
                 return ResourceManager.GetString("UniversityCreatedSuccesses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to University deleted successfully..
+        /// </summary>
+        internal static string UniversityDeletedSuccessfully {
+            get {
+                return ResourceManager.GetString("UniversityDeletedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to University not found..
+        /// </summary>
+        internal static string UniversityNotFound {
+            get {
+                return ResourceManager.GetString("UniversityNotFound", resourceCulture);
             }
         }
         
@@ -835,6 +898,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User not found..
+        /// </summary>
+        internal static string UserNotFound {
+            get {
+                return ResourceManager.GetString("UserNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You must join the event before commenting..
         /// </summary>
         internal static string UserNotJoinedEvent {
@@ -849,6 +921,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string UserRegisterSuccess {
             get {
                 return ResourceManager.GetString("UserRegisterSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The code is invalid or has expired..
+        /// </summary>
+        internal static string VerificationCodeInvalidOrExpired {
+            get {
+                return ResourceManager.GetString("VerificationCodeInvalidOrExpired", resourceCulture);
             }
         }
         

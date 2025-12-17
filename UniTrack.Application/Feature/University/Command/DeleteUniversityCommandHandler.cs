@@ -1,12 +1,9 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 using UniTrack.Domain.Enums;
 
 namespace UniTrack.Application.Feature.University.Command
@@ -15,12 +12,15 @@ namespace UniTrack.Application.Feature.University.Command
     {
         private readonly ICurrentUserServices currentUserServices;
         private readonly IUniversityRepository universityRepository;
+        private readonly ILocalizationService localizationService;
         public DeleteUniversityCommandHandler(
             ICurrentUserServices currentUserServices,
-            IUniversityRepository universityRepository)
+            IUniversityRepository universityRepository,
+            ILocalizationService localizationService)
         {
             this.currentUserServices = currentUserServices;
             this.universityRepository = universityRepository;
+            this.localizationService = localizationService;
         }
         public async Task<ServiceResponse<string>> Handle(DeleteUniversityCommand request, CancellationToken cancellationToken)
         {
@@ -30,7 +30,7 @@ namespace UniTrack.Application.Feature.University.Command
                 return new ServiceResponse<string>
                 {
                     IsSuccess = false,
-                    Message = "Kullanıcı bulunamadı."
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
                 };
             }
             var role = currentUserServices.Role();
@@ -39,7 +39,7 @@ namespace UniTrack.Application.Feature.University.Command
                 return new ServiceResponse<string>
                 {
                     IsSuccess = false,
-                    Message = "Bu işlemi gerçekleştirmek için yetkiniz yok."
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
                 };
             }
             var existingUniversity = await universityRepository.GetByIdAsync(request.Id);
@@ -48,7 +48,7 @@ namespace UniTrack.Application.Feature.University.Command
                 return new ServiceResponse<string>
                 {
                     IsSuccess = false,
-                    Message = "Üniversite bulunamadı."
+                    Message = await localizationService.Get(ValidationKeys.UniversityNotFound)
                 };
             }
             await universityRepository.DeleteAsync(existingUniversity);
@@ -56,7 +56,7 @@ namespace UniTrack.Application.Feature.University.Command
             return new ServiceResponse<string>
             {
                 IsSuccess = true,
-                Message = "Üniversite başarıyla silindi."
+                Message = await localizationService.Get(ValidationKeys.UniversityCreatedSuccesses)
             };
         }
     }

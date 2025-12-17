@@ -1,9 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using UniTrack.Application.Abstraction.Repositories;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Abstraction.Services.VerificationCode;
 using UniTrack.Application.Common;
-using UniTrack.Domain.Entities; // Club entity'sinin burada olduğunu varsayıyorum
+using UniTrack.Application.Common.Constants;
 using UniTrack.Domain.Enums;
 
 namespace UniTrack.Application.Feature.VerificationCode.Command
@@ -13,15 +14,18 @@ namespace UniTrack.Application.Feature.VerificationCode.Command
         private readonly IClubRepository _clubRepository;
         private readonly IVerificationCodeService _codeService;
         private readonly IPasswordHasher<Domain.Entities.Club> _passwordHasher; // <User> yerine <Club>
+        private readonly ILocalizationService localizationService;
 
         public ResetClubPasswordCommandHandler(
             IClubRepository clubRepository,
             IVerificationCodeService codeService,
-            IPasswordHasher<Domain.Entities.Club> passwordHasher)
+            IPasswordHasher<Domain.Entities.Club> passwordHasher,
+            ILocalizationService localizationService)
         {
             _clubRepository = clubRepository;
             _codeService = codeService;
             _passwordHasher = passwordHasher;
+            this.localizationService = localizationService;
         }
 
         public async Task<ServiceResponse<string>> Handle(ResetClubPasswordCommand request, CancellationToken cancellationToken)
@@ -34,7 +38,7 @@ namespace UniTrack.Application.Feature.VerificationCode.Command
                 return new ServiceResponse<string>
                 {
                     IsSuccess = false,
-                    Message = "Kod geçersiz veya süresi dolmuş."
+                    Message = await localizationService.Get(ValidationKeys.InvalidOrExpiredCode)
                 };
             }
 
@@ -48,7 +52,7 @@ namespace UniTrack.Application.Feature.VerificationCode.Command
                 return new ServiceResponse<string>
                 {
                     IsSuccess = false,
-                    Message = "Bu e-posta adresine ait bir kulüp bulunamadı."
+                    Message =await localizationService.Get(ValidationKeys.ClubNotFound)
                 };
             }
 
@@ -68,7 +72,7 @@ namespace UniTrack.Application.Feature.VerificationCode.Command
             return new ServiceResponse<string>
             {
                 IsSuccess = true,
-                Message = "Kulüp şifresi başarıyla güncellendi."
+                Message = await localizationService.Get(ValidationKeys.ClubPasswordResetSuccess)
             };
         }
     }

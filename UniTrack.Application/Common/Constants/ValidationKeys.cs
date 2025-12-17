@@ -131,5 +131,17 @@
         public const string ProfileUpdatedSuccessfully = "ProfileUpdatedSuccessfully";
 
         public const string UniversityCreatedSuccesses = "UniversityCreatedSuccesses";
+        public const string UniversityNotFound = "UniversityNotFound";
+        public const string UniversityDeletedSuccessfully = "UniversityDeletedSuccessfully";
+        public const string InvalidOrExpiredCode = "InvalidOrExpiredCode";
+        public const string ClubNotFoundByEmail = "ClubNotFoundByEmail";
+        public const string ClubPasswordResetSuccess = "ClubPasswordResetSuccess";
+
+        public const string PasswordChangedSuccess = "PasswordChangedSuccess";
+        public const string UserNotFound = "UserNotFound";
+
+        public const string ClubVerifiedSuccess = "ClubVerifiedSuccess";
+        public const string VerificationCodeInvalidOrExpired = "VerificationCodeInvalidOrExpired";
+
     }
 }

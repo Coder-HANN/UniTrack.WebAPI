@@ -136,7 +136,13 @@
     <value>Bu e-posta adresi zaten kullanımda</value>
   </data>
   <data name="ClubNotFound" xml:space="preserve">
-    <value />
+    <value>Kulüp bulunamadı.</value>
+  </data>
+  <data name="ClubNotFoundByEmail" xml:space="preserve">
+    <value>Bu e-posta adresine ait bir kulüp bulunamadı.</value>
+  </data>
+  <data name="ClubPasswordResetSuccess" xml:space="preserve">
+    <value>Kulüp şifresi başarıyla güncellendi.</value>
   </data>
   <data name="ClubRegisterFailed" xml:space="preserve">
     <value>Kulüp kaydı sırasında bir hata oluştu</value>
@@ -152,6 +158,9 @@
   </data>
   <data name="ClubTeamNotFound" xml:space="preserve">
     <value>Kulüp ekibi bulunamadı veya silme yetkiniz yok.</value>
+  </data>
+  <data name="ClubVerifiedSuccess" xml:space="preserve">
+    <value>Kulüp başarıyla doğrulandı.</value>
   </data>
   <data name="CommentCreatedSuccess" xml:space="preserve">
     <value>Yorum başarıyla eklendi.</value>
@@ -279,6 +288,9 @@
   <data name="InvalidEmailOrPassword" xml:space="preserve">
     <value>E-posta veya şifre hatalı</value>
   </data>
+  <data name="InvalidOrExpiredCode" xml:space="preserve">
+    <value>Kod geçersiz veya süresi dolmuş.</value>
+  </data>
   <data name="InvalidTag" xml:space="preserve">
     <value>Geçersiz etiket seçimi</value>
   </data>
@@ -315,6 +327,9 @@
   <data name="NotJoinedEvent" xml:space="preserve">
     <value>Bu etkinliğe katılımınız bulunmamaktadır</value>
   </data>
+  <data name="PasswordChangedSuccess" xml:space="preserve">
+    <value>Şifreniz başarıyla değiştirildi.</value>
+  </data>
   <data name="PasswordTooShort" xml:space="preserve">
     <value>Şifre en az 6 karakter olmalıdır</value>
   </data>
@@ -341,6 +356,12 @@
   </data>
   <data name="UniversityCreatedSuccesses" xml:space="preserve">
     <value>Üniversite başarıyla oluşturuldu.</value>
+  </data>
+  <data name="UniversityDeletedSuccessfully" xml:space="preserve">
+    <value>Üniversite başarıyla silindi.</value>
+  </data>
+  <data name="UniversityNotFound" xml:space="preserve">
+    <value>Üniversite bulunamadı.</value>
   </data>
   <data name="UpdateClockInvalid" xml:space="preserve">
     <value>Etkinlik saati geçersiz</value>
@@ -375,11 +396,17 @@
   <data name="UserNotFollowingClub" xml:space="preserve">
     <value>Önce kulübü takip etmelisiniz.</value>
   </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>Kullanıcı bulunamadı.</value>
+  </data>
   <data name="UserNotJoinedEvent" xml:space="preserve">
     <value>Etkinliğe katılmadan yorum yapamazsınız.</value>
   </data>
   <data name="UserRegisterSuccess" xml:space="preserve">
     <value>Hesap başarıyla oluşturuldu</value>
+  </data>
+  <data name="VerificationCodeInvalidOrExpired" xml:space="preserve">
+    <value>Kod hatalı veya süresi dolmuş.</value>
   </data>
   <data name="VerificationCodeSent" xml:space="preserve">
     <value>Doğrulama kodu e-posta adresinize gönderildi</value>
