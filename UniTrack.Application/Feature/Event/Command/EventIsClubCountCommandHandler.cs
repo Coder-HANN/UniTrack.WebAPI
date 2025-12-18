@@ -17,11 +17,11 @@ namespace UniTrack.Application.Feature.Event.Command
 
         public async Task<ServiceResponse<EventIsClubCountResponseDTO>> Handle(EventIsClubCountCommand request, CancellationToken cancellationToken)
         {
-            var count = eventRepository.GetClubEventCountAsync(request.ClubId);
+            var count = await eventRepository.GetClubEventCountAsync(request.ClubId);
 
             var responseDto = new EventIsClubCountResponseDTO
             {
-                EventCount = count.Result
+                EventCount = count
             };
 
             return new ServiceResponse<EventIsClubCountResponseDTO>

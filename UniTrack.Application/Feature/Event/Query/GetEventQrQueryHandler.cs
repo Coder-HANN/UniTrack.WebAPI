@@ -9,6 +9,14 @@ namespace UniTrack.Application.Feature.Event.Query
     {
         private readonly ICurrentUserServices currentUserService;
         private readonly IEventRepository eventRepository;
+
+        public GetEventQrQueryHandler(
+            ICurrentUserServices currentUserService,
+            IEventRepository eventRepository)
+        {
+            this.currentUserService = currentUserService;
+            this.eventRepository = eventRepository;
+        }
         public async Task<ServiceResponse<string>> Handle(GetEventQrQuery request, CancellationToken cancellationToken)
         {
             var clubId = currentUserService.CurrentClub();

@@ -23,6 +23,7 @@
 
 	<ItemGroup>
 	  <Folder Include="Feature\City\Query\" />
+	  <Folder Include="Feature\Department\Query\" />
 	</ItemGroup>
 
 </Project>

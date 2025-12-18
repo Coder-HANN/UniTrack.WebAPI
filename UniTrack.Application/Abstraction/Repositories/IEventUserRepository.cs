@@ -6,7 +6,7 @@ namespace UniTrack.Application.Abstraction.Repositories
     {
         public Task<List<EventUser>> GetClubEventJoinsByClubIdAsync(Guid eventId);
         public Task<EventUser> GetEventoinUserIdAsync(Guid eventId);
-        public Task GetEventUserCheckInAsync(Guid? userId, Guid eventCheckInId);
+        public Task<EventUser> GetEventUserCheckInAsync(Guid userId, Guid eventCheckInId);
         public Task<int> GetTotalJoinerCountByClubIdAsync(Guid clubId);
     }
 }

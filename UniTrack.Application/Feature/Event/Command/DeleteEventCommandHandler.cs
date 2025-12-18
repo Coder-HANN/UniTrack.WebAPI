@@ -45,19 +45,19 @@ namespace UniTrack.Application.Feature.Event.Command
                 return ServiceResponse<DeleteEventResponseDTO>.Fail(await localization.Get(ValidationKeys.NotAuthorized));
             }
 
-            var existingEvent = eventRepository.GetAsync(e => e.Id == request.EventId);
+            var existingEvent = await eventRepository.GetAsync(e => e.Id == request.EventId);
 
             if (existingEvent == null)
             {
                 return ServiceResponse<DeleteEventResponseDTO>.Fail(await localization.Get(ValidationKeys.EventNotFound));
             }
 
-            existingEvent.Result.IsDeleted = true;
+            existingEvent.IsDeleted = true;
 
-            await eventRepository.UpdateAsync(existingEvent.Result);
+            await eventRepository.UpdateAsync(existingEvent);
 
 
-            await notificationService.ClubIsDeleteEventAsync(clubId.Value,await localization.Get(ValidationKeys.EventDeletedNotification, existingEvent.Result.Title));
+            await notificationService.ClubIsDeleteEventAsync(clubId.Value,await localization.Get(ValidationKeys.EventDeletedNotification, existingEvent.Title));
 
             return ServiceResponse<DeleteEventResponseDTO>.Success(await localization.Get(ValidationKeys.EventDeletedSuccess));
         }

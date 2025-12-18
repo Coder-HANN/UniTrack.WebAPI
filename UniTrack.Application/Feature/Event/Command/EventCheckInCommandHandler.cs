@@ -45,7 +45,7 @@ namespace UniTrack.Application.Feature.Event.Command.EventCheckInCommandHandler
             {
                 return ServiceResponse<string>.Fail(await localization.Get(ValidationKeys.EventNotFound));
             }
-            var eventUser = eventUserRepository.GetEventUserCheckInAsync(userId.Value, request.EventCheckInId);
+            var eventUser = await eventUserRepository.GetEventUserCheckInAsync(userId.Value, request.EventCheckInId);
             if (eventUser != null)
             {
                 return ServiceResponse<string>.Fail(ValidationKeys.AlreadyCheckedIn);

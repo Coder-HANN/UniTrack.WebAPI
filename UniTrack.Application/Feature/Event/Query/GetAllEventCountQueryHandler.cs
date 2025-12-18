@@ -15,7 +15,7 @@ namespace UniTrack.Application.Feature.Event.Query
         {
             var eventCount = await eventRepository.GetCountAsync();
 
-            if (eventCount <= 0 || eventCount == null)
+            if (eventCount == 0)
             {
                 return new ServiceResponse<long>
                 {
