@@ -26,10 +26,32 @@ namespace UniTrack.Persistence.Context
         public DbSet<Department> Departments { get; set; }
         public DbSet<ClubTeam> ClubTeams { get; set; }
         public DbSet<Notification> Notification { get; set; }
+        public DbSet<Like> Likes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Like>(builder =>
+            {
+                builder.HasKey(l => l.Id);
+
+                builder.HasOne(l => l.User)
+                       .WithMany(u => u.Likes)
+                       .HasForeignKey(l => l.UserId)
+                       .OnDelete(DeleteBehavior.Cascade);
+
+                builder.HasOne(l => l.Comment)
+                       .WithMany(c => c.Likes)
+                       .HasForeignKey(l => l.CommentId)
+                       .OnDelete(DeleteBehavior.Cascade);
+
+                builder.HasOne(l => l.Club)
+                       .WithMany(c => c.Likes)
+                       .HasForeignKey(l => l.ClubId)
+                       .OnDelete(DeleteBehavior.Cascade);
+
+            });
 
             modelBuilder.Entity<Notification>(builder =>
             {
@@ -71,6 +93,7 @@ namespace UniTrack.Persistence.Context
                 builder.HasKey(c => c.Id);
                 builder.Property(c => c.Point).IsRequired().HasMaxLength(5);
                 builder.Property(c => c.Description).IsRequired().HasMaxLength(500);
+                builder.Property(c => c.LikeCount);
 
                 builder.HasOne(c => c.User)
                        .WithMany(eu => eu.Comments)
@@ -147,7 +170,6 @@ namespace UniTrack.Persistence.Context
                 builder.Property(ud => ud.Name).IsRequired().HasMaxLength(50);
                 builder.Property(ud => ud.Surname).IsRequired().HasMaxLength(50);
                 builder.Property(ud => ud.BirthDate).IsRequired();
-                builder.Property(ud => ud.Department).IsRequired();
                 builder.Property(ud => ud.Gender).IsRequired();
                 builder.Property(ud => ud.ProfileImage).IsRequired(false);
                 builder.Property(ud => ud.Graduaiton_Date).IsRequired();
@@ -169,6 +191,12 @@ namespace UniTrack.Persistence.Context
                        .WithMany(u => u.UserDetails)
                        .HasForeignKey(ud => ud.UniverstiyId)
                        .OnDelete(DeleteBehavior.Cascade);
+
+                builder.HasOne(ud => ud.Department)
+                          .WithOne(d => d.UserDetail)
+                          .HasForeignKey<UserDetail>(ud => ud.DepartmentId)
+                          .OnDelete(DeleteBehavior.Cascade);
+
             });
 
             modelBuilder.Entity<Club>(builder => 
@@ -216,7 +244,7 @@ namespace UniTrack.Persistence.Context
                 builder.Property(e => e.Quota); 
                 builder.Property(e => e.Joiner);
                 builder.Property(e => e.Clock);
-                builder.Property(e => e.Tag);
+                builder.Property(e => e.EventTag);
                 builder.Property(e => e.Description);
                 builder.Property(e => e.Image);
                 builder.Property(e => e.Title);

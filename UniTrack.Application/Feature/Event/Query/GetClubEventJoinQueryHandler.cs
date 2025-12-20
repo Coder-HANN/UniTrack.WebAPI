@@ -1,11 +1,10 @@
-﻿using MediatR; 
+﻿using MediatR;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
-using UniTrack.Application.DTOs.Ban;
-using UniTrack.Application.DTOs.Comment;
+using UniTrack.Application.Common.Constants;
 using UniTrack.Application.DTOs.Event;
-using UniTrack.Domain.Entities;
 using UniTrack.Domain.Enums;
 
 namespace UniTrack.Application.Feature.Event.Query
@@ -14,13 +13,16 @@ namespace UniTrack.Application.Feature.Event.Query
     {
         private readonly ICurrentUserServices currentUserServices;
         private readonly IEventUserRepository eventUserRepository;
+        private readonly ILocalizationService localizationService;
 
         public GetClubEventJoinQueryHandler(
             ICurrentUserServices currentUserServices,
-            IEventUserRepository eventUserRepository)
+            IEventUserRepository eventUserRepository,
+            ILocalizationService localizationService)
         {
             this.currentUserServices = currentUserServices;
             this.eventUserRepository = eventUserRepository;
+            this.localizationService = localizationService;
         }
 
         // Etkinliğe katılan kullanıcıları getir
@@ -35,8 +37,8 @@ namespace UniTrack.Application.Feature.Event.Query
                     
                         IsSuccess = false,
                         Data = null,
-                        Message = "Unauthorized"
-                    
+                        Message = await localizationService.Get(ValidationKeys.NotAuthorized)
+
                 };
             }
             var role = currentUserServices.Role();
@@ -46,8 +48,8 @@ namespace UniTrack.Application.Feature.Event.Query
                 { 
                          IsSuccess = false,
                          Data = null,
-                         Message = "Yetkisiz kullanıcı"
-                     
+                         Message = await localizationService.Get(ValidationKeys.NotAuthorized)
+
                 };
             }
 
@@ -56,10 +58,10 @@ namespace UniTrack.Application.Feature.Event.Query
             {
                 return new ServiceResponse<List<GetClubEventJoinQueryResponseDTO>> {
                     
-                        IsSuccess = false,
+                        IsSuccess = true,
                         Data = null,
-                        Message = "Etkinliğe katılan kullanıcı yok"
-                    
+                        Message = await localizationService.Get(ValidationKeys.UserNotFound)
+
                 };
             }
 
@@ -76,7 +78,7 @@ namespace UniTrack.Application.Feature.Event.Query
                 
                     IsSuccess = true,
                     Data = responseList,
-                    Message = "Etkinliğe katılan kullanıcılar başarıyla getirildi"
+                    Message = null
                 
             };
         }

@@ -59,10 +59,12 @@ namespace UniTrack.Application.Feature.Event.Command.EventCheckInCommandHandler
                 UserId = userId.Value,
                 IsJoined = true,
                 IsCheckedIn = true,
-                CheckedInAt = DateTime.UtcNow
+                CheckedInAt = DateTimeOffset.UtcNow
             });
 
             return ServiceResponse<string>.Success(await localization.Get(ValidationKeys.CheckInSuccess));
+
+            // TO DO: Eğer qr okutulduysa kullanıcıya katıldınız bilgisi verilecek. eğer katılmadıysa katılmadınız bilgisi verilecek. Bunu Katıldığım etkinlikler kısmında göstereceğiz.
         }
     }
 }

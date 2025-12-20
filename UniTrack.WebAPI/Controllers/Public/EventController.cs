@@ -32,12 +32,12 @@ namespace UniTrack.WebAPI.Controllers.Public
         }
 
         [HttpGet("GetAllFeatureEvents")]
-        public async Task<ServiceResponse<IPagingExecutionResult<List<GetAllFeatureEventQueryResponseDTO>>>> GetAllFeatureEvents([FromQuery] GetAllFeatureEventQuery query)
+        public async Task<ServiceResponse<IPagingExecutionResult<GetAllFeatureEventQueryResponseDTO>>> GetAllFeatureEvents([FromQuery] GetAllFeatureEventQuery query)
         {
             return await mediator.Send(query);
         }
         [HttpGet("GetAllPastEvents")]
-        public async Task<ServiceResponse<IPagingExecutionResult<List<GetAllPastEventQueryResponseDTO>>>> GetAllPastEvents([FromQuery] GetAllPastEventQuery query)
+        public async Task<ServiceResponse<IPagingExecutionResult<GetAllPastEventQueryResponseDTO>>> GetAllPastEvents([FromQuery] GetAllPastEventQuery query)
         {
             return await mediator.Send(query);
         }

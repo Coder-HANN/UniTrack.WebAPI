@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 
 namespace UniTrack.Application.Feature.Event.Query
 {
@@ -9,13 +11,16 @@ namespace UniTrack.Application.Feature.Event.Query
     {
         private readonly ICurrentUserServices currentUserService;
         private readonly IEventRepository eventRepository;
+        private readonly ILocalizationService localizationService;
 
         public GetEventQrQueryHandler(
             ICurrentUserServices currentUserService,
-            IEventRepository eventRepository)
+            IEventRepository eventRepository,
+            ILocalizationService localizationService)
         {
             this.currentUserService = currentUserService;
             this.eventRepository = eventRepository;
+            this.localizationService = localizationService;
         }
         public async Task<ServiceResponse<string>> Handle(GetEventQrQuery request, CancellationToken cancellationToken)
         {
@@ -28,7 +33,7 @@ namespace UniTrack.Application.Feature.Event.Query
                 {
                     Data = null,
                     IsSuccess = false,
-                    Message = "Yetkiniz yok."
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
                 };
             }
 
@@ -38,7 +43,7 @@ namespace UniTrack.Application.Feature.Event.Query
                 {
                     Data = null,
                     IsSuccess = false,
-                    Message = "Kullanıcı bulunamadı."
+                    Message = await localizationService.Get(ValidationKeys.UserNotFound)
                 };
             }
 
@@ -50,7 +55,7 @@ namespace UniTrack.Application.Feature.Event.Query
                 {
                     Data = null,
                     IsSuccess = false,
-                    Message = "Etkinlik bulunamadı."
+                    Message = await localizationService.Get(ValidationKeys.EventNotFound)
                 };
             }
 
@@ -58,7 +63,7 @@ namespace UniTrack.Application.Feature.Event.Query
             {
                 Data = eventEntity.Result.QrCodeUrl,
                 IsSuccess = true,
-                Message = "Qr kod başarıyla getirildi."
+                Message = null
             };
         }
     }

@@ -1,70 +1,52 @@
-﻿// UniTrack.Application.Feature.Event.Query/GetClubFavoriteThreeEventsQueryHandler.cs
-
-using MediatR;
+﻿using MediatR;
 using UniTrack.Application.Abstraction.Repositories;
-using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 using UniTrack.Application.DTOs.Event;
 
 namespace UniTrack.Application.Feature.Event.Query
 {
-    public class GetClubFavoriteThreeEventsQueryHandler : 
-        IRequestHandler<GetClubFavoriteThreeEventsQuery, ServiceResponse<List<FavoriteEventsResponseDTO>>>
+    public class GetClubFavoriteThreeEventsQueryHandler : IRequestHandler<GetClubFavoriteThreeEventsQuery, ServiceResponse<List<FavoriteEventsResponseDTO>>>
     {
-        private readonly ICurrentUserServices currentUserServices;
         private readonly IEventRepository eventRepository;
-        private readonly ICommentRepository commentRepository; // Geri Eklendi
+        private readonly ICommentRepository commentRepository; 
+        private readonly ILocalizationService localizationService;
 
         public GetClubFavoriteThreeEventsQueryHandler(
-            ICurrentUserServices currentUserServices, 
             IEventRepository eventRepository,
-            ICommentRepository commentRepository) // DI'a Eklendi
+            ICommentRepository commentRepository,
+            ILocalizationService localizationService)
         {
-            this.currentUserServices = currentUserServices;
             this.eventRepository = eventRepository;
             this.commentRepository = commentRepository;
+            this.localizationService = localizationService;
         }
 
-        public async Task<ServiceResponse<List<FavoriteEventsResponseDTO>>> Handle(
-            GetClubFavoriteThreeEventsQuery request, 
-            CancellationToken cancellationToken)
+        public async Task<ServiceResponse<List<FavoriteEventsResponseDTO>>> Handle(GetClubFavoriteThreeEventsQuery request, CancellationToken cancellationToken)
         {
-            var clubId = currentUserServices.CurrentClub();
-            var userId = currentUserServices.CurrentUser();
 
-            // 1. Yetkilendirme Kontrolü
-            if (clubId == null || clubId != request.ClubId || userId == null)
-            {
-                return new ServiceResponse<List<FavoriteEventsResponseDTO>>
-                {
-                    IsSuccess = false,
-                    Message = "Unauthorized access to club favorite events.",
-                    Data = null
-
-                };
-            }
-            
-            // 2. En çok katılım alan ilk 3 etkinlik çekiliyor
+            // 1.En çok katılım alan ilk 3 etkinlik çekiliyor
             var favoriteEvents = await eventRepository.GetTopThreeFavoriteEventsByClubIdAsync(request.ClubId);
             
             if (favoriteEvents == null || favoriteEvents.Count == 0)
             {
                 return new ServiceResponse<List<FavoriteEventsResponseDTO>>
-                    {
-                        IsSuccess = false,
-                        Message = "No favorite events found for the club.",
-                        Data = null
-                    }
-                ;
+                {
+                    IsSuccess = true,
+                    Message = await localizationService.Get(ValidationKeys.EventNotFound),
+                    Data = null
+                };
+                
             }
             
             var favoriteEventsId = favoriteEvents.Select(e => e.Id).ToList();
 
-            // 3. Performanslı Puan ve Yorum Sayısı Çekme (Tek sorgu)
+            // 2. Performanslı Puan ve Yorum Sayısı Çekme (Tek sorgu)
             var ratingsDict = await commentRepository.GetEventsRatingsSummaryAsync(favoriteEventsId);
 
             
-            // 4. DTO'ya dönüştürme ve verileri birleştirme
+            // 3. DTO'ya dönüştürme ve verileri birleştirme
             var favoriteEventsDto = favoriteEvents.Select(e =>
             {
                 // Puan özetini Dictionary'den al (bulunamazsa (0f, 0) varsayılan değer döner)
@@ -90,7 +72,7 @@ namespace UniTrack.Application.Feature.Event.Query
             return new ServiceResponse<List<FavoriteEventsResponseDTO>>
             {
                 IsSuccess = true,
-                Message = "Favorite events retrieved successfully.",
+                Message = null,
                 Data = favoriteEventsDto
             };
         }

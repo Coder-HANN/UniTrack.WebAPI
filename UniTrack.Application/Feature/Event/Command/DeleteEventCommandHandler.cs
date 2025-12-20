@@ -53,6 +53,7 @@ namespace UniTrack.Application.Feature.Event.Command
             }
 
             existingEvent.IsDeleted = true;
+            existingEvent.IsActived = false;
 
             await eventRepository.UpdateAsync(existingEvent);
 

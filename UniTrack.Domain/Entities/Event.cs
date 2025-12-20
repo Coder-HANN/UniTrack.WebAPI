@@ -12,13 +12,13 @@ namespace UniTrack.Domain.Entities
         public byte[]? Image { get; set; }
         public long Quota { get; set; }
         public long Joiner { get; set; }
-        public Tag Tag { get; set; }
+        public EventTag EventTag { get; set; }
         public string Location { get; set; }
         public TimeOnly Clock { get; set; }  
         public Status Status { get; set; }  
         public Guid ClubId { get; set; }
         public Time Time { get; set; }
-        public bool IsActived { get; set; }
+        public bool IsActived { get; set; } = true;
         public Club Club { get; set; }  
         public int CityId { get; set; }
         public Guid UniversityId { get; set; }

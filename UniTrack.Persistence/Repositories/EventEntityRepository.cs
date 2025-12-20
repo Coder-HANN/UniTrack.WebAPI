@@ -12,6 +12,17 @@ namespace UniTrack.Persistence.Repositories
         {
         }
 
+        public async Task<bool> CountaddedAsync(Guid EventId)
+        {
+            var joinerCount = await context.Events
+                .Where(c => c.Id == EventId)
+                .ExecuteUpdateAsync(s =>
+                    s.SetProperty(c => c.Joiner, c => c.Joiner + 1)
+                );
+
+            return joinerCount > 0;
+        }
+
         public Task<List<Event>> GetAllClubEventAsync(Expression<Func<Event, bool>> expression)
         {
             return dbSet.ToListAsync();

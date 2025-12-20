@@ -4,6 +4,7 @@
     {
         Past = 0,
         Future = 1,
-        Cancelled = 2
+        Cancelled = 2,
+        Ongoing = 3
     }
 }

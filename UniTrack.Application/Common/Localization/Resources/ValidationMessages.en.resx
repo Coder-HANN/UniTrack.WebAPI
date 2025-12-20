@@ -129,6 +129,9 @@
   <data name="AlreadyJoinedEvent" xml:space="preserve">
     <value>You have already joined this event</value>
   </data>
+  <data name="AlreadyLiked" xml:space="preserve">
+    <value>You already liked this comment.</value>
+  </data>
   <data name="CheckInSuccess" xml:space="preserve">
     <value>Successfully checked in to the event.</value>
   </data>
@@ -284,6 +287,12 @@
   </data>
   <data name="FollowClubSuccess" xml:space="preserve">
     <value>Club followed successfully</value>
+  </data>
+  <data name="GetEventSuccesses" xml:space="preserve">
+    <value>Event loaded successfully.</value>
+  </data>
+  <data name="GoogleSheetsTableNotFound" xml:space="preserve">
+    <value>This event’s Google Sheets spreadsheet ID could not be found.</value>
   </data>
   <data name="InvalidDate" xml:space="preserve">
     <value>Invalid date</value>

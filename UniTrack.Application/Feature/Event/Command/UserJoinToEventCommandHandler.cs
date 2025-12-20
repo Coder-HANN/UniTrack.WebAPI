@@ -84,10 +84,12 @@ namespace UniTrack.Application.Feature.Event.Command
             {
                 EventId = request.EventId,
                 UserId = userId.Value,
-                IsJoined = true
+                IsJoined = true,
+                IsCheckedIn = false,
             });
 
-            eventEntity.Joiner += 1;
+            var joinerCountAdded = await eventRepository.CountaddedAsync(request.EventId);
+
             await eventRepository.UpdateAsync(eventEntity);
 
             // === SIDE EFFECT (Sheets) ===

@@ -2,45 +2,56 @@
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Repositories.Pagenation;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
+using UniTrack.Application.DTOs.Comment;
 using UniTrack.Application.DTOs.Event;
 
 namespace UniTrack.Application.Feature.Event.Query
 {
-    public class GetAllPastEventQueryHandler : IRequestHandler<GetAllPastEventQuery, ServiceResponse<IPagingExecutionResult<List<GetAllPastEventQueryResponseDTO>>>>
+    public class GetAllPastEventQueryHandler : IRequestHandler<GetAllPastEventQuery, ServiceResponse<IPagingExecutionResult<GetAllPastEventQueryResponseDTO>>>
     {
         private readonly ICurrentUserServices currentUserServices;
-        private readonly IBaseEntityRepository<Domain.Entities.Event> pagingBaseService;
+        private readonly IBaseEntityRepository<Domain.Entities.Event> baseEntityRepository;
         private readonly IEventRepository eventRepository;
+        private readonly ILocalizationService localizationService;
         public GetAllPastEventQueryHandler(
             ICurrentUserServices currentUserServices,
-            IBaseEntityRepository<Domain.Entities.Event> pagingBaseService,
-            IEventRepository eventRepository)
+            IBaseEntityRepository<Domain.Entities.Event> baseEntityRepository,
+            IEventRepository eventRepository,
+            ILocalizationService localizationService)
         {
             this.currentUserServices = currentUserServices;
-            this.pagingBaseService = pagingBaseService;
+            this.baseEntityRepository = baseEntityRepository;
             this.eventRepository = eventRepository;
+            this.localizationService = localizationService;
         }
-        public async Task<ServiceResponse<IPagingExecutionResult<List<GetAllPastEventQueryResponseDTO>>>> Handle(GetAllPastEventQuery request, CancellationToken cancellationToken)
+        public async Task<ServiceResponse<IPagingExecutionResult<GetAllPastEventQueryResponseDTO>>> Handle(GetAllPastEventQuery request, CancellationToken cancellationToken)
         {
             var userId = currentUserServices.CurrentUser();
             if (userId == null)
             {
-                return new ServiceResponse<IPagingExecutionResult<List<GetAllPastEventQueryResponseDTO>>>
+                return new ServiceResponse<IPagingExecutionResult<GetAllPastEventQueryResponseDTO>>
                 {
                     IsSuccess = false,
                     Data = null,
-                    Message = "Unauthorized"
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
                 };
             }
             var events = await eventRepository.GetPastEventsAsync();
             if (events == null || events.Count == 0)
             {
-                return new ServiceResponse<IPagingExecutionResult<List<GetAllPastEventQueryResponseDTO>>>
+                return new ServiceResponse<IPagingExecutionResult<GetAllPastEventQueryResponseDTO>>
                 {
-                    IsSuccess = false,
-                    Data = null,
-                    Message = "No featured events found"
+                    IsSuccess = true,
+                    Data = await baseEntityRepository.GetPagedResult(
+                    Enumerable.Empty<GetAllPastEventQueryResponseDTO>(),
+                    pageSize: request.PageSize,
+                    pageIndex: request.Page,
+                    ordering: null,
+                    cancellationToken: cancellationToken),
+                    Message = await localizationService.Get(ValidationKeys.EventNotFound)
                 };
             }
             var responses = events.Select(e => new GetAllPastEventQueryResponseDTO
@@ -53,12 +64,12 @@ namespace UniTrack.Application.Feature.Event.Query
                 Location = e.Location,
                 Quota = e.Quota,
                 ClubId = e.ClubId,
-                Tags = e.Tag,
+                EventTag = e.EventTag,
                 Time = e.Time,
                 Status = e.Status,
             }).ToList();
 
-            var result = await pagingBaseService.GetPagedResult(
+            var result = await baseEntityRepository.GetPagedResult(
               responses,
               pageSize: request.PageSize,
               pageIndex: request.Page,
@@ -66,11 +77,11 @@ namespace UniTrack.Application.Feature.Event.Query
               cancellationToken: cancellationToken
             );
 
-            return new ServiceResponse<IPagingExecutionResult<List<GetAllPastEventQueryResponseDTO>>>
+            return new ServiceResponse<IPagingExecutionResult<GetAllPastEventQueryResponseDTO>>
             {
                 IsSuccess = true,
-                Data = (IPagingExecutionResult<List<GetAllPastEventQueryResponseDTO>>)result,
-                Message = "Past events retrieved successfully"
+                Data = result,
+                Message = await localizationService.Get(ValidationKeys.GetEventSuccesses)
             };
         }
     }

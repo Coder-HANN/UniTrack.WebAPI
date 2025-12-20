@@ -51,9 +51,9 @@ namespace UniTrack.Application.Feature.Event.Command
                 .When(x => x.Status != default)
                 .WithMessage(localization.Get(ValidationKeys.UpdateStatusInvalid).Result);
 
-            RuleFor(x => x.Tag)
+            RuleFor(x => x.EventTag)
                 .IsInEnum()
-                .When(x => x.Tag != default)
+                .When(x => x.EventTag != default)
                 .WithMessage(localization.Get(ValidationKeys.UpdateTagInvalid).Result);
         }
 

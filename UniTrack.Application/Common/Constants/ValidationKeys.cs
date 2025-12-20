@@ -56,6 +56,9 @@
         public const string NotJoinedEvent = "NotJoinedEvent";
         public const string EventLeftSuccess = "EventLeftSuccess";
 
+        // Get Event Details
+        public const string GetEventSuccesses = "GetEventSuccesses";
+
         // Club Register 
         public const string PresidentEmailRequired = "PresidentEmailRequired";
         public const string ClubEmailAlreadyExists = "ClubEmailAlreadyExists";
@@ -146,5 +149,8 @@
 
         public const string ClubFansNotFound = "ClubFansNotFound";
 
+        public const string GoogleSheetsTableNotFound = "GoogleSheetsTableNotFound";
+
+        public static string AlreadyLiked { get; internal set; }
     }
 }

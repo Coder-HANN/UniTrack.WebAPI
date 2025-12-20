@@ -198,7 +198,7 @@ public class ParticipantSheetRepository : IParticipantSheetRepository
         UpdateCells = new UpdateCellsRequest
         {
             // Hücre formatının sadece arkaplan rengini güncellemek istediğimizi belirtiyoruz
-            Fields = "userEnteredFormat.backgroundColor",
+            Fields = "userEnteredFormat.background",
             
             // Formatın uygulanacağı hücre şablonu
             Rows = new List<RowData>

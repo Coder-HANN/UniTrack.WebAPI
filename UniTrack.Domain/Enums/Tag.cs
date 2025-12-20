@@ -28,6 +28,6 @@
         Matematik = 24,
         HavacilikVeUzay = 25,
         Otomotiv = 27,
-        Astronomi = 29
+        Astronomi = 28   // TO DO: günlük haftalık kullanıcı sayısı, Kayıt olurken bizi nereden duydunuz eklenmeli, Etkiniklere doping eklenmeli
     }
 }

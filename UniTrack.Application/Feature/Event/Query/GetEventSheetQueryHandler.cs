@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
-using System.Threading;
-using System.Threading.Tasks;
+using UniTrack.Application.Common.Constants;
 
 namespace UniTrack.Application.Feature.Event.Query
 {
@@ -11,14 +11,19 @@ namespace UniTrack.Application.Feature.Event.Query
     {
         private readonly ICurrentUserServices currentUserService;
         private readonly IEventRepository eventRepository;
+        private readonly ILocalizationService localizationService;
 
         // Google Sheets Görüntüleme URL'sinin sabit kısmı.
         private const string BaseGoogleSheetUrl = "https://docs.google.com/spreadsheets/d/";
 
-        public GetEventSheetQueryHandler(ICurrentUserServices currentUserService, IEventRepository eventRepository)
+        public GetEventSheetQueryHandler(
+            ICurrentUserServices currentUserService, 
+            IEventRepository eventRepository,
+            ILocalizationService localizationService)
         {
             this.currentUserService = currentUserService;
             this.eventRepository = eventRepository;
+            this.localizationService = localizationService;
         }
 
         public async Task<ServiceResponse<string>> Handle(GetEventSheetQuery request, CancellationToken cancellationToken)
@@ -33,7 +38,7 @@ namespace UniTrack.Application.Feature.Event.Query
                 {
                     Data = null,
                     IsSuccess = false,
-                    Message = "Yetkiniz yok."
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
                 };
             }
             if (clubId == null)
@@ -42,7 +47,7 @@ namespace UniTrack.Application.Feature.Event.Query
                 {
                     Data = null,
                     IsSuccess = false,
-                    Message = "Kullanıcı/Kulüp bilgisi bulunamadı."
+                    Message = await localizationService.Get(ValidationKeys.ClubNotFound)
                 };
             }
 
@@ -54,7 +59,7 @@ namespace UniTrack.Application.Feature.Event.Query
                 {
                     Data = null,
                     IsSuccess = false,
-                    Message = "Etkinlik bulunamadı veya yetkiniz olmayan bir etkinliği istiyorsunuz."
+                    Message = await localizationService.Get(ValidationKeys.EventNotFound)
                 };
             }
 
@@ -65,7 +70,7 @@ namespace UniTrack.Application.Feature.Event.Query
                 {
                     Data = null,
                     IsSuccess = false,
-                    Message = "Bu etkinlik için Google Sheets e-tablo ID'si bulunamadı."
+                    Message = await localizationService.Get(ValidationKeys.GoogleSheetsTableNotFound)
                 };
             }
 
@@ -78,7 +83,7 @@ namespace UniTrack.Application.Feature.Event.Query
             {
                 Data = fullSheetUrl,
                 IsSuccess = true,
-                Message = "E-tablo URL'si başarıyla getirildi."
+                Message = null
             };
         }
     }

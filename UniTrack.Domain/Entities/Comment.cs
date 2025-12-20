@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace UniTrack.Domain.Entities
+﻿namespace UniTrack.Domain.Entities
 {
     public class Comment : BaseEntity
     {
@@ -14,8 +8,10 @@ namespace UniTrack.Domain.Entities
         public Guid UserId { get; set; }
         public Guid EventId { get; set; }
         public Guid ClubId { get; set; }
+        public int? LikeCount { get; set; }
         public User User { get; set; }
         public Event Event { get; set; }
         public Club Club { get; set; }
+        public ICollection<Like> Likes { get; set; }
     }
 }

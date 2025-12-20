@@ -1,27 +1,26 @@
-﻿using MediatR;
-using UniTrack.Application.Abstraction.Services.Localization;
+﻿using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
 
 namespace UniTrack.WebAPI.Middleware
 {
     public class ValidationExceptionMiddleware
     {
-        private readonly RequestDelegate next;
-        private readonly ILocalizationService localization;
+        private readonly RequestDelegate _next;
 
-        public ValidationExceptionMiddleware(
-            RequestDelegate next,
-            ILocalizationService localization)
+        public ValidationExceptionMiddleware(RequestDelegate next)
         {
-            this.next = next;
-            this.localization = localization;
+            _next = next;
         }
 
-        public async Task Invoke(HttpContext context)
+        public async Task InvokeAsync(HttpContext context)
         {
+            // ✅ Scoped servis request scope'tan alınır
+            var localization =
+                context.RequestServices.GetRequiredService<ILocalizationService>();
+
             try
             {
-                await next(context);
+                await _next(context);
             }
             catch (FluentValidation.ValidationException ex)
             {
@@ -35,8 +34,7 @@ namespace UniTrack.WebAPI.Middleware
                     Data = null
                 };
 
-
-                context.Response.StatusCode = 400;
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
                 await context.Response.WriteAsJsonAsync(response);
             }
         }

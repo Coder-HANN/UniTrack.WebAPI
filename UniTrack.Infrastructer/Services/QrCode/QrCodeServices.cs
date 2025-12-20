@@ -1,8 +1,5 @@
-﻿using UniTrack.Application.Abstraction.Services.QrCode;
-using System;
-using System.Threading.Tasks;
-using QRCoder;
-using System.IO;
+﻿using QRCoder;
+using UniTrack.Application.Abstraction.Services.QrCode;
 
 namespace UniTrack.Infrastructure.Services.QrCode
 {

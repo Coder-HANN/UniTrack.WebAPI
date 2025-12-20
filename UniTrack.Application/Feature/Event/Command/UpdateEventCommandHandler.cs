@@ -105,9 +105,9 @@ namespace UniTrack.Application.Feature.Event.Command
                 isUpdated = true;
             }
 
-            if (request.Tag != default && existingEvent.Tag != request.Tag)
+            if (request.EventTag != default && existingEvent.EventTag != request.EventTag)
             {
-                existingEvent.Tag = request.Tag;
+                existingEvent.EventTag = request.EventTag;
                 isUpdated = true;
             }
 

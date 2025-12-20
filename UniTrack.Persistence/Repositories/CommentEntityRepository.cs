@@ -91,5 +91,16 @@ namespace UniTrack.Persistence.Repositories
 
             return ratingSummaries;
         }
+
+        public async Task<bool> IncrementLikeCountAsync(Guid commentId)
+        {
+            var affected = await context.Comments
+                .Where(c => c.Id == commentId)
+                .ExecuteUpdateAsync(s =>
+                    s.SetProperty(c => c.LikeCount, c => c.LikeCount + 1)
+                );
+
+            return affected > 0;
+        }
     }
 }

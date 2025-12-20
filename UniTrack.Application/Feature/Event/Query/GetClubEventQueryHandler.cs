@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 using UniTrack.Application.DTOs.Event;
 
 namespace UniTrack.Application.Feature.Event.Query
@@ -10,13 +12,16 @@ namespace UniTrack.Application.Feature.Event.Query
     {
         private readonly ICurrentUserServices currentUserServices;
         private readonly IEventRepository eventRepository;
+        private readonly ILocalizationService localizationService;
 
         public GetClubEventQueryHandler(
             ICurrentUserServices currentUserServices,
-            IEventRepository eventRepository)
+            IEventRepository eventRepository,
+            ILocalizationService localizationService)
         {
             this.currentUserServices = currentUserServices;
             this.eventRepository = eventRepository;
+            this.localizationService = localizationService;
         }
 
         public async Task<ServiceResponse<List<GetClubEventQueryResponseDTO>>> Handle(GetClubEventQuery request, CancellationToken cancellationToken)
@@ -27,10 +32,9 @@ namespace UniTrack.Application.Feature.Event.Query
             {
                 return new ServiceResponse<List<GetClubEventQueryResponseDTO>> {
                    
-                        IsSuccess = false,
+                        IsSuccess = true,
                         Data = null,
-                        Message = "No events found for this club"
-                    
+                        Message = await localizationService.Get(ValidationKeys.EventNotFound)
                 };
             }
             var response = events.Select(e => new GetClubEventQueryResponseDTO
@@ -46,7 +50,7 @@ namespace UniTrack.Application.Feature.Event.Query
                     Time=e.Time,
                     ClubId = e.ClubId,
                     Status = e.Status,
-                    Tags = e.Tag,
+                    EventTag = e.EventTag,
 
             }).ToList();
 
@@ -54,8 +58,7 @@ namespace UniTrack.Application.Feature.Event.Query
                 
                     IsSuccess = true,
                     Data = response,
-                    Message = "Club events retrieved successfully"
-                
+                    Message = null
             };
         }
     }

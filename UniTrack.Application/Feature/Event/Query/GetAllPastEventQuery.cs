@@ -5,7 +5,7 @@ using UniTrack.Application.DTOs.Event;
 
 namespace UniTrack.Application.Feature.Event.Query
 {
-    public class GetAllPastEventQuery : IRequest<ServiceResponse<IPagingExecutionResult<List<GetAllPastEventQueryResponseDTO>>>>
+    public class GetAllPastEventQuery : IRequest<ServiceResponse<IPagingExecutionResult<GetAllPastEventQueryResponseDTO>>>
     {
         public int Page { get; set; }
         public int PageSize { get; set; }

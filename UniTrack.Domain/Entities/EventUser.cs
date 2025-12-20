@@ -8,7 +8,7 @@
         public User User { get; set; }
         public bool IsJoined { get; set; } = false;
         public bool IsCheckedIn { get; set; } = false;
-        public DateTime? CheckedInAt { get; set; }
+        public DateTimeOffset CheckedInAt { get; set; }
         public bool? IsJoinedForSponsor { get; set; } = false;
     }
 }

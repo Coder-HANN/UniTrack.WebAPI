@@ -11,6 +11,7 @@ using UniTrack.Application.Abstraction.Services.Logger;
 using UniTrack.Application.Abstraction.Services.Mail;
 using UniTrack.Application.Abstraction.Services.MemoryCach;
 using UniTrack.Application.Abstraction.Services.Notification;
+using UniTrack.Application.Abstraction.Services.Storage;
 using UniTrack.Application.Abstraction.Services.Transaction;
 using UniTrack.Application.Abstraction.Services.UserHub;
 using UniTrack.Application.Abstraction.Services.VerificationCode;
@@ -19,6 +20,7 @@ using UniTrack.Domain.Entities;
 using UniTrack.Infrastructure.Localization;
 using UniTrack.Infrastructure.Services;
 using UniTrack.Infrastructure.Services.Sheets;
+using UniTrack.Infrastructure.Services.Storage;
 using UniTrack.Persistence.Context;
 using UniTrack.Persistence.Repositories;
 using UniTrack.WebAPI.Extensions;
@@ -81,6 +83,10 @@ builder.Services.AddScoped<ICityRepository, CityRepository>();
 builder.Services.AddScoped<IClubTeamRepository, ClubTeamRepository>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<ILikeRepository, LikeRepository>();
+builder.Services.AddScoped<IStorageService, FakeStorageService>();
+
+
 
 
 builder.Services.AddSignalR();
@@ -143,7 +149,7 @@ app.UseHttpsRedirection();
 
 var supportedCultures = new[] { "tr-TR", "en-US" };
 
-var localizationOptions = new RequestLocalizationOptions()
+var localizationOptions = new RequestLocalizationOptions
 {
     DefaultRequestCulture = new RequestCulture("tr-TR"),
     SupportedCultures = supportedCultures.Select(c => new CultureInfo(c)).ToList(),
@@ -152,23 +158,22 @@ var localizationOptions = new RequestLocalizationOptions()
 
 app.UseRequestLocalization(localizationOptions);
 
-// 3. MİDDLEWARE SIRALAMASI (KESİN DOĞRU HALİ)
+// 🔥 ROUTING MUTLAKA BURADA OLMALI
+app.UseRouting();
+
+// 🔐 AUTH
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseMiddleware<AdvancedLoggingMiddleware>(); // Loglama Authentication'dan sonra!
 
+// 🧱 CUSTOM MIDDLEWARE (Auth sonrası doğru)
+app.UseMiddleware<AdvancedLoggingMiddleware>();
 app.UseMiddleware<BanMiddleware>();
 app.UseMiddleware<UserMiddleware>();
 app.UseMiddleware<ValidationExceptionMiddleware>();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-    // Hub uç noktasını tanımlayın
-    endpoints.MapHub<UserCountHub>("/userCountHub"); 
-});
-
+// 🎯 ENDPOINT TANIMLARI (NET 6+)
 app.MapControllers();
+app.MapHub<UserCountHub>("/userCountHub");
 app.MapHub<NotificationHub>("/notificationhub");
 
 app.Run();

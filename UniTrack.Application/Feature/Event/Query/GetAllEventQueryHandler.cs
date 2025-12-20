@@ -2,7 +2,10 @@
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Repositories.Pagenation;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
+using UniTrack.Application.DTOs.Comment;
 using UniTrack.Application.DTOs.Event;
 
 namespace UniTrack.Application.Feature.Event.Query
@@ -12,15 +15,18 @@ namespace UniTrack.Application.Feature.Event.Query
         private readonly ICurrentUserServices currentUserServices;
         private readonly IEventRepository eventRepository;
         private readonly IBaseEntityRepository<Domain.Entities.Event> baseEntityRepository;
+        private readonly ILocalizationService localizationService;
 
         public GetAllEventQueryHandler(
             ICurrentUserServices currentUserServices,
             IEventRepository eventRepository,
-            IBaseEntityRepository<Domain.Entities.Event> baseEntityRepository)
+            IBaseEntityRepository<Domain.Entities.Event> baseEntityRepository,
+            ILocalizationService localizationService)
         {
             this.currentUserServices = currentUserServices;
             this.eventRepository = eventRepository;
             this.baseEntityRepository = baseEntityRepository;
+            this.localizationService = localizationService;
         }
         public async Task<ServiceResponse<IPagingExecutionResult<GetAllEventQueryResponseDTO>>> Handle(GetAllEventQuery request, CancellationToken cancellationToken)
         {
@@ -30,9 +36,14 @@ namespace UniTrack.Application.Feature.Event.Query
             {
                 return new ServiceResponse<IPagingExecutionResult<GetAllEventQueryResponseDTO>> {
 
-                        IsSuccess = false,
-                        Data = null,
-                        Message = "No events found"
+                    IsSuccess = true,
+                    Data = await baseEntityRepository.GetPagedResult(
+                    Enumerable.Empty<GetAllEventQueryResponseDTO>(),
+                    pageSize: request.PageSize,
+                    pageIndex: request.Page,
+                    ordering: null,
+                    cancellationToken: cancellationToken),
+                    Message = await localizationService.Get(ValidationKeys.EventNotFound)
                 };
             }
 
@@ -48,7 +59,7 @@ namespace UniTrack.Application.Feature.Event.Query
                 Location = e.Location,
                 Quota = e.Quota,
                 ClubId = e.ClubId,  
-                Tags = e.Tag,
+                EventTag = e.EventTag,
                 Time = e.Time,
                 Status = e.Status,
 

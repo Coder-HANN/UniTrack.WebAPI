@@ -97,6 +97,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You already liked this comment..
+        /// </summary>
+        internal static string AlreadyLiked {
+            get {
+                return ResourceManager.GetString("AlreadyLiked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Successfully checked in to the event..
         /// </summary>
         internal static string CheckInSuccess {
@@ -561,6 +570,24 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string FollowClubSuccess {
             get {
                 return ResourceManager.GetString("FollowClubSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event loaded successfully..
+        /// </summary>
+        internal static string GetEventSuccesses {
+            get {
+                return ResourceManager.GetString("GetEventSuccesses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This event’s Google Sheets spreadsheet ID could not be found..
+        /// </summary>
+        internal static string GoogleSheetsTableNotFound {
+            get {
+                return ResourceManager.GetString("GoogleSheetsTableNotFound", resourceCulture);
             }
         }
         

@@ -32,5 +32,6 @@ namespace UniTrack.Domain.Entities
         public Ban Ban { get; set; }
         public City City { get; set; }
         public ICollection<ClubTeam> ClubTeams { get; set; }
+        public ICollection<Like> Likes { get; set; }
     }
 }
