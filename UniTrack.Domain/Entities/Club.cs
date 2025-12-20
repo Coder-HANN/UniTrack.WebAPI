@@ -26,7 +26,7 @@ namespace UniTrack.Domain.Entities
         public int CityId { get; set; }
         public DateOnly ClubCreatedDate { get; set; }
         public ICollection<Event> Events { get; set; }
-        public ICollection<UserClub> UserClubs { get; set; } // TO DO: Kuuluş tarihi eklenecek
+        public ICollection<UserClub> UserClubs { get; set; } 
         public ICollection<Comment> Comments { get; set; }
         public University University { get; set; }
         public Ban Ban { get; set; }

@@ -19,7 +19,7 @@ namespace UniTrack.Application.Feature.Event.Query
             {
                 return new ServiceResponse<long>
                 {
-                    IsSuccess = false,
+                    IsSuccess = true,
                     Data = 0,
                     Message = null
                 };

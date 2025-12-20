@@ -153,6 +153,7 @@ namespace UniTrack.Persistence.Context
                 builder.Property(ud => ud.Graduaiton_Date).IsRequired();
                 builder.Property(ud => ud.IsNotified).IsRequired();
                 builder.Property(ud => ud.Language);
+                builder.Property(ud => ud.PhoneNumber).IsRequired();
 
                 builder.HasOne(ud => ud.City)
                        .WithMany(c => c.UserDetails)
@@ -168,9 +169,6 @@ namespace UniTrack.Persistence.Context
                        .WithMany(u => u.UserDetails)
                        .HasForeignKey(ud => ud.UniverstiyId)
                        .OnDelete(DeleteBehavior.Cascade);
-
-                
-
             });
 
             modelBuilder.Entity<Club>(builder => 
@@ -194,7 +192,6 @@ namespace UniTrack.Persistence.Context
                 builder.Property(c => c.Role);
                 builder.Property(c => c.ClubCreatedDate);
                
-
 
                 builder.HasOne(c => c.City)
                        .WithMany(u => u.Clubs)

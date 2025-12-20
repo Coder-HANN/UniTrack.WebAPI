@@ -38,7 +38,7 @@ public class DeleteCommentCommandHandlerTests
     public async Task Handle_Should_Delete_Comment_Successfully_When_User_Is_Admin()
     {
         var commentId = Guid.NewGuid();
-        var comment = new Domain.Entities.Comment { Id = commentId };
+        var comment = new UniTrack.Domain.Entities.Comment { Id = commentId };
 
         _currentUserServices.Setup(x => x.Role()).Returns(Role.Admin);
         _commentRepository.Setup(x => x.GetCommentIdAsync(commentId)).ReturnsAsync(comment);

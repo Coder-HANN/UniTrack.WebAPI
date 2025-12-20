@@ -35,7 +35,7 @@ namespace UniTrack.Application.Feature.ActiveDetail.Query
             if (activeUserCount == 0) {
                 return new ServiceResponse<long>
                 {
-                    IsSuccess = false,
+                    IsSuccess = true,
                     Data = 0,
                     Message = null
                 };

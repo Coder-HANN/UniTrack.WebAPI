@@ -28,7 +28,6 @@ namespace UniTrack.Application.Feature.Club.Query
             this.baseEntityRepository = baseEntityRepository;
             this.localizationService = localizationService;
         }
-        // TO DO: Kullanıcı panelinde olmalı 
         public async Task<ServiceResponse<IPagingExecutionResult<GetFollowClubQueryResponseDTO>>> Handle(GetFollowClubQuery request, CancellationToken cancellationToken)
         {
             var userId = currentUserServices.CurrentUser();
@@ -54,7 +53,7 @@ namespace UniTrack.Application.Feature.Club.Query
                 };
             }
 
-            var clubs = clubRepository.GetAllClubAsync(c => c.UserClubs.Any(cu => cu.UserId == userId)); // TO DO: club kontrolünü düzenle
+            var clubs = clubRepository.GetAllClubAsync(c => c.UserClubs.Any(cu => cu.UserId == userId)); 
 
             if (clubs == null)
             {

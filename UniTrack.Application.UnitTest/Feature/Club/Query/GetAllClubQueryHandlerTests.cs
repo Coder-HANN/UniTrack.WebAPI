@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Moq;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Repositories.Pagenation;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.DTOs.Club;
 using UniTrack.Application.Feature.Club.Query;
 using UniTrack.Domain.Entities;
@@ -17,7 +13,8 @@ public class GetAllClubQueryHandlerTests
 {
     private readonly Mock<ICurrentUserServices> _currentUserServices;
     private readonly Mock<IClubRepository> _clubRepository;
-    private readonly Mock<BaseEntityRepository<Club>> _baseEntityRepository;
+    private readonly Mock<IBaseEntityRepository<Club>> _baseEntityRepository;
+    
 
     private readonly GetAllClubQueryHandler _handler;
 
@@ -27,12 +24,15 @@ public class GetAllClubQueryHandlerTests
         _clubRepository = new Mock<IClubRepository>();
 
         // BaseEntityRepository concrete olduğu için mock böyle
-        _baseEntityRepository = new Mock<BaseEntityRepository<Club>>(null);
+        _baseEntityRepository = new Mock<IBaseEntityRepository<Club>>(null);
 
-        _handler = new GetAllClubQueryHandler(
+        var localizationServiceMock = new Mock<ILocalizationService>();
+
+                _handler = new GetAllClubQueryHandler(
             _currentUserServices.Object,
             _clubRepository.Object,
-            _baseEntityRepository.Object);
+            _baseEntityRepository.Object,
+            localizationServiceMock.Object);
     }
 
     // ----------------------------------------------------

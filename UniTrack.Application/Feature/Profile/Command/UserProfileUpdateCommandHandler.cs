@@ -109,6 +109,11 @@ namespace UniTrack.Application.Feature.Profile.Command
                 userDetail.Graduaiton_Date = request.Graduaiton_Date.Value;
                 isUpdated = true;
             }
+            if(request.PhoneNumber.HasValue && request.PhoneNumber.Value != userDetail.PhoneNumber)
+            {
+                userDetail.PhoneNumber = request.PhoneNumber.Value;
+                isUpdated = true;
+            }
 
             var allMail = await userRepository.GetAllAsync();
             var mailExists = allMail.Any(c => c.Email == request.Email);

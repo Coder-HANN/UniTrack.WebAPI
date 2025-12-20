@@ -47,7 +47,7 @@ namespace UniTrack.Application.Feature.Event.Query
                 EndDate = e.EndDate,
                 Location = e.Location,
                 Quota = e.Quota,
-                ClubId = e.ClubId,  // TO DO: Düzenlenecek
+                ClubId = e.ClubId,  
                 Tags = e.Tag,
                 Time = e.Time,
                 Status = e.Status,

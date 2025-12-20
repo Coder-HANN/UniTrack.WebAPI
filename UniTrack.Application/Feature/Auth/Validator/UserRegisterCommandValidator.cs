@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using System.ComponentModel.DataAnnotations;
 using UniTrack.Application.Common.Constants;
 using UniTrack.Application.Feature.Auth.Command;
 

@@ -67,7 +67,7 @@ namespace UniTrack.WebAPI.Controllers.Public
         }
 
         [HttpGet("GetAllFeatureEventCount")]
-        public async Task<long> GetAllFeatureEventCount([FromQuery] GetAllEventFeatureCountQuery query)
+        public async Task<ServiceResponse<long>> GetAllFeatureEventCount([FromQuery] GetAllEventFeatureCountQuery query)
         {
             return await mediator.Send(query);
         }

@@ -13,15 +13,15 @@ namespace UniTrack.Domain.Entities
         public Gender Gender { get; set; }
         public DateOnly BirthDate { get; set; }
         public byte? ProfileImage { get; set; }
-        public long PhoneNumber { get; set; } // TO DO: Düzenle,entegre et
-        public DateTime Graduaiton_Date { get; set; }  // TO DO: Düzenle,  
+        public long PhoneNumber { get; set; } 
+        public DateTime Graduaiton_Date { get; set; }  
         public Guid UserId { get; set; }
         public int CityId { get; set; }
         public User User { get; set; }
         public University University { get; set; }
         public City City { get; set; }
         public ClubTeam ClubTeam { get; set; }
-        public bool IsNotified { get; set; } = true; // TO DO : Düzenle
+        public bool IsNotified { get; set; } = true;
         public string Language { get; set; }
     }
 }

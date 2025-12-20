@@ -26,7 +26,7 @@ namespace UniTrack.Application.Tests.Feature.Event.Query
                 .Setup(x => x.GetAllEventFeatureCountAsync())
                 .ReturnsAsync(0);
 
-            var query = new GetAllEventCountQuery();
+            var query = new GetAllEventFeatureCountQuery();
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
@@ -44,7 +44,7 @@ namespace UniTrack.Application.Tests.Feature.Event.Query
                 .Setup(x => x.GetAllEventFeatureCountAsync())
                 .ReturnsAsync(10);
 
-            var query = new GetAllEventCountQuery();
+            var query = new GetAllEventFeatureCountQuery();
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
