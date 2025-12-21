@@ -6,7 +6,7 @@ namespace UniTrack.Domain.Entities
     {
         public Guid Id { get; set; }
         public Role Role { get; set; }
-        public DateTime LastLoginDate { get; set; }
+        public DateTimeOffset LastLoginDate { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
 

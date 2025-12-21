@@ -19,7 +19,7 @@ namespace UniTrack.Domain.Entities
         public string? WebsiteLink { get; set; }
         public string? LinkedlnLink { get; set; }
         public long Follower { get; set; }
-        public DateTime LastLoginDate { get; set; }
+        public DateTimeOffset LastLoginDate { get; set; }
         public byte? Logo { get; set; }
         public byte? CoverImage { get; set; }
         public  Tag Tag { get; set; }

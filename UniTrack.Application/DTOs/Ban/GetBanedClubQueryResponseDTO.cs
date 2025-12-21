@@ -9,7 +9,7 @@ namespace UniTrack.Application.DTOs.Ban
         public Guid? UserId { get; set; }
         public Guid? ClubId { get; set; }
         public string Description { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public DateTime? LastDate { get; set; }
+        public DateTimeOffset CreatedDate { get; set; }
+        public DateTimeOffset? LastDate { get; set; }
     }
 }

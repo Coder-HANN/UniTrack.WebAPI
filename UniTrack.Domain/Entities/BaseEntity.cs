@@ -1,14 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UniTrack.Domain.Entities
 {
     [NotMapped]
     public class BaseEntity
     {
-        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
-        public DateTime? UpdatedDate { get; set; }
+        public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.UtcNow;
+        public DateTimeOffset UpdatedDate { get; set; }
         public bool IsDeleted { get; set; } = false;
-        public DateTime? DeletedDate { get; set; }
+        public DateTimeOffset? DeletedDate { get; set; }
         public bool IsVerified { get; set; }
 
     }

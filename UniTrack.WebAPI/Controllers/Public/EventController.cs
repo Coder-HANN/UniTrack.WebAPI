@@ -26,7 +26,7 @@ namespace UniTrack.WebAPI.Controllers.Public
         }
 
         [HttpGet("GetAllEventByClub")]
-        public async Task<ServiceResponse<List<GetClubEventQueryResponseDTO>>> GetAllEventByClub([FromQuery] GetClubEventQuery query)
+        public async Task<ServiceResponse<IPagingExecutionResult<GetClubEventQueryResponseDTO>>> GetAllEventByClub([FromQuery] GetClubEventQuery query)
         {
             return await mediator.Send(query);
         }

@@ -7,8 +7,8 @@ namespace UniTrack.Domain.Entities
         public Guid Id { get; set; }
         public string Title { get; set; }
         public string? Description { get; set; }
-        public DateTime StartDate { get; set; }  
-        public DateTime EndDate { get; set; }
+        public DateTimeOffset StartDate { get; set; }  
+        public DateTimeOffset EndDate { get; set; }
         public byte[]? Image { get; set; }
         public long Quota { get; set; }
         public long Joiner { get; set; }

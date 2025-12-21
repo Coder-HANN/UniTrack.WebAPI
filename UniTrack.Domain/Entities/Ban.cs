@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UniTrack.Domain.Enums;
+﻿using UniTrack.Domain.Enums;
 
 namespace UniTrack.Domain.Entities
 {
@@ -12,7 +7,7 @@ namespace UniTrack.Domain.Entities
         public Guid Id { get; set; }
         public string Description { get; set; }
         public bool IsBanned { get; set; }
-        public DateTime? LastDate { get; set; }
+        public DateTimeOffset? LastDate { get; set; }
         public Role Role { get; set; }
         public Guid? UserId { get; set; }
         public User User { get; set; }

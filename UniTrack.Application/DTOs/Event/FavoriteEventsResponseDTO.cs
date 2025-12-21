@@ -5,7 +5,7 @@ namespace UniTrack.Application.DTOs.Event
     public class FavoriteEventsResponseDTO
     {
         public string EventName { get; set; }
-        public DateTime EventDate { get; set; }
+        public DateTimeOffset EventDate { get; set; }
         public byte[] EventImage { get; set; }
         public string EventLocation { get; set; }
         public Time Time { get; set; }
