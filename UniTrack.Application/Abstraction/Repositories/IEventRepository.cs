@@ -18,5 +18,6 @@ namespace UniTrack.Application.Abstraction.Repositories
          public Task<Event> GetEventByIdAndClubIdAsync(Guid eventId, Guid clubId);
 
         public Task<bool> CountaddedAsync(Guid EventId);
+        public Task<long> GetAllClubEventJoinerCountAsync(Guid? clubId);
     }
 }

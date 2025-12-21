@@ -28,6 +28,12 @@ namespace UniTrack.Persistence.Repositories
             return dbSet.ToListAsync();
         }
 
+        public async Task<long> GetAllClubEventJoinerCountAsync(Guid? clubId)
+        {
+            return await dbSet.Where(e => e.ClubId == clubId)
+                .SumAsync(e => e.Joiner);
+        }
+
         public async Task<List<Event>> GetAllEventAsync(Expression<Func<Event, bool>> expression)
         {
             return await dbSet.Where(expression).ToListAsync();

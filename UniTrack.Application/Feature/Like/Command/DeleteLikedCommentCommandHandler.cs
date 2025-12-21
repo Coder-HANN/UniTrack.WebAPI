@@ -29,7 +29,7 @@ namespace UniTrack.Application.Feature.Like.Command
             var userId = currentUserServices.CurrentUser();
             var clubId = currentUserServices.CurrentClub();
 
-            if (userId == null || clubId == null)
+            if (userId == null && clubId == null)
             {
                 return await localizationService.Get(ValidationKeys.NotAuthorized);
             }
