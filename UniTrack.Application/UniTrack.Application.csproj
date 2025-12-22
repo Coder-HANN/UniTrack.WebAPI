@@ -16,7 +16,6 @@
     <Folder Include="Feature\Department\Query\" />
     <Folder Include="Feature\Like\Validator\" />
     <Folder Include="Feature\Like\Query\" />
-    <Folder Include="Feature\Notification\Query\" />
     <Folder Include="Feature\Notification\Validator\" />
     <Folder Include="Feature\University\Validator\" />
     <Folder Include="Feature\University\Query\" />

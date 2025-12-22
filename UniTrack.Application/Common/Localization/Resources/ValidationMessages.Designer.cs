@@ -259,6 +259,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Created new event..
+        /// </summary>
+        internal static string CreatedNewEvent {
+            get {
+                return ResourceManager.GetString("CreatedNewEvent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A department with this name already exists..
         /// </summary>
         internal static string DepartmentAlreadyExists {
@@ -408,6 +417,24 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string EventIdRequired {
             get {
                 return ResourceManager.GetString("EventIdRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event is deleted..
+        /// </summary>
+        internal static string EventIsDeleted {
+            get {
+                return ResourceManager.GetString("EventIsDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event is updated.
+        /// </summary>
+        internal static string EventIsUpdated {
+            get {
+                return ResourceManager.GetString("EventIsUpdated", resourceCulture);
             }
         }
         
@@ -714,6 +741,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string NotificationClosedSuccess {
             get {
                 return ResourceManager.GetString("NotificationClosedSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notification not found.
+        /// </summary>
+        internal static string NotificationNotFound {
+            get {
+                return ResourceManager.GetString("NotificationNotFound", resourceCulture);
             }
         }
         

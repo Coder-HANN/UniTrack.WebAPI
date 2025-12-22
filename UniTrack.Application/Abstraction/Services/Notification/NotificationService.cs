@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using UniTrack.Application.Abstraction.Repositories;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Abstraction.Services.Notification;
+using UniTrack.Application.Common.Constants;
 using UniTrack.Domain.Entities;
 using UniTrack.Domain.Enums;
 
@@ -9,11 +11,13 @@ public class NotificationService : INotificationService
 
     private readonly IHubContext<NotificationHub> _hubServices;
     private readonly INotificationRepository notificationRepository;
+    private readonly ILocalizationService localizationService;
 
-    public NotificationService(IHubContext<NotificationHub> hubServices,INotificationRepository notificationRepository)
+    public NotificationService(IHubContext<NotificationHub> hubServices,INotificationRepository notificationRepository, ILocalizationService localizationService)
     {
         _hubServices = hubServices;
         this.notificationRepository = notificationRepository;
+        this.localizationService = localizationService;
     }
 
     public async Task SendToUserAsync(Guid userId, string message)
@@ -32,7 +36,7 @@ public class NotificationService : INotificationService
 
         foreach (var userId in users)
         {
-            await PersistAndSendRealTimeNotificationAsync(userId,"Yeni Etkinlik Oluşturuldu",message,NotificationType.EventCreated,relatedEntityId: clubId
+            await PersistAndSendRealTimeNotificationAsync(userId,await localizationService.Get(ValidationKeys.CreatedNewEvent),message,NotificationType.EventCreated,relatedEntityId: clubId
             );
         }
     }
@@ -43,7 +47,7 @@ public class NotificationService : INotificationService
         {
             await PersistAndSendRealTimeNotificationAsync(
                 userId,
-                "Etkinlik Güncellendi",
+                await localizationService.Get(ValidationKeys.EventIsUpdated),
                 message,
                 NotificationType.EventUpdated,
                 relatedEntityId: clubId
@@ -59,7 +63,7 @@ public class NotificationService : INotificationService
         {
             await PersistAndSendRealTimeNotificationAsync(
                 userId,
-                "Etkinlik Silindi",
+                await localizationService.Get(ValidationKeys.EventIsDeleted),
                 message,
                 NotificationType.EventDeleted,
                 relatedEntityId: clubId

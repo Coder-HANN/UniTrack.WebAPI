@@ -13,8 +13,11 @@ namespace UniTrack.Application.Abstraction.Repositories
         // 3. Kullanıcının okumadığı bildirimleri çeker
         Task<List<Notification>> GetUserNotificationsAsync(Guid userId, int take = 50);
 
+        // Kulüplerin okumadığı bildiirmleri döner
+        public Task<List<Notification>> GetClubNotificationsAsync(Guid clubId, int take = 50);
 
         // Tüm bildirimleri çeker
         Task<List<Notification>> GetUserAllNotification(Guid userId);
+        Task<List<Notification>> GetClubAllNotification(Guid clubId);
     }                                                                                               
 }

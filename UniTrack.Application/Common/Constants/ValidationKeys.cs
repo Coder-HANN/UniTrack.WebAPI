@@ -150,7 +150,12 @@
         public const string ClubFansNotFound = "ClubFansNotFound";
 
         public const string GoogleSheetsTableNotFound = "GoogleSheetsTableNotFound";
+        public const string NotificationNotFound = "NotificationNotFound";
 
-        public static string AlreadyLiked { get; internal set; }
+        public const string AlreadyLiked = "AlreadyLiked";
+
+        public const string CreatedNewEvent = "CreatedNewEvent";
+        public const string EventIsUpdated = "EventIsUpdated";
+        public const string EventIsDeleted = "EventIsDeleted";
     }
 }

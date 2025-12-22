@@ -183,6 +183,9 @@
   <data name="ContactMessageSent" xml:space="preserve">
     <value>Your message has been sent successfully. We will get back to you as soon as possible.</value>
   </data>
+  <data name="CreatedNewEvent" xml:space="preserve">
+    <value>Created new event.</value>
+  </data>
   <data name="DepartmentAlreadyExists" xml:space="preserve">
     <value>A department with this name already exists.</value>
   </data>
@@ -233,6 +236,12 @@
   </data>
   <data name="EventIdRequired" xml:space="preserve">
     <value>Event name is required for deletion.</value>
+  </data>
+  <data name="EventIsDeleted" xml:space="preserve">
+    <value>Event is deleted.</value>
+  </data>
+  <data name="EventIsUpdated" xml:space="preserve">
+    <value>Event is updated</value>
   </data>
   <data name="EventJoinSuccess" xml:space="preserve">
     <value>You have successfully joined the event</value>
@@ -335,6 +344,9 @@
   </data>
   <data name="NotificationClosedSuccess" xml:space="preserve">
     <value>Club notifications have been successfully closed.</value>
+  </data>
+  <data name="NotificationNotFound" xml:space="preserve">
+    <value>Notification not found</value>
   </data>
   <data name="NotificationOpenedSuccess" xml:space="preserve">
     <value>Club notifications have been successfully enabled.</value>

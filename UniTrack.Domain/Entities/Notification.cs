@@ -6,6 +6,8 @@ namespace UniTrack.Domain.Entities
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
+        public Guid ClubId { get; set; }
+        public byte? Logo { get; set; }
         public string Title { get; set; }
         public string Message { get; set; }
         public bool IsRead { get; set; } = false;
@@ -13,5 +15,6 @@ namespace UniTrack.Domain.Entities
         public Guid? RelatedEntityId { get; set; } // Etkinlik veya Kulüp ID'si
         public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
         public User User { get; set; }
+        public Club Club { get; set; }
     }
 }

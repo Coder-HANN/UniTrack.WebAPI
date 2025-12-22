@@ -62,12 +62,19 @@ namespace UniTrack.Persistence.Context
                 builder.Property(n => n.RelatedEntityId).IsRequired();
                 builder.Property(n => n.IsRead).IsRequired();
                 builder.Property(n => n.CreatedAt).IsRequired();
+                builder.Property(n => n.Logo);
                 
 
                 builder.HasOne(n => n.User)
                        .WithMany(u => u.Notification)
                        .HasForeignKey(n => n.UserId)
                        .OnDelete(DeleteBehavior.Cascade);
+
+                builder.HasOne(n => n.Club)
+                        .WithMany(c => c.Notifications)
+                        .HasForeignKey(n => n.ClubId)
+                        .OnDelete(DeleteBehavior.Cascade);
+                        
             });
 
             modelBuilder.Entity<ClubTeam>(builder =>

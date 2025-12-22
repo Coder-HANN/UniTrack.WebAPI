@@ -33,5 +33,6 @@ namespace UniTrack.Domain.Entities
         public City City { get; set; }
         public ICollection<ClubTeam> ClubTeams { get; set; }
         public ICollection<Like> Likes { get; set; }
+        public ICollection<Notification> Notifications { get; set; }
     }
 }

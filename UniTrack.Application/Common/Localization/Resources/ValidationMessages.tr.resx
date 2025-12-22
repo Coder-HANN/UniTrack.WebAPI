@@ -183,6 +183,9 @@
   <data name="ContactMessageSent" xml:space="preserve">
     <value>Mesajınız başarıyla gönderildi. En kısa sürede size geri dönüş yapacağız.</value>
   </data>
+  <data name="CreatedNewEvent" xml:space="preserve">
+    <value>Yeni etkinlik oluşturuldu.</value>
+  </data>
   <data name="DepartmentAlreadyExists" xml:space="preserve">
     <value>Bu isimde bir bölüm zaten mevcut.</value>
   </data>
@@ -233,6 +236,12 @@
   </data>
   <data name="EventIdRequired" xml:space="preserve">
     <value>Silme işlemi için etkinlik adı zorunludur.</value>
+  </data>
+  <data name="EventIsDeleted" xml:space="preserve">
+    <value>Katılmak istediğiniz bir etkinlik silindi.</value>
+  </data>
+  <data name="EventIsUpdated" xml:space="preserve">
+    <value>Etkinlik güncellendi.</value>
   </data>
   <data name="EventJoinSuccess" xml:space="preserve">
     <value>Etkinliğe başarıyla katıldınız</value>
@@ -335,6 +344,9 @@
   </data>
   <data name="NotificationClosedSuccess" xml:space="preserve">
     <value>Kulüp bildirimleri başarıyla kapatıldı.</value>
+  </data>
+  <data name="NotificationNotFound" xml:space="preserve">
+    <value>Bildirim bulunamadı.</value>
   </data>
   <data name="NotificationOpenedSuccess" xml:space="preserve">
     <value>Kulüp bildirimleri başarıyla açıldı.</value>
