@@ -31,9 +31,8 @@ namespace UniTrack.Application.Feature.Event.Command
 
         public async Task<ServiceResponse<DeleteEventResponseDTO>> Handle(DeleteEventCommand request, CancellationToken cancellationToken)
         {
-            var userId = currentUserServices.CurrentUser();
             var clubId = currentUserServices.CurrentClub();
-            if (userId == null && clubId == null)
+            if (clubId == null)
             {
                 return ServiceResponse<DeleteEventResponseDTO>.Fail(await localization.Get(ValidationKeys.NotAuthorized));
             }
@@ -58,7 +57,7 @@ namespace UniTrack.Application.Feature.Event.Command
             await eventRepository.UpdateAsync(existingEvent);
 
 
-            await notificationService.ClubIsDeleteEventAsync(clubId.Value,await localization.Get(ValidationKeys.EventDeletedNotification, existingEvent.Title));
+            await notificationService.ClubIsDeleteEventAsync(clubId.Value, request.EventId,NotificationType.EventDeleted.ToString());
 
             return ServiceResponse<DeleteEventResponseDTO>.Success(await localization.Get(ValidationKeys.EventDeletedSuccess));
         }

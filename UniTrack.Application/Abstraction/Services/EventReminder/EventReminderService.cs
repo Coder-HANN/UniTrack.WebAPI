@@ -6,25 +6,25 @@ namespace UniTrack.Application.Abstraction.Services.EventReminder
 {
     public class EventReminderService : IEventReminderService
     {
-        private readonly INotificationRepository notificationRepository;
+        private readonly IEventUserRepository eventUserRepository;
         private readonly INotificationService notificationServices;
         public EventReminderService(
-            INotificationRepository notificationRepository,
+            IEventUserRepository eventUserRepository,
             INotificationService notificationServices)
         {
-            this.notificationRepository = notificationRepository;
+            this.eventUserRepository = eventUserRepository;
             this.notificationServices = notificationServices;
         }
         public async Task SendEventReminder(Guid eventId, string title, string message)
         {
             // 1. Etkinliğe katılan kullanıcıları çek (EventUser tablosu)
-            var targetUserIds = await notificationRepository.GetUsersJoinedToEventAsync(eventId);
+            var targetUserIds = await eventUserRepository.GetUsersJoinedToEventAsync(eventId);
 
             // 2. Her kullanıcı için bireysel bildirim görevini tetikle
             foreach (var userId in targetUserIds)
             {
                 // Burada tekrar kuyruğa atabiliriz veya direkt olarak kalıcılık metodunu çağırabiliriz (hata riski az olduğu için direkt çağıralım)
-                await notificationServices.PersistAndSendRealTimeNotificationAsync(userId,title,message,NotificationType.EventReminder,eventId);
+                await notificationServices.PersistAndSendRealTimeNotificationAsync(userId,message,NotificationType.EventReminder,eventId);
             }
 
         }

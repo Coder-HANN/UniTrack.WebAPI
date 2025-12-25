@@ -8,5 +8,8 @@ namespace UniTrack.Application.Abstraction.Repositories
 		Task<UserClub> GetClubFollowersByUserIdAsync(Guid value, Guid userDetailId);
         Task<int> GetFollowedClubCountAsync(Guid? userId);
         Task<UserClub> GetUserIdInClubAsync(Guid clubId, Guid userId);
+
+        // Kulübü takip eden ve bildirimi açık olan kullanıcıları çeker
+        Task<List<Guid>> GetUsersWithNotificationOpenForClubAsync(Guid clubId);
     }
 }

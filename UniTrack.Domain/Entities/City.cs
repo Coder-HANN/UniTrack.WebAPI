@@ -8,6 +8,7 @@
         public ICollection<UserDetail> UserDetails { get; set; }
         public ICollection<Club> Clubs { get; set; }
         public ICollection<Event> Events { get; set; }
+        public ICollection<TargetNotificationCity> TargetNotificationCities { get; set; }
 
     }
 }

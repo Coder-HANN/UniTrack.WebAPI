@@ -27,10 +27,132 @@ namespace UniTrack.Persistence.Context
         public DbSet<ClubTeam> ClubTeams { get; set; }
         public DbSet<Notification> Notification { get; set; }
         public DbSet<Like> Likes { get; set; }
+        public DbSet<TargetNotification> TargetNotifications { get; set; }
+        public DbSet<TargetNotificationCity> TargetNotificationCities { get; set; }
+        public DbSet<TargetNotificationClub> TargetNotificationClubs { get; set; }
+        public DbSet<TargetNotificationDepartment> TargetNotificationDepartments { get; set; }
+        public DbSet<TargetNotificationUniversity> TargetNotificationUniversities { get; set; }
+        public DbSet<UserNotification> UserNotifications { get; set; }
+        public DbSet<ClubNotification> ClubNotifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ClubNotification>(builder =>
+            {
+                builder.HasKey(cn => cn.Id);
+                builder.Property(cn => cn.IsRead).IsRequired();
+                builder.Property(cn => cn.ReadDate).IsRequired(false);
+
+
+                builder.HasOne(cn => cn.Club)
+                       .WithMany(c => c.ClubNotifications)
+                       .HasForeignKey(cn => cn.ClubId)
+                       .OnDelete(DeleteBehavior.Restrict);
+
+                builder.HasOne(cn => cn.Notification)
+                       .WithMany(n => n.ClubNotifications)
+                       .HasForeignKey(cn => cn.NotificationId)
+                       .OnDelete(DeleteBehavior.Restrict);
+
+            });
+
+
+            modelBuilder.Entity<UserNotification>(builder =>
+            {
+                builder.HasKey(un => un.Id);
+
+                builder.HasOne(un => un.User)
+                       .WithMany(u => u.UserNotifications)
+                       .HasForeignKey(un => un.UserId)
+                       .OnDelete(DeleteBehavior.Restrict);
+
+                builder.HasOne(un => un.Notification)
+                       .WithMany(n => n.UserNotifications)
+                       .HasForeignKey(un => un.NotificationId)
+                       .OnDelete(DeleteBehavior.Restrict);
+
+                builder.Property(un => un.IsRead)
+                       .IsRequired();
+
+                builder.Property(un => un.ReadDate)
+                       .IsRequired(false);
+            });
+
+
+            modelBuilder.Entity<TargetNotificationUniversity>(builder =>
+            {
+                builder.HasKey(tnu => tnu.Id);
+
+                builder.HasOne(tnu => tnu.TargetNotification)
+                       .WithMany(tn => tn.Universities)
+                       .HasForeignKey(tnu => tnu.TargetNotificationId)
+                       .OnDelete(DeleteBehavior.Restrict);
+
+                builder.HasOne(tnu => tnu.University)
+                       .WithMany(u => u.TargetNotificationUniversities)
+                       .HasForeignKey(tnu => tnu.UniversityId)
+                       .OnDelete(DeleteBehavior.Restrict);
+            });
+
+
+            modelBuilder.Entity<TargetNotificationDepartment>(builder =>
+            {
+                builder.HasKey(tnd => tnd.Id);
+
+                builder.HasOne(tnc => tnc.TargetNotification)
+                        .WithMany(tn => tn.Departments)
+                        .HasForeignKey(tnc => tnc.TargetNotificationId)
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                builder.HasOne(tnc => tnc.Department)
+                      .WithMany(c => c.Departments)
+                      .HasForeignKey(tnc => tnc.DepartmentId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<TargetNotificationClub>(builder =>
+            {
+                builder.HasKey(tnc => tnc.Id);
+
+                builder.HasOne(tnc => tnc.Club)
+                       .WithMany(c => c.TargetNotificationClubs)
+                       .HasForeignKey(tnc => tnc.ClubId)
+                       .OnDelete(DeleteBehavior.Restrict);
+
+                builder.HasOne(tnc =>tnc.TargetNotification)
+                        .WithMany(tn => tn.Clubs)
+                        .HasForeignKey(tnc =>tnc.TargetNotificationId)
+                        .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<TargetNotificationCity>(builder =>
+            { 
+                builder.HasKey(tn => tn.Id);
+
+                builder.HasOne(e => e.City)
+                       .WithMany(c => c.TargetNotificationCities)
+                       .HasForeignKey(e => e.CityId)
+                       .OnDelete(DeleteBehavior.Restrict);
+
+                builder.HasOne(e => e.TargetNotification)
+                      .WithMany(c => c.City)
+                      .HasForeignKey(e => e.TargetNotificationId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<TargetNotification>(builder =>
+            {
+                builder.HasKey(tn => tn.Id);
+                
+                builder.HasOne(tn => tn.Notification)
+                       .WithMany(n => n.Targets)
+                       .HasForeignKey(tn => tn.NotificationId)
+                       .OnDelete(DeleteBehavior.Restrict);
+                
+            });
+
 
             modelBuilder.Entity<Like>(builder =>
             {
@@ -57,24 +179,10 @@ namespace UniTrack.Persistence.Context
             {
                 builder.HasKey(n => n.Id);
                 builder.Property(n => n.Message).IsRequired().HasMaxLength(250);
-                builder.Property(n => n.Title).IsRequired().HasMaxLength(100);
                 builder.Property(n => n.Type).IsRequired().HasMaxLength(50);
-                builder.Property(n => n.RelatedEntityId).IsRequired();
-                builder.Property(n => n.IsRead).IsRequired();
                 builder.Property(n => n.CreatedAt).IsRequired();
-                builder.Property(n => n.Logo);
-                
-
-                builder.HasOne(n => n.User)
-                       .WithMany(u => u.Notification)
-                       .HasForeignKey(n => n.UserId)
-                       .OnDelete(DeleteBehavior.Cascade);
-
-                builder.HasOne(n => n.Club)
-                        .WithMany(c => c.Notifications)
-                        .HasForeignKey(n => n.ClubId)
-                        .OnDelete(DeleteBehavior.Cascade);
-                        
+                builder.Property(n => n.LogoUrl);
+                builder.Property(n => n.Title);
             });
 
             modelBuilder.Entity<ClubTeam>(builder =>

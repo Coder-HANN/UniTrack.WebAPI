@@ -40,6 +40,13 @@ namespace UniTrack.Persistence.Repositories
                 .Where(eu => eu.Event.ClubId == clubId && eu.IsJoined == true)
                 .CountAsync();
         }
+        public async Task<List<Guid>> GetUsersJoinedToEventAsync(Guid eventId)
+        {
+            return await context.Set<EventUser>()
+                .Where(eu => eu.EventId == eventId && eu.IsJoined)
+                .Select(eu => eu.UserId)
+                .ToListAsync();
+        }
 
     }
 }

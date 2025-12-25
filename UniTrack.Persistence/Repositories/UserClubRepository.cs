@@ -34,5 +34,13 @@ namespace UniTrack.Persistence.Repositories
         {
             return dbSet.FirstOrDefaultAsync(c => c.ClubId == clubId && c.UserId == userId);
         }
+
+        public async Task<List<Guid>> GetUsersWithNotificationOpenForClubAsync(Guid clubId)
+        {
+            return await context.Set<UserClub>()
+              .Where(uc => uc.ClubId == clubId && uc.IsNotification == true) // Sadece bildirimi açık olanlar
+              .Select(uc => uc.UserId)
+              .ToListAsync();
+        }
     }
 }

@@ -2,8 +2,7 @@
 
 namespace UniTrack.Application.Abstraction.Repositories
 {
-    public interface INotificationRepository : IBaseEntityRepository<Notification>
+    public interface ITargetNotificationCityRepository : IBaseEntityRepository<TargetNotificationCity>
     {
-       
     }
 }

@@ -141,10 +141,9 @@ namespace UniTrack.Application.Feature.Event.Command
 
                 var message = await localizationService.Get(ValidationKeys.EventUpdatedNotification,existingEvent.Title);
 
-                await notificationService.ClubIsUpdateEventAsync(existingEvent.ClubId, message);
+                await notificationService.ClubIsUpdateEventAsync(existingEvent.ClubId, existingEvent.Id, message);
 
             return ServiceResponse<UpdateEventResponseDTO>.Success(await localizationService.Get(ValidationKeys.EventUpdatedSuccess));
-            
         }
     }
 }

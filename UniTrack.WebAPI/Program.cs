@@ -85,6 +85,12 @@ builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<ILikeRepository, LikeRepository>();
 builder.Services.AddScoped<IStorageService, FakeStorageService>();
+builder.Services.AddScoped<IUserNotificationRepository, UserNotificationRepository>();
+builder.Services.AddScoped<IClubNotificationRepository, ClubNotificationRepository>();
+builder.Services.AddScoped<ITargetNotificationCityRepository, TargetNotificationCityRepository>();
+builder.Services.AddScoped<ITargetNotificationDepartmentRepository, TargetNotificationDepartmentRepository>();
+builder.Services.AddScoped<ITargetNotificationRepository, TargetNotificationRepository>();
+builder.Services.AddScoped<ITargetNotificationUniversityRepository,  TargetNotificationUniversityRepository>();
 
 
 
