@@ -13,7 +13,5 @@ namespace UniTrack.Application.Abstraction.Services.Notification
         {
             await Clients.All.SendAsync("ReceiveNotification", message);
         }
-
-
     }
 }

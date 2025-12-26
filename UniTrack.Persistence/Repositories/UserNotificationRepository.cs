@@ -27,5 +27,12 @@ namespace UniTrack.Persistence.Repositories
                 .Take(take)
                 .ToListAsync();
         }
+
+        public async Task AddRangeAsync(List<UserNotification> userNotifications)
+        {
+            await context.Set<UserNotification>().AddRangeAsync(userNotifications);
+            await context.SaveChangesAsync();
+        }
+
     }
 }

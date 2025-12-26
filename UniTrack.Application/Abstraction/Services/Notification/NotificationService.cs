@@ -2,7 +2,6 @@
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Abstraction.Services.Notification;
-using UniTrack.Application.Common.Constants;
 using UniTrack.Domain.Entities;
 using UniTrack.Domain.Enums;
 
@@ -31,7 +30,7 @@ public class NotificationService : INotificationService
         this.notificationRepository = notificationRepository;
         this.userNotificationRepository = userNotificationRepository;
     }
-
+    // bireysel geçici bildirim
     public async Task SendToUserAsync(Guid userId, string message)
     {
         await _hubServices.Clients.User(userId.ToString()).SendAsync("ReceiveNotification", message);
@@ -44,81 +43,146 @@ public class NotificationService : INotificationService
 
     public async Task ClubIsCreateEventAsync(Guid clubId, string message)
     {
-        var users = await userClubRepository.GetUsersWithNotificationOpenForClubAsync(clubId);
+        var users = await userClubRepository
+            .GetUsersWithNotificationOpenForClubAsync(clubId);
 
-        foreach (var userId in users)
-        {
-            await PersistAndSendRealTimeNotificationAsync(userId, message, NotificationType.EventCreated, clubId);
-        }
+        if (!users.Any())
+            return;
+
+        await CreateAndDispatchNotificationAsync(
+            users,
+            message,
+            NotificationType.EventCreated,
+            clubId
+        );
     }
-    public async Task ClubIsUpdateEventAsync(Guid clubId,Guid eventId, string message)
+
+    public async Task ClubIsUpdateEventAsync(Guid clubId, Guid eventId, string message)
     {
-        var users = await userClubRepository.GetUsersWithNotificationOpenForClubAsync(clubId);
+        var users = await userClubRepository
+            .GetUsersWithNotificationOpenForClubAsync(clubId);
 
-        var joiner = await eventUserRepository.GetUsersJoinedToEventAsync(eventId);
+        var joiners = await eventUserRepository
+            .GetUsersJoinedToEventAsync(eventId);
 
-        var targetUsers = users // Etkinliğe katıldıysa veya bildirimleri açıksa
-        .Union(joiner)
-        .Distinct();
+        var targetUsers = users
+            .Union(joiners)
+            .Distinct()
+            .ToList();
 
-        foreach (var userId in targetUsers)
-        {
-            await PersistAndSendRealTimeNotificationAsync(userId,message,NotificationType.EventUpdated,clubId);
-        }
+        if (!targetUsers.Any())
+            return;
+
+        await CreateAndDispatchNotificationAsync(
+            targetUsers,
+            message,
+            NotificationType.EventUpdated,
+            eventId
+        );
     }
 
     public async Task ClubIsDeleteEventAsync(Guid clubId, Guid eventId, string message)
     {
-        var users = await userClubRepository.GetUsersWithNotificationOpenForClubAsync(clubId);
-        var joiner = await eventUserRepository.GetUsersJoinedToEventAsync(eventId);
+        var users = await userClubRepository
+            .GetUsersWithNotificationOpenForClubAsync(clubId);
 
-        var targetUsers = users // Etkinliğe katıldıysa veya bildirimleri açıksa
-        .Union(joiner)
-        .Distinct();
+        var joiners = await eventUserRepository
+            .GetUsersJoinedToEventAsync(eventId);
 
-        foreach (var userId in targetUsers)
-        {
-            await PersistAndSendRealTimeNotificationAsync(userId,message,NotificationType.EventDeleted, clubId);
-        }
+        var targetUsers = users
+            .Union(joiners)
+            .Distinct()
+            .ToList();
+
+        if (!targetUsers.Any())
+            return;
+
+        await CreateAndDispatchNotificationAsync(
+            targetUsers,
+            message,
+            NotificationType.EventDeleted,
+            eventId
+        );
     }
 
-
-    // --------------------------------------------------------------------
-    // KALICI OLARAK KAYDET + REAL-TIME GÖNDER
-    // --------------------------------------------------------------------
-    public async Task PersistAndSendRealTimeNotificationAsync(Guid userId,string message,NotificationType type,Guid relatedEntityId)
+    private async Task CreateAndDispatchNotificationAsync(List<Guid> userIds,string message,NotificationType type,Guid relatedEntityId)
     {
-        // Veritabanına kaydet
+        // Notification (1 KERE)
         var notification = new Notification
         {
             Id = Guid.NewGuid(),
             Message = message,
             Type = type,
             RelatedEntityId = relatedEntityId,
-            CreatedAt = DateTimeOffset.UtcNow,
+            CreatedAt = DateTimeOffset.UtcNow
         };
 
         await notificationRepository.AddAsync(notification);
 
+        //  UserNotification (N KERE)
+        var userNotifications = userIds.Select(userId =>
+            new UserNotification
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                NotificationId = notification.Id,
+                IsRead = false
+            }).ToList();
+
+        await userNotificationRepository.AddRangeAsync(userNotifications);
+
+        // Real-time gönder
+        foreach (var userId in userIds)
+        {
+            await _hubServices.Clients
+                .User(userId.ToString())
+                .SendAsync("ReceiveNotification", new
+                {
+                    NotificationId = notification.Id,
+                    RelatedEntityId = relatedEntityId,
+                    Message = message,
+                    Type = type.ToString(),
+                    CreatedAt = notification.CreatedAt
+                });
+        }
+    }
+
+    // Kişiye özel bildirim gönderir ve kalıcı bildirim içerir.
+    public async Task SendDirectNotificationAsync(Guid userId,string message,NotificationType type,Guid? relatedEntityId = null)
+    {
+        // 1️⃣ Notification (1 tane – bireysel)
+        var notification = new Notification
+        {
+            Id = Guid.NewGuid(),
+            Message = message,
+            Type = type,
+            RelatedEntityId = relatedEntityId,
+            CreatedAt = DateTimeOffset.UtcNow
+        };
+
+        await notificationRepository.AddAsync(notification);
+
+        // 2️⃣ UserNotification (1 tane)
         var userNotification = new UserNotification
         {
             Id = Guid.NewGuid(),
             UserId = userId,
             NotificationId = notification.Id,
-            IsRead = false,
+            IsRead = false
         };
 
         await userNotificationRepository.AddAsync(userNotification);
 
-        // Real-time bildirimi gönder
-        await _hubServices.Clients.User(userId.ToString()).SendAsync("ReceiveNotification", new
-        {
-            NotificationId = notification.Id,
-            RelatedEntityId = notification.RelatedEntityId,
-            UserId = userId,
-            Message = message,
-            Type = type.ToString(),
-            CreatedAt = notification.CreatedAt
-        });
+        // 3️⃣ Real-time gönder
+        await _hubServices.Clients
+            .User(userId.ToString())
+            .SendAsync("ReceiveNotification", new
+            {
+                NotificationId = notification.Id,
+                RelatedEntityId = notification.RelatedEntityId,
+                Message = message,
+                Type = type.ToString(),
+                CreatedAt = notification.CreatedAt
+            });
     }
 }

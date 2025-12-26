@@ -7,26 +7,32 @@ namespace UniTrack.Application.Abstraction.Services.EventReminder
     public class EventReminderService : IEventReminderService
     {
         private readonly IEventUserRepository eventUserRepository;
-        private readonly INotificationService notificationServices;
+        private readonly INotificationService notificationService;
+
         public EventReminderService(
             IEventUserRepository eventUserRepository,
-            INotificationService notificationServices)
+            INotificationService notificationService)
         {
             this.eventUserRepository = eventUserRepository;
-            this.notificationServices = notificationServices;
+            this.notificationService = notificationService;
         }
+
         public async Task SendEventReminder(Guid eventId, string title, string message)
         {
-            // 1. Etkinliğe katılan kullanıcıları çek (EventUser tablosu)
-            var targetUserIds = await eventUserRepository.GetUsersJoinedToEventAsync(eventId);
+            // 1️⃣ Etkinliğe katılan kullanıcıları al
+            var targetUserIds = await eventUserRepository
+                .GetUsersJoinedToEventAsync(eventId);
 
-            // 2. Her kullanıcı için bireysel bildirim görevini tetikle
+            // 2️⃣ Her kullanıcıya bireysel ve kalıcı reminder bildirimi gönder
             foreach (var userId in targetUserIds)
             {
-                // Burada tekrar kuyruğa atabiliriz veya direkt olarak kalıcılık metodunu çağırabiliriz (hata riski az olduğu için direkt çağıralım)
-                await notificationServices.PersistAndSendRealTimeNotificationAsync(userId,message,NotificationType.EventReminder,eventId);
+                await notificationService.SendDirectNotificationAsync(
+                    userId: userId,
+                    message: message,
+                    type: NotificationType.EventReminder,
+                    relatedEntityId: eventId // event sayfasına yönlendirme için
+                );
             }
-
         }
     }
 }
