@@ -95,6 +95,13 @@ namespace UniTrack.Persistence.Repositories
                 .ToListAsync();
         }
 
-
+        public async Task<List<Guid>> GetUserClubIdsAsync(Guid userId)
+        {
+            return await context.UserClubs
+                .Where(uc => uc.UserId == userId)
+                .Select(uc => uc.ClubId)
+                .Distinct()
+                .ToListAsync();
+        }
     }
 }

@@ -10,13 +10,19 @@ namespace UniTrack.Application.Feature.Notification.Query
     {
         private readonly IUserNotificationRepository userNotificationRepository;
         private readonly ICurrentUserServices currentUserServices;
+        private readonly ITargetNotificationRepository targetNotificationRepository;
+        private readonly IClubRepository clubRepository;
 
         public GetMyNotificationsQueryHandler(
             IUserNotificationRepository userNotificationRepository,
-            ICurrentUserServices currentUserServices)
+            ICurrentUserServices currentUserServices,
+            ITargetNotificationRepository targetNotificationRepository,
+            IClubRepository clubRepository)
         {
             this.userNotificationRepository = userNotificationRepository;
             this.currentUserServices = currentUserServices;
+            this.targetNotificationRepository = targetNotificationRepository;
+            this.clubRepository = clubRepository;
         }
 
         public async Task<ServiceResponse<List<NotificationListResponse>>> Handle(GetUserNotificationsQuery request,CancellationToken cancellationToken)
@@ -24,28 +30,45 @@ namespace UniTrack.Application.Feature.Notification.Query
             var userId = currentUserServices.CurrentUser();
 
             if (userId == null)
-            {
                 return ServiceResponse<List<NotificationListResponse>>.Fail("Unauthorized");
-            }
 
-            var notifications = await userNotificationRepository.GetUserNotificationsAsync(userId.Value);
+            // 1️⃣ Bireysel bildirimler
+            var userNotifications =await userNotificationRepository.GetUserNotificationsAsync(userId.Value);
 
-            var result = notifications.Select(x => new NotificationListResponse
+            // 2️⃣ Kullanıcı bilgileri
+            var cityId = currentUserServices.CityId();
+            var universityId = currentUserServices.UniversityId();
+            var departmentId = currentUserServices.DepartmentId();
+            var clubIds = await clubRepository.GetUserClubIdsAsync(userId.Value);
+
+            // 3️⃣ Target notification’ları runtime resolve et
+            var targetNotifications =await targetNotificationRepository.GetMatchingNotificationsAsync(cityId,universityId,departmentId,clubIds);
+
+            // 4️⃣ Mapping
+            var result = new List<NotificationListResponse>();
+
+            result.AddRange(userNotifications.Select(n => new NotificationListResponse
             {
-                Title = x.Notification.Title,
-                Message = x.Notification.Message,
-                LogoUrl = x.Notification.LogoUrl,
-                DisplayType = !string.IsNullOrEmpty(x.Notification.Title)
-                    ? x.Notification.Title
-                    : x.Notification.Type.ToString(),
-                IsRead = x.IsRead,
-                CreatedAt = x.Notification.CreatedAt,
-                RelatedEntityId = x.Notification.RelatedEntityId
-            })
-            .OrderByDescending(x => x.CreatedAt)
-            .ToList();
+                Title = n.Notification.Title ?? n.Notification.Type.ToString(),
+                Message = n.Notification.Message,
+                LogoUrl = n.Notification.LogoUrl,
+                IsRead = n.IsRead,
+                CreatedAt = n.Notification.CreatedAt,
+                RelatedEntityId = n.Notification.RelatedEntityId
+            }));
 
-            return ServiceResponse<List<NotificationListResponse>>.Success(null,result);
+            result.AddRange(targetNotifications.Select(n => new NotificationListResponse
+            {
+                Title = n.Title ?? n.Type.ToString(),
+                Message = n.Message,
+                LogoUrl = n.LogoUrl,
+                IsRead = false, // şimdilik
+                CreatedAt = n.CreatedAt,
+                RelatedEntityId = n.RelatedEntityId
+            }));
+
+            return ServiceResponse<List<NotificationListResponse>>
+                .Success(null,result.OrderByDescending(x => x.CreatedAt).ToList());
         }
     }
 }

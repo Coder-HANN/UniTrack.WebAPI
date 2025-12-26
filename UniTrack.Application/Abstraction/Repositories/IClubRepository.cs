@@ -16,5 +16,6 @@ namespace UniTrack.Application.Abstraction.Repositories
         Task<long> GetClubFollowerCountAsync(Guid value);
         Task <Club>GetByEmailAndVerifyAsync(string presidentEmail);
         Task<List<Guid>> GetFilteredClubIdsAsync(List<int>? cityIds, List<Guid>? universityIds, List<Guid>? clubIds);
+        Task<List<Guid>> GetUserClubIdsAsync(Guid userId);
     }
 }

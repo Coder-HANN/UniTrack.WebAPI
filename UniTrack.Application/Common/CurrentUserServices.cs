@@ -46,4 +46,46 @@ public class CurrentUserServices : ICurrentUserServices
 
         return null;
     }
+    public int? CityId()
+    {
+        if (httpContextAccessor.HttpContext?.Items["cityId"] is int id)
+            return id;
+
+        var claim = httpContextAccessor.HttpContext?.User?
+            .Claims.FirstOrDefault(c => c.Type == "cityId");
+
+        if (claim != null && int.TryParse(claim.Value, out var cityId))
+            return cityId;
+
+        return null;
+    }
+
+    public Guid? UniversityId()
+    {
+        if (httpContextAccessor.HttpContext?.Items["universityId"] is Guid id)
+            return id;
+
+        var claim = httpContextAccessor.HttpContext?.User?
+            .Claims.FirstOrDefault(c => c.Type == "universityId");
+
+        if (claim != null && Guid.TryParse(claim.Value, out var universityId))
+            return universityId;
+
+        return null;
+    }
+
+    public int? DepartmentId()
+    {
+        if (httpContextAccessor.HttpContext?.Items["departmentId"] is int id)
+            return id;
+
+        var claim = httpContextAccessor.HttpContext?.User?
+            .Claims.FirstOrDefault(c => c.Type == "departmentId");
+
+        if (claim != null && int.TryParse(claim.Value, out var departmentId))
+            return departmentId;
+
+        return null;
+    }
+
 }
