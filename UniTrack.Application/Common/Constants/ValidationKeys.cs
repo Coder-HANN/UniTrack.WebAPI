@@ -157,5 +157,7 @@
         public const string CreatedNewEvent = "CreatedNewEvent";
         public const string EventIsUpdated = "EventIsUpdated";
         public const string EventIsDeleted = "EventIsDeleted";
+
+        public static string NotificationSendSuccess = "NotificationSendSuccess";
     }
 }

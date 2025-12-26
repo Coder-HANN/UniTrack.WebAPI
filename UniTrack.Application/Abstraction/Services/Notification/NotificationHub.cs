@@ -13,5 +13,10 @@ namespace UniTrack.Application.Abstraction.Services.Notification
         {
             await Clients.All.SendAsync("ReceiveNotification", message);
         }
+
+        public async Task JoinClubGroup(Guid clubId)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, $"club-{clubId}");
+        }
     }
 }

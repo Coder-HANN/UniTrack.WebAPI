@@ -21,6 +21,28 @@ namespace UniTrack.Persistence.Repositories
             );
         }
 
+        public async Task<int> CountUsersByClubIdsAsync(List<Guid> clubIds,List<int>? departmentIds)
+        {
+            IQueryable<User> query = context.Users
+                .Where(u => !u.IsDeleted && u.IsVerified);
+
+            // Kulüp üyeliği
+            query = query.Where(u =>
+                u.UserClubs.Any(uc =>
+                    clubIds.Contains(uc.ClubId) && uc.IsFollowing));
+
+            // Department filtresi (DOĞRU YER)
+            if (departmentIds != null && departmentIds.Any())
+            {
+                query = query.Where(u =>
+                    departmentIds.Contains(u.UserDetail.DepartmentId));
+            }
+
+            return await query.CountAsync();
+        }
+
+
+
         public Task<long> For90DaysCountAsync()
         {
             var ninetyDaysAgo = DateTime.UtcNow.AddDays(-90);

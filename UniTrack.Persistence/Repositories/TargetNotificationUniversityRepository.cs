@@ -9,5 +9,10 @@ namespace UniTrack.Persistence.Repositories
         public TargetNotificationUniversityRepository(UniTrackDbContext context) : base(context)
         {
         }
+
+        public Task AddRangeAsync(List<TargetNotificationUniversity> targetNotificationUniversities)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

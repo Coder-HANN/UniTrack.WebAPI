@@ -351,6 +351,9 @@
   <data name="NotificationOpenedSuccess" xml:space="preserve">
     <value>Club notifications have been successfully enabled.</value>
   </data>
+  <data name="NotificationSendSuccess" xml:space="preserve">
+    <value>Notification is send successes.</value>
+  </data>
   <data name="NotJoinedEvent" xml:space="preserve">
     <value>You are not joined to this event</value>
   </data>

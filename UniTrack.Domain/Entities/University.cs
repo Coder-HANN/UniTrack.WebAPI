@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace UniTrack.Domain.Entities
+﻿namespace UniTrack.Domain.Entities
 {
     public class University : BaseEntity
     {
@@ -15,6 +9,7 @@ namespace UniTrack.Domain.Entities
         public ICollection<Event> Events { get; set; }
         public int CityId { get; set; }
         public City City { get; set; }
+        public ICollection<Department> Departments { get; set; }
         public ICollection<TargetNotificationUniversity> TargetNotificationUniversities { get; set; }
     }
 }

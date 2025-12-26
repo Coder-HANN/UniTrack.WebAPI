@@ -763,6 +763,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Notification is send successes..
+        /// </summary>
+        internal static string NotificationSendSuccess {
+            get {
+                return ResourceManager.GetString("NotificationSendSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You are not joined to this event.
         /// </summary>
         internal static string NotJoinedEvent {

@@ -7,7 +7,7 @@ namespace UniTrack.Application.Abstraction.Repositories
         Task AddRangeAsync(List<UserNotification> userNotifications);
         public Task<List<UserNotification>> GetUserAllNotification(Guid userId);
         // Kullanıcının okumadığı bildirimleri çeker
-        Task<List<UserNotification>> GetUserNotificationsAsync(Guid userId, int take = 50);
+        Task<List<UserNotification>> GetUserNotificationsAsync(Guid userId);
 
     }
 }

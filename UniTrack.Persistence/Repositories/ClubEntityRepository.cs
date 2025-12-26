@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Linq.Expressions;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Domain.Entities;
@@ -67,5 +68,33 @@ namespace UniTrack.Persistence.Repositories
                 .Where(cf => cf.ClubId == value)
                 .LongCountAsync();
         }
+
+        public async Task<List<Guid>> GetFilteredClubIdsAsync(List<int>? cityIds,List<Guid>? universityIds,List<Guid>? clubIds)
+        {
+            IQueryable<Club> query = context.Clubs
+                .Where(c => !c.IsDeleted && c.IsVerified);
+
+            if (cityIds != null && cityIds.Any())
+            {
+                query = query.Where(c => cityIds.Contains(c.CityId));
+            }
+
+            if (universityIds != null && universityIds.Any())
+            {
+                query = query.Where(c => universityIds.Contains(c.UniversityId));
+            }
+
+            if (clubIds != null && clubIds.Any())
+            {
+                query = query.Where(c => clubIds.Contains(c.Id));
+            }
+
+            return await query
+                .Select(c => c.Id)
+                .Distinct()
+                .ToListAsync();
+        }
+
+
     }
 }

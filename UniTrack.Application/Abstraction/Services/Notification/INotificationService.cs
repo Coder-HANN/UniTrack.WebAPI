@@ -10,5 +10,7 @@ namespace UniTrack.Application.Abstraction.Services.Notification
         Task SendToUserAsync(Guid userId, string message);
         Task SendToAllAsync(string message);
         Task SendDirectNotificationAsync(Guid userId,string message,NotificationType type,Guid? relatedEntityId = null); // kişisel bildirim
+        Task SendNotificationToClubAsync(Guid clubId,string message,NotificationType type,Guid? relatedEntityId = null); // tek kulübe gönder
+        Task CreateClubTargetNotificationAsync(List<Guid> clubIds, string title, string message, NotificationType type, Guid? relatedEntityId = null); // toplu kulüp bildirimi
     }
 }

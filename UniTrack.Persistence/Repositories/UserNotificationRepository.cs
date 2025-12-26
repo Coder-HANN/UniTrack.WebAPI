@@ -19,13 +19,13 @@ namespace UniTrack.Persistence.Repositories
                 .ToListAsync();
         }
 
-        public async Task<List<UserNotification>> GetUserNotificationsAsync(Guid userId, int take = 50)
+        public async Task<List<UserNotification>> GetUserNotificationsAsync(Guid userId)
         {
-            return await context.Set<UserNotification>()
-                .Where(n => n.UserId == userId && !n.IsRead)
-                .OrderByDescending(n => n.CreatedDate)
-                .Take(take)
-                .ToListAsync();
+            return await context.UserNotifications
+            .Include(x => x.Notification)
+            .Where(x => x.UserId == userId)
+            .AsNoTracking()
+            .ToListAsync();
         }
 
         public async Task AddRangeAsync(List<UserNotification> userNotifications)
