@@ -4,7 +4,7 @@ using UniTrack.Application.DTOs.Notification;
 
 namespace UniTrack.Application.Feature.Notification.Query
 {
-    public class PreviewTargetNotificationQuery: IRequest<ServiceResponse<PreviewTargetNotificationResponse>>
+    public class PreviewTargetNotificationQuery: IRequest<ServiceResponse<PreviewTargetNotificationResponseDTO>>
     {
         public List<int>? CityIds { get; set; }
         public List<Guid>? UniversityIds { get; set; }

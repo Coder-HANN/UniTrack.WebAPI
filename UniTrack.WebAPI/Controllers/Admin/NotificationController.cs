@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using UniTrack.Application.Abstraction.Services.Mail;
 using UniTrack.Application.Common;
+using UniTrack.Application.DTOs.Notification;
 using UniTrack.Application.Feature.Notification.Command;
+using UniTrack.Application.Feature.Notification.Query;
 
 namespace UniTrack.WebAPI.Controllers.Admin
 {
@@ -22,6 +24,12 @@ namespace UniTrack.WebAPI.Controllers.Admin
         public Task<ServiceResponse<string>> PushNotification([FromBody] SendNotificationCommand command)
         { 
             return mediator.Send(command);
+        }
+
+        [HttpGet("SeeNotificationUserCount")]
+        public Task<ServiceResponse<PreviewTargetNotificationResponseDTO>> SeeNotificationUserCount([FromQuery] PreviewTargetNotificationQuery query)
+        {
+            return mediator.Send(query);
         }
 
     }

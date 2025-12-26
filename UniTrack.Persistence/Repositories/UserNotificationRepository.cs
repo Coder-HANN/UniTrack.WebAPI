@@ -34,5 +34,14 @@ namespace UniTrack.Persistence.Repositories
             await context.SaveChangesAsync();
         }
 
+
+        public async Task<UserNotification?> GetByUserAndNotificationIdAsync(Guid userId, Guid notificationId)
+        {
+            return await context.UserNotifications
+                .AsNoTracking() // sadece okuma için (istersen kaldırabilirsin)
+                    .FirstOrDefaultAsync(un =>
+                    un.UserId == userId &&
+                    un.NotificationId == notificationId);
+        }    
     }
 }
