@@ -1,28 +1,33 @@
 ﻿using MediatR;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
 using UniTrack.Application.DTOs.Notification;
 
 namespace UniTrack.Application.Feature.Notification.Query
 {
-    public class GetMyNotificationsQueryHandler: IRequestHandler<GetUserNotificationsQuery, ServiceResponse<List<NotificationListResponse>>>
+    public class GetUserNotificationsQueryHandler: IRequestHandler<GetUserNotificationsQuery, ServiceResponse<List<NotificationListResponse>>>
     {
         private readonly IUserNotificationRepository userNotificationRepository;
         private readonly ICurrentUserServices currentUserServices;
         private readonly ITargetNotificationRepository targetNotificationRepository;
         private readonly IClubRepository clubRepository;
+        private readonly ILocalizationService localizationService;
 
-        public GetMyNotificationsQueryHandler(
+        public GetUserNotificationsQueryHandler(
             IUserNotificationRepository userNotificationRepository,
             ICurrentUserServices currentUserServices,
             ITargetNotificationRepository targetNotificationRepository,
-            IClubRepository clubRepository)
+            IClubRepository clubRepository,
+            ILocalizationService localizationService)
         {
             this.userNotificationRepository = userNotificationRepository;
             this.currentUserServices = currentUserServices;
             this.targetNotificationRepository = targetNotificationRepository;
             this.clubRepository = clubRepository;
+            this.localizationService = localizationService;
         }
 
         public async Task<ServiceResponse<List<NotificationListResponse>>> Handle(GetUserNotificationsQuery request,CancellationToken cancellationToken)
@@ -30,7 +35,7 @@ namespace UniTrack.Application.Feature.Notification.Query
             var userId = currentUserServices.CurrentUser();
 
             if (userId == null)
-                return ServiceResponse<List<NotificationListResponse>>.Fail("Unauthorized");
+                return ServiceResponse<List<NotificationListResponse>>.Fail(await localizationService.Get(ValidationKeys.NotAuthorized));
 
             // 1️⃣ Bireysel bildirimler
             var userNotifications =await userNotificationRepository.GetUserNotificationsAsync(userId.Value);
@@ -59,16 +64,15 @@ namespace UniTrack.Application.Feature.Notification.Query
 
             result.AddRange(targetNotifications.Select(n => new NotificationListResponse
             {
-                Title = n.Title ?? n.Type.ToString(),
-                Message = n.Message,
-                LogoUrl = n.LogoUrl,
+                Title = n.Notification.Title ?? n.Notification.Type.ToString(),
+                Message = n.Notification.Message,
+                LogoUrl = n.Notification.LogoUrl,
                 IsRead = false, // şimdilik
-                CreatedAt = n.CreatedAt,
-                RelatedEntityId = n.RelatedEntityId
+                CreatedAt = n.Notification.CreatedAt,
+                RelatedEntityId = n.Notification.RelatedEntityId
             }));
 
-            return ServiceResponse<List<NotificationListResponse>>
-                .Success(null,result.OrderByDescending(x => x.CreatedAt).ToList());
+            return ServiceResponse<List<NotificationListResponse>>.Success(null,result.OrderByDescending(x => x.CreatedAt).ToList());
         }
     }
 }

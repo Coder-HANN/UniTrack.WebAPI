@@ -21,7 +21,7 @@ namespace UniTrack.Application.Feature.Notification.Command
             this.userClubRepository = userClubRepository;
             this.localizationService = localizationService;
         }
-        public async  Task<ServiceResponse<string>> Handle(OpenNotificationForClubCommand request, CancellationToken cancellationToken)
+        public async Task<ServiceResponse<string>> Handle(OpenNotificationForClubCommand request, CancellationToken cancellationToken)
         {
             var userId = currentUserServices.CurrentUser();
            

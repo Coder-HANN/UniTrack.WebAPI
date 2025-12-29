@@ -136,7 +136,6 @@ namespace UniTrack.Application.Feature.Event.Command
                     await localizationService.Get(ValidationKeys.EventNotModified)
                 );
             }
-
                 await eventRepository.UpdateAsync(existingEvent);
 
                 var message = await localizationService.Get(ValidationKeys.EventUpdatedNotification,existingEvent.Title);

@@ -28,6 +28,7 @@ namespace UniTrack.Application.Feature.Notification.Query
             this.currentUserServices = currentUserServices;
             this.localizationService = localizationService;
         }
+        // bildirim sayısını döner (kullanıcıya gidecek)
 
         public async Task<ServiceResponse<PreviewTargetNotificationResponseDTO>> Handle(PreviewTargetNotificationQuery request,CancellationToken cancellationToken)
         {

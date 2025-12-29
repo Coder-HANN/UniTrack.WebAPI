@@ -27,7 +27,7 @@ namespace UniTrack.Application.Feature.Notification.Command
             this.currentUserServices = currentUserServices;
             this.localizationService = localizationService;
         }
-
+        // Bildirimleri okundu işaretle
         public async Task<ServiceResponse<string>> Handle(MarkNotificationAsReadCommand request,CancellationToken cancellationToken)
         {
             var userId = currentUserServices.CurrentUser();
@@ -35,8 +35,7 @@ namespace UniTrack.Application.Feature.Notification.Command
             if (userId == null)
                 return ServiceResponse<string>.Fail(await localizationService.Get(ValidationKeys.NotAuthorized));
 
-            var userNotification =
-                await userNotificationRepository.GetByUserAndNotificationIdAsync(userId.Value, request.NotificationId);
+            var userNotification = await userNotificationRepository.GetByUserAndNotificationIdAsync(userId.Value, request.NotificationId);
 
             if (userNotification == null)
                 return ServiceResponse<string>.Fail(await localizationService.Get(ValidationKeys.NotificationNotFound));

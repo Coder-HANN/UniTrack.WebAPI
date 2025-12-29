@@ -40,7 +40,7 @@ namespace UniTrack.Application.Feature.Notification.Command
             this.currentUserServices = currentUserServices;
             this.localizationService = localizationService;
         }
-
+        // genel bildirim gönderimi
         public async Task<ServiceResponse<string>>Handle(SendNotificationCommand request,CancellationToken cancellationToken)
         {
             var adminId = currentUserServices.CurrentUser();

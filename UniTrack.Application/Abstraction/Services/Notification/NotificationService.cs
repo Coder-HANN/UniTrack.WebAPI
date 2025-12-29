@@ -185,7 +185,7 @@ public class NotificationService : INotificationService
             });
     }
 
-    // Kulüplere özel kaydedilen bilrim
+    // Kulübe özel kaydedilen bilrim
     public async Task SendNotificationToClubAsync(Guid clubId,string message,NotificationType type,Guid? relatedEntityId = null)
     {
         // 1️⃣ Notification (1 kere)

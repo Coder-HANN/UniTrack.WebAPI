@@ -91,6 +91,8 @@ builder.Services.AddScoped<ITargetNotificationCityRepository, TargetNotification
 builder.Services.AddScoped<ITargetNotificationDepartmentRepository, TargetNotificationDepartmentRepository>();
 builder.Services.AddScoped<ITargetNotificationRepository, TargetNotificationRepository>();
 builder.Services.AddScoped<ITargetNotificationUniversityRepository,  TargetNotificationUniversityRepository>();
+builder.Services.AddScoped<ITargetNotificationClubRepository, TargetNotificationClubRepository>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 
 
