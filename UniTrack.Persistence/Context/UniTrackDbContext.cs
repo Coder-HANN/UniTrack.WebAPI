@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,10 +35,39 @@ namespace UniTrack.Persistence.Context
         public DbSet<TargetNotificationUniversity> TargetNotificationUniversities { get; set; }
         public DbSet<UserNotification> UserNotifications { get; set; }
         public DbSet<ClubNotification> ClubNotifications { get; set; }
+        public DbSet<Report> Reports { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Report>(builder =>
+            {
+         
+                builder.HasKey(r => r.Id);
+
+                builder.Property(r => r.Description).HasMaxLength(1000);
+                builder.Property(r => r.Status).IsRequired();
+                builder.Property(r => r.Reason).IsRequired();
+                builder.Property(r => r.TargetType).IsRequired();
+                builder.Property(r => r.ReviewedAt);
+                builder.Property(r => r.ReviewedByAdminId);
+
+                builder.HasOne(r => r.User)
+                    .WithMany(u => u.Reports) 
+                    .HasForeignKey(r => r.ReporterUserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                
+                builder.HasOne(r => r.Club)
+                    .WithMany(c => c.Reports) 
+                    .HasForeignKey(r => r.ClubId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                builder.HasOne(r => r.Event)
+                    .WithMany(e => e.Reports) 
+                    .HasForeignKey(r => r.EventId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
 
             modelBuilder.Entity<ClubNotification>(builder =>
             {

@@ -30,5 +30,6 @@ namespace UniTrack.Domain.Entities
         public string? SheetsId { get; set; }
         public Guid? CheckInToken { get; set; }
         public string? QrCodeUrl  { get; set; }
+        public ICollection<Report> Reports { get; set; }
     }
 }

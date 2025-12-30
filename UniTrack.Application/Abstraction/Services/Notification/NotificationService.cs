@@ -260,5 +260,4 @@ public class NotificationService : INotificationService
 
         await targetNotificationClubRepository.AddRangeAsync(targetClubs);
     }
-
 }

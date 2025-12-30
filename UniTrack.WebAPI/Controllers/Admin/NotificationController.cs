@@ -32,5 +32,28 @@ namespace UniTrack.WebAPI.Controllers.Admin
             return mediator.Send(query);
         }
 
+        [HttpPost("PushNotificationForUser")]
+        public Task<ServiceResponse<bool>> PushNotificationForUser([FromBody] PushNotificationForUserCommand command)
+        {
+            return mediator.Send(command);
+        }
+
+        [HttpPost("push-UsersTarget")]
+        public async Task<ServiceResponse<bool>> PushUsersTargetNotification(PushTargetNotificationCommand command)
+        {
+            return await mediator.Send(command);
+        }
+
+        [HttpPost("push-target-club")]
+        public async Task<ServiceResponse<bool>> PushTargetNotificationForClubs(PushTargetNotificationForClubsCommand command)
+        {
+            return await mediator.Send(command);
+        }
+
+        [HttpPost("push-club")]
+        public async Task<ServiceResponse<bool>> PushNotificationForClub(PushNotificationForClubCommand command)
+        {
+            return await mediator.Send(command);
+        }
     }
 }
