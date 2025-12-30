@@ -8,7 +8,7 @@ namespace UniTrack.Application.Feature.Event.Command
     public class UpdateEventCommand : IRequest<ServiceResponse<UpdateEventResponseDTO>>
     {
         public Guid Id { get; set; }
-        public byte[]? Image { get; set; }
+        public string[]? ImageUrl { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTime StartDate { get; set; }

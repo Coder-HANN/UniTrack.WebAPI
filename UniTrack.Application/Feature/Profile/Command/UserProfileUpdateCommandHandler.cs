@@ -89,10 +89,14 @@ namespace UniTrack.Application.Feature.Profile.Command
                 isUpdated = true;
             }
 
-            if (!string.IsNullOrWhiteSpace(request.ProfileImage.ToString()) && request.ProfileImage != userDetail.ProfileImage)
+            if (request.ProfileImageUrl != null && request.ProfileImageUrl.Any())
             {
-                userDetail.ProfileImage = request.ProfileImage;
-                isUpdated = true;
+                // Mevcut resimlerle yeni gelen resimler aynı mı? (Sıralama dahil kontrol eder)
+                if (userDetail.ProfileImageUrl == null || !userDetail.ProfileImageUrl.SequenceEqual(request.ProfileImageUrl))
+                {
+                    userDetail.ProfileImageUrl = request.ProfileImageUrl;
+                    isUpdated = true;
+                }
             }
             if (!string.IsNullOrWhiteSpace(request.Password) && request.Password != user.Password)
             {

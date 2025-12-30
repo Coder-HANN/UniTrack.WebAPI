@@ -159,5 +159,9 @@
         public const string EventIsDeleted = "EventIsDeleted";
 
         public static string NotificationSendSuccess = "NotificationSendSuccess";
+
+        public static string AlreadyAllCommentReaded = "AlreadyAllCommentReaded";
+
+        public static string OperationSuccessful = "OperationSuccessful";
     }
 }

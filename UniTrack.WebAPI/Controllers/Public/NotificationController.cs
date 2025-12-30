@@ -21,10 +21,16 @@ namespace UniTrack.WebAPI.Controllers.Public
         }
 
 
-        [HttpPost("NotificationRead")]
-        public Task<ServiceResponse<string>> NotificationRead([FromBody] MarkNotificationAsReadCommand command)
+        [HttpPost("UserNotificationRead")]
+        public Task<ServiceResponse<string>> UserNotificationRead([FromBody] MarkNotificationAsReadCommand command)
         {
             return mediator.Send(command);
+        }
+
+        [HttpPost("UserReadAllNotification")]
+        public Task<ServiceResponse<string>> UserReadAllNotification([FromBody] MarkAllNotificationsAsReadCommand command)
+        { 
+            return mediator.Send(command); 
         }
 
     }

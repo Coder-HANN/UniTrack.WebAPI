@@ -85,6 +85,7 @@ namespace UniTrack.Application.Tests.Feature.Event.Command
             _notificationServiceMock.Verify(
                 x => x.ClubIsUpdateEventAsync(
                     clubId,
+                    eventId,
                     It.IsAny<string>()),
                 Times.Once);
         }

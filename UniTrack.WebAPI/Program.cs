@@ -95,8 +95,6 @@ builder.Services.AddScoped<ITargetNotificationClubRepository, TargetNotification
 builder.Services.AddScoped<INotificationService, NotificationService>();
 
 
-
-
 builder.Services.AddSignalR();
 
 builder.Services.AddScoped<IUserRegisterCountService, RegistrationNotifierService>(); 

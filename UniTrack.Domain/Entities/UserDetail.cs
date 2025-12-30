@@ -12,7 +12,7 @@ namespace UniTrack.Domain.Entities
         public Department Department { get; set; }
         public Gender Gender { get; set; }
         public DateOnly BirthDate { get; set; }
-        public byte? ProfileImage { get; set; }
+        public string? ProfileImageUrl { get; set; }
         public long PhoneNumber { get; set; } 
         public DateTime Graduaiton_Date { get; set; }  
         public Guid UserId { get; set; }

@@ -9,6 +9,6 @@ namespace UniTrack.Application.Abstraction.Repositories
         public Task<List<UserNotification>> GetUserAllNotification(Guid userId);
         // Kullanıcının okumadığı bildirimleri çeker
         Task<List<UserNotification>> GetUserNotificationsAsync(Guid userId);
-
+        Task<bool> MarkAllAsReadAsync(Guid? userId);
     }
 }

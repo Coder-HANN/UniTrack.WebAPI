@@ -58,7 +58,6 @@ namespace UniTrack.Persistence.Context
 
             });
 
-
             modelBuilder.Entity<UserNotification>(builder =>
             {
                 builder.HasKey(un => un.Id);
@@ -80,7 +79,6 @@ namespace UniTrack.Persistence.Context
                        .IsRequired(false);
             });
 
-
             modelBuilder.Entity<TargetNotificationUniversity>(builder =>
             {
                 builder.HasKey(tnu => tnu.Id);
@@ -95,7 +93,6 @@ namespace UniTrack.Persistence.Context
                        .HasForeignKey(tnu => tnu.UniversityId)
                        .OnDelete(DeleteBehavior.Restrict);
             });
-
 
             modelBuilder.Entity<TargetNotificationDepartment>(builder =>
             {
@@ -152,7 +149,6 @@ namespace UniTrack.Persistence.Context
                        .OnDelete(DeleteBehavior.Restrict);
                 
             });
-
 
             modelBuilder.Entity<Like>(builder =>
             {
@@ -286,7 +282,7 @@ namespace UniTrack.Persistence.Context
                 builder.Property(ud => ud.Surname).IsRequired().HasMaxLength(50);
                 builder.Property(ud => ud.BirthDate).IsRequired();
                 builder.Property(ud => ud.Gender).IsRequired();
-                builder.Property(ud => ud.ProfileImage).IsRequired(false);
+                builder.Property(ud => ud.ProfileImageUrl).IsRequired(false);
                 builder.Property(ud => ud.Graduaiton_Date).IsRequired();
                 builder.Property(ud => ud.IsNotified).IsRequired();
                 builder.Property(ud => ud.Language);
@@ -323,8 +319,8 @@ namespace UniTrack.Persistence.Context
                 builder.Property(c => c.TwitterLink);
                 builder.Property(c => c.WebsiteLink);
                 builder.Property(c => c.LinkedlnLink);
-                builder.Property(c => c.Logo);
-                builder.Property(c => c.CoverImage);
+                builder.Property(c => c.LogoUrl);
+                builder.Property(c => c.CoverImageUrl);
                 builder.Property(c => c.Name).HasMaxLength(50);
                 builder.Property(c => c.Tag);
                 builder.Property(c => c.President);
@@ -361,7 +357,7 @@ namespace UniTrack.Persistence.Context
                 builder.Property(e => e.Clock);
                 builder.Property(e => e.EventTag);
                 builder.Property(e => e.Description);
-                builder.Property(e => e.Image);
+                builder.Property(e => e.ImageUrl);
                 builder.Property(e => e.Title);
                 builder.Property(e => e.EndDate);
                 builder.Property(e => e.Location);
@@ -411,6 +407,7 @@ namespace UniTrack.Persistence.Context
                             .HasForeignKey<Ban>(b => b.EventId)
                             .OnDelete(DeleteBehavior.Cascade);
             });
+
             modelBuilder.Entity<University>(builder =>
             {
                 builder.HasKey(u => u.Id);
@@ -421,6 +418,7 @@ namespace UniTrack.Persistence.Context
                        .HasForeignKey(u => u.CityId)
                        .OnDelete(DeleteBehavior.Cascade);
             });
+
             modelBuilder.Entity<Department>(builder =>
             {
                 builder.HasKey(d => d.Id);

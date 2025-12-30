@@ -1,9 +1,4 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
 using UniTrack.Application.Abstraction.Services.Localization;
@@ -12,13 +7,13 @@ using UniTrack.Application.Common.Constants;
 
 namespace UniTrack.Application.Feature.Notification.Command
 {
-    public class MarkNotificationAsReadCommandHandler: IRequestHandler<MarkNotificationAsReadCommand, ServiceResponse<string>>
+    public class MarkUserNotificationAsReadCommandHandler: IRequestHandler<MarkNotificationAsReadCommand, ServiceResponse<string>>
     {
         private readonly IUserNotificationRepository userNotificationRepository;
         private readonly ICurrentUserServices currentUserServices;
         private readonly ILocalizationService localizationService;
 
-        public MarkNotificationAsReadCommandHandler(
+        public MarkUserNotificationAsReadCommandHandler(
             IUserNotificationRepository userNotificationRepository,
             ICurrentUserServices currentUserServices,
             ILocalizationService localizationService)
@@ -35,20 +30,20 @@ namespace UniTrack.Application.Feature.Notification.Command
             if (userId == null)
                 return ServiceResponse<string>.Fail(await localizationService.Get(ValidationKeys.NotAuthorized));
 
-            var userNotification = await userNotificationRepository.GetByUserAndNotificationIdAsync(userId.Value, request.NotificationId);
+           
+                var userNotification = await userNotificationRepository.GetByUserAndNotificationIdAsync(userId.Value, request.NotificationId);
 
-            if (userNotification == null)
-                return ServiceResponse<string>.Fail(await localizationService.Get(ValidationKeys.NotificationNotFound));
+                if (userNotification == null)
+                    return ServiceResponse<string>.Fail(await localizationService.Get(ValidationKeys.NotificationNotFound));
 
-            if (!userNotification.IsRead)
-            {
-                userNotification.IsRead = true;
-                userNotification.ReadDate = DateTimeOffset.UtcNow;
-                await userNotificationRepository.UpdateAsync(userNotification);
-            }
-
+                if (!userNotification.IsRead)
+                {
+                    userNotification.IsRead = true;
+                    userNotification.ReadDate = DateTimeOffset.UtcNow;
+                    await userNotificationRepository.UpdateAsync(userNotification);
+                }
+            
             return ServiceResponse<string>.Success(null);
         }
     }
-
 }

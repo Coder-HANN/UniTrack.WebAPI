@@ -20,8 +20,8 @@ namespace UniTrack.Domain.Entities
         public string? LinkedlnLink { get; set; }
         public long Follower { get; set; }
         public DateTimeOffset LastLoginDate { get; set; }
-        public byte? Logo { get; set; }
-        public byte? CoverImage { get; set; }
+        public string? LogoUrl { get; set; }
+        public string? CoverImageUrl { get; set; }
         public  Tag Tag { get; set; }
         public int CityId { get; set; }
         public DateOnly ClubCreatedDate { get; set; }

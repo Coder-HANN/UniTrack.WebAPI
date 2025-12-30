@@ -9,7 +9,7 @@ namespace UniTrack.Domain.Entities
         public string? Description { get; set; }
         public DateTimeOffset StartDate { get; set; }  
         public DateTimeOffset EndDate { get; set; }
-        public byte[]? Image { get; set; }
+        public string[]? ImageUrl { get; set; }
         public long Quota { get; set; }
         public long Joiner { get; set; }
         public EventTag EventTag { get; set; }

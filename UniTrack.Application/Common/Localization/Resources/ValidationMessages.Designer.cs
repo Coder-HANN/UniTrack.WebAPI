@@ -61,6 +61,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Alreadey readed all comment..
+        /// </summary>
+        internal static string AlreadyAllCommentReaded {
+            get {
+                return ResourceManager.GetString("AlreadyAllCommentReaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You are already checked in to this event..
         /// </summary>
         internal static string AlreadyCheckedIn {
@@ -777,6 +786,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string NotJoinedEvent {
             get {
                 return ResourceManager.GetString("NotJoinedEvent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation successful..
+        /// </summary>
+        internal static string OperationSuccessful {
+            get {
+                return ResourceManager.GetString("OperationSuccessful", resourceCulture);
             }
         }
         

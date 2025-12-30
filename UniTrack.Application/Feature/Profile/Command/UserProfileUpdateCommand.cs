@@ -15,7 +15,7 @@ namespace UniTrack.Application.Feature.Profile.Command
         public int? DepartmentId { get; set; }
         public Gender? Gender { get; set; }
         public DateOnly? BirthDate { get; set; }
-        public byte? ProfileImage { get; set; }
+        public string? ProfileImageUrl { get; set; }
         public bool? IsNotified { get; set; }
         public DateTime? Graduaiton_Date { get; set; }
         public long? PhoneNumber { get; set; }

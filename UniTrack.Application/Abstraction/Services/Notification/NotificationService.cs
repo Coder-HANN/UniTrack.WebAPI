@@ -104,6 +104,7 @@ public class NotificationService : INotificationService
         await CreateAndDispatchNotificationAsync(targetUsers,message,NotificationType.EventDeleted,eventId);
     }
 
+    // Grup bildiirmi 
     public async Task CreateAndDispatchNotificationAsync(List<Guid> userIds,string message,NotificationType type,Guid relatedEntityId)
     {
         // Notification (1 KERE)

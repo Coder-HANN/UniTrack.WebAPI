@@ -45,8 +45,8 @@ public class GetFollowClubQueryHandlerTests
                 Follower = 25,
                 President = "Ali Veli",
                 Tag = Tag.Hayvanseverlik,
-                Logo = new byte(),
-                CoverImage = new byte(),
+                LogoUrl = "svblvblscdlkssd",
+                CoverImageUrl = "svnndşsnvlsnvl",
                 UserClubs = new List<UserClub>
                 {
                     new UserClub { UserId = userId }
@@ -69,8 +69,8 @@ public class GetFollowClubQueryHandlerTests
                     Followers = 25,
                     President = "Ali Veli",
                     Tag = Tag.Bilim,
-                    Logo = new byte(),
-                    CoverImage = new byte()
+                    LogoUrl = "svnndşsnvlsnvl",
+                    CoverImageUrl = "svnndşsnvlsnvl"
                 }
             },
             hasPaging: true,
@@ -99,6 +99,6 @@ public class GetFollowClubQueryHandlerTests
         result.IsSuccess.Should().BeTrue();
         result.Data.Data.Should().HaveCount(1);
         result.Data.Data.First().Tag.Should().Be(Tag.Spor);
-        result.Data.Data.First().Logo.Should().NotBeNull();
+        result.Data.Data.First().LogoUrl.Should().NotBeNull();
     }
 }

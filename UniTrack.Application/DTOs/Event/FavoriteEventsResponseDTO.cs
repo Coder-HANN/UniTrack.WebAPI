@@ -6,7 +6,7 @@ namespace UniTrack.Application.DTOs.Event
     {
         public string EventName { get; set; }
         public DateTimeOffset EventDate { get; set; }
-        public byte[] EventImage { get; set; }
+        public string[]? EventImageUrl { get; set; }
         public string EventLocation { get; set; }
         public Time Time { get; set; }
         public long Qouta { get; set; }

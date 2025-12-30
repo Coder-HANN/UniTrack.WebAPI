@@ -9,7 +9,6 @@ namespace UniTrack.Domain.Entities
         public DateTimeOffset LastLoginDate { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-
         public UserDetail UserDetail { get; set; }
         public ICollection<EventUser> EventUsers { get; set; }
         public ICollection<UserClub> UserClubs { get; set; } 

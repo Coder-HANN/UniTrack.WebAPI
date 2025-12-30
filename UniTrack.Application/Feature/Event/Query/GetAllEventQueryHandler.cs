@@ -51,7 +51,7 @@ namespace UniTrack.Application.Feature.Event.Query
             var responses = events.Select(e => new GetAllEventQueryResponseDTO
             {
 
-                Image = e.Image,
+                ImageUrl = e.ImageUrl,
                 Title = e.Title,
                 Description = e.Description,
                 StartDate = e.StartDate,

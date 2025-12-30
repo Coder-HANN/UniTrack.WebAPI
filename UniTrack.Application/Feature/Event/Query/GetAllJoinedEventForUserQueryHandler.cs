@@ -69,7 +69,7 @@ namespace UniTrack.Application.Feature.Event.Query
 
                 return new GetAllJoinedEventForUserQueryResponseDTO
                 {
-                    EventImage = e.Event.Image,
+                    EventImage = e.Event.ImageUrl,
                     EventName = e.Event.Title,
                     ShortDescription = e.Event.Description,
                     EventDate = e.Event.StartDate,

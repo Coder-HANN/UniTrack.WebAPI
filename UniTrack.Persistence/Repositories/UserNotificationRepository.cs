@@ -42,6 +42,18 @@ namespace UniTrack.Persistence.Repositories
                     .FirstOrDefaultAsync(un =>
                     un.UserId == userId &&
                     un.NotificationId == notificationId);
-        }    
+        }
+
+        public async Task<bool> MarkAllAsReadAsync(Guid? userId)
+        {
+            var affectedRows = await context.UserNotifications
+                .Where(n => n.UserId == userId && !n.IsRead)
+                .ExecuteUpdateAsync(s => s.SetProperty(n => n.IsRead, true));
+
+            return affectedRows > 0;
+        }
     }
+
+       
+    
 }

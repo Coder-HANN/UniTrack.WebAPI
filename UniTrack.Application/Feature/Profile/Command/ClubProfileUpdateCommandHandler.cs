@@ -109,15 +109,23 @@ namespace UniTrack.Application.Feature.Profile.Command
                 existingClub.Tag = request.Tag.Value;
                 isUpdated = true;
             }
-            if (!request.Logo.HasValue && request.Logo.Value != existingClub.Logo)
+            if (request.LogoUrl != null && request.LogoUrl.Any())
             {
-                existingClub.Logo = request.Logo;
-                isUpdated = true;
+                // Mevcut resimlerle yeni gelen resimler aynı mı? (Sıralama dahil kontrol eder)
+                if (existingClub.LogoUrl == null || !existingClub.LogoUrl.SequenceEqual(request.LogoUrl))
+                {
+                    existingClub.LogoUrl = request.LogoUrl;
+                    isUpdated = true;
+                }
             }
-            if(!request.CoverImage.HasValue && request.CoverImage.Value != existingClub.CoverImage)
+            if (request.CoverImageUrl != null && request.CoverImageUrl.Any())
             {
-                existingClub.CoverImage = request.CoverImage;
-                isUpdated = true;
+                // Mevcut resimlerle yeni gelen resimler aynı mı? (Sıralama dahil kontrol eder)
+                if (existingClub.CoverImageUrl == null || !existingClub.CoverImageUrl.SequenceEqual(request.CoverImageUrl))
+                {
+                    existingClub.CoverImageUrl = request.CoverImageUrl;
+                    isUpdated = true;
+                }
             }
             if (!string.IsNullOrEmpty(request.President) && existingClub.President != request.President)
             {
@@ -158,8 +166,8 @@ namespace UniTrack.Application.Feature.Profile.Command
                         WebsiteLink = existingClub.WebsiteLink,
                         TwitterLink = existingClub.TwitterLink,
                         Tag = existingClub.Tag,
-                        Logo = existingClub.Logo,
-                        CoverImage = existingClub.CoverImage,
+                        LogoUrl = existingClub.LogoUrl,
+                        CoverImageUrl = existingClub.CoverImageUrl,
                         President = existingClub.President,
                         PresidentMail = existingClub.PresidentMail,
                         UniversityId = existingClub.UniversityId,

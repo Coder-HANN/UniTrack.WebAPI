@@ -77,7 +77,7 @@ namespace UniTrack.Application.Feature.Club.Query
                     Surname = fc.User.UserDetail.Surname,
                     Department = fc.User.UserDetail.Department.Name,
                     UniversityId = fc.User.UserDetail.UniverstiyId,
-                    Image = fc.User.UserDetail.ProfileImage  // Kontrol et
+                    ImageUrl = fc.User.UserDetail.ProfileImageUrl  // Kontrol et
             }).ToList();
 
             return new ServiceResponse<List<GetClubIsFollowerQueryResponseDTO>> 

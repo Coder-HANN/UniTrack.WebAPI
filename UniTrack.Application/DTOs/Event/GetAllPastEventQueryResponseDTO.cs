@@ -4,7 +4,7 @@ namespace UniTrack.Application.DTOs.Event
 {
     public class GetAllPastEventQueryResponseDTO
     {
-        public byte[]? Image { get; set; }
+        public string[]? ImageUrl { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTimeOffset StartDate { get; set; }

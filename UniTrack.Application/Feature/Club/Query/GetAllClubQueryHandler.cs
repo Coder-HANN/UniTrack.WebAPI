@@ -61,8 +61,8 @@ namespace UniTrack.Application.Feature.Club.Query
             var responses = clubs.Select(c => new GetAllClubQueryResponseDTO
             {
                 Id = c.Id,
-                Logo = c.Logo,
-                CoverImage = c.CoverImage,
+                LogoUrl = c.LogoUrl,
+                CoverImageUrl = c.CoverImageUrl,
                 Name = c.Name,
                 Description = c.Description,
                 ContactMail = c.ContectEmail,

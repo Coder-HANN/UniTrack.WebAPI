@@ -5,8 +5,8 @@ namespace UniTrack.Application.DTOs.Club
     public class GetAllClubQueryResponseDTO
     {
         public Guid Id { get; set; }
-        public byte? Logo { get; set; }
-        public byte? CoverImage { get; set; }
+        public string? LogoUrl { get; set; }
+        public string? CoverImageUrl { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public string President { get; set; }

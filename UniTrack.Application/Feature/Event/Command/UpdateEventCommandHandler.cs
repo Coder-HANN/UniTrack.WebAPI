@@ -91,11 +91,15 @@ namespace UniTrack.Application.Feature.Event.Command
                 isUpdated = true;
             }
 
-            if (request.Image != null &&
-            (existingEvent.Image == null || !existingEvent.Image.SequenceEqual(request.Image)))
+            // null değilse ve içerisinde eleman varsa
+            if (request.ImageUrl != null && request.ImageUrl.Any())
             {
-                existingEvent.Image = request.Image;
-                isUpdated = true;
+                // Mevcut resimlerle yeni gelen resimler aynı mı? (Sıralama dahil kontrol eder)
+                if (existingEvent.ImageUrl == null || !existingEvent.ImageUrl.SequenceEqual(request.ImageUrl))
+                {
+                    existingEvent.ImageUrl = request.ImageUrl;
+                    isUpdated = true;
+                }
             }
 
 

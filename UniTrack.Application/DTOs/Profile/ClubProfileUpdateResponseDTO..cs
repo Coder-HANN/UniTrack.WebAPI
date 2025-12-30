@@ -15,8 +15,8 @@ namespace UniTrack.Application.DTOs.Profile
         public string? TwitterLink { get; set; }
         public string? WebsiteLink { get; set; }
         public string? LinkedlnLink { get; set; }
-        public byte? Logo { get; set; }
-        public byte? CoverImage { get; set; }
+        public string? LogoUrl { get; set; }
+        public string? CoverImageUrl { get; set; }
         public Tag? Tag { get; set; }
         public DateOnly? ClubCreatedDate { get; set; }
    
