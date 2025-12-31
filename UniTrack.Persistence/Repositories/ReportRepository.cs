@@ -1,15 +1,22 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using UniTrack.Application.Abstraction.Repositories;
+using UniTrack.Domain.Entities;
 using UniTrack.Domain.Enums;
 using UniTrack.Persistence.Context;
 
 namespace UniTrack.Persistence.Repositories
 {
-    public class ReportRepository : BaseEntityRepository<Report>, IReportRepository
+    public class ReportRepository : BaseEntityRepository<Domain.Entities.Report>, IReportRepository
     {
         public ReportRepository(UniTrackDbContext context) : base(context)
         {
+        }
+
+        public async  Task<Report> GetByIdAsync(Guid reportId)
+        {
+            return await context.Reports
+                .Where(x => x.Id == reportId)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<bool> GetReportClubAsync(Guid userId, Guid clubId)

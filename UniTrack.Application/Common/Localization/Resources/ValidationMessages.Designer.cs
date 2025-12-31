@@ -115,6 +115,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Already reviewed..
+        /// </summary>
+        internal static string AlreadyReviewed {
+            get {
+                return ResourceManager.GetString("AlreadyReviewed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Successfully checked in to the event..
         /// </summary>
         internal static string CheckInSuccess {
@@ -327,6 +336,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string EmailAlreadyUsed {
             get {
                 return ResourceManager.GetString("EmailAlreadyUsed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You already reported this event..
+        /// </summary>
+        internal static string EventAlreadyReported {
+            get {
+                return ResourceManager.GetString("EventAlreadyReported", resourceCulture);
             }
         }
         
@@ -682,6 +700,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Marked as reviewed..
+        /// </summary>
+        internal static string MarkedAsReviewed {
+            get {
+                return ResourceManager.GetString("MarkedAsReviewed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Must be at most 100 characters..
         /// </summary>
         internal static string MaxLength100 {
@@ -705,6 +732,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string MinLength2 {
             get {
                 return ResourceManager.GetString("MinLength2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no complaints yet..
+        /// </summary>
+        internal static string NoComplaintsAtTheMoment {
+            get {
+                return ResourceManager.GetString("NoComplaintsAtTheMoment", resourceCulture);
             }
         }
         
@@ -858,6 +894,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string ProfileUpdatedSuccessfully {
             get {
                 return ResourceManager.GetString("ProfileUpdatedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Report not found..
+        /// </summary>
+        internal static string ReportNotFound {
+            get {
+                return ResourceManager.GetString("ReportNotFound", resourceCulture);
             }
         }
         

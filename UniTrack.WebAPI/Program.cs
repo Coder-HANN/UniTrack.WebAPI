@@ -94,6 +94,7 @@ builder.Services.AddScoped<ITargetNotificationUniversityRepository,  TargetNotif
 builder.Services.AddScoped<ITargetNotificationClubRepository, TargetNotificationClubRepository>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
+builder.Services.AddScoped<IAdminNotificationRepository, AdminNotificationRepository>();
 
 
 builder.Services.AddSignalR();

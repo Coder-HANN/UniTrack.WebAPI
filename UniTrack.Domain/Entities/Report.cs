@@ -1,6 +1,6 @@
-﻿using UniTrack.Domain.Entities;
-using UniTrack.Domain.Enums;
+﻿using UniTrack.Domain.Enums;
 
+namespace UniTrack.Domain.Entities;
 public class Report : BaseEntity
 {
     public Guid Id { get; set; }
@@ -23,7 +23,6 @@ public class Report : BaseEntity
     public ReportStatus Status { get; set; }
     // Pending | Reviewed | Resolved | Rejected
 
-    public Guid? ReviewedByAdminId { get; set; }
     public DateTimeOffset? ReviewedAt { get; set; }
 
 }

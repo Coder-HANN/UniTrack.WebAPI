@@ -2,7 +2,7 @@
 using UniTrack.Application.Common;
 using UniTrack.Domain.Enums;
 
-namespace UniTrack.Application.Feature.Report
+namespace UniTrack.Application.Feature.Report.Command
 {
     public class CreateClubReportCommand : IRequest<ServiceResponse<string>>
     {

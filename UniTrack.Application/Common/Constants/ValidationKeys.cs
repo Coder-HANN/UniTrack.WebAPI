@@ -163,5 +163,15 @@
         public static string AlreadyAllCommentReaded = "AlreadyAllCommentReaded";
 
         public static string OperationSuccessful = "OperationSuccessful";
+
+        public static string EventAlreadyReported = "EventAlreadyReported";
+
+        public static string NoComplaintsAtTheMoment = "NoComplaintsAtTheMoment";
+
+        public static string ReportNotFound = "ReportNotFound";
+
+        public static string AlreadyReviewed = "AlreadyReviewed";
+
+        public static string MarkedAsReviewed = "MarkedAsReviewed";
     }
 }

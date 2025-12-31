@@ -31,5 +31,6 @@ namespace UniTrack.Domain.Entities
         public Guid? CheckInToken { get; set; }
         public string? QrCodeUrl  { get; set; }
         public ICollection<Report> Reports { get; set; }
+        public bool IsDoping { get; set; } = false;
     }
 }

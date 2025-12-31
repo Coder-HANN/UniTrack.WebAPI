@@ -36,10 +36,18 @@ namespace UniTrack.Persistence.Context
         public DbSet<UserNotification> UserNotifications { get; set; }
         public DbSet<ClubNotification> ClubNotifications { get; set; }
         public DbSet<Report> Reports { get; set; }
+        public DbSet<AdminNotification> AdminNotifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<AdminNotification>(builder =>
+            {
+                builder.HasKey(x => x.Id);
+                builder.Property(x => x.Title);
+                builder.Property(x => x.Description);
+            });
 
             modelBuilder.Entity<Report>(builder =>
             {
@@ -51,7 +59,6 @@ namespace UniTrack.Persistence.Context
                 builder.Property(r => r.Reason).IsRequired();
                 builder.Property(r => r.TargetType).IsRequired();
                 builder.Property(r => r.ReviewedAt);
-                builder.Property(r => r.ReviewedByAdminId);
 
                 builder.HasOne(r => r.User)
                     .WithMany(u => u.Reports) 
@@ -360,6 +367,7 @@ namespace UniTrack.Persistence.Context
                 builder.Property(c => c.Password);
                 builder.Property(c => c.Role);
                 builder.Property(c => c.ClubCreatedDate);
+                builder.Property(c => c.IsDoping);
                
 
                 builder.HasOne(c => c.City)
@@ -397,6 +405,7 @@ namespace UniTrack.Persistence.Context
                 builder.Property(e => e.SheetsId);
                 builder.Property(e => e.CheckInToken);
                 builder.Property(e => e.QrCodeUrl);
+                builder.Property(e => e.IsDoping);
                 
 
                 builder.HasOne(e => e.City)

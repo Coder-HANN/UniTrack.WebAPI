@@ -4,29 +4,29 @@ using UniTrack.Application.Abstraction.Services.CurrentUserServices;
 using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
 using UniTrack.Application.Common.Constants;
-using UniTrack.Domain.Entities;
+using UniTrack.Application.Feature.Report.Command;
 using UniTrack.Domain.Enums;
 
-public class CreateEventReportCommandHandler: IRequestHandler<CreateEventReportCommand, ServiceResponse<string>>
+public class CreateClubReportCommandHandler : IRequestHandler<CreateClubReportCommand, ServiceResponse<string>>
 {
     private readonly IReportRepository reportRepository;
-    private readonly IEventRepository eventRepository;
+    private readonly IClubRepository clubRepository;
     private readonly ICurrentUserServices currentUser;
     private readonly ILocalizationService localizationService;
 
-    public CreateEventReportCommandHandler(
+    public CreateClubReportCommandHandler(
         IReportRepository reportRepository,
-        IEventRepository eventRepository,
+        IClubRepository clubRepository,
         ICurrentUserServices currentUser,
         ILocalizationService localizationService)
     {
         this.reportRepository = reportRepository;
-        this.eventRepository = eventRepository;
+        this.clubRepository = clubRepository;
         this.currentUser = currentUser;
         this.localizationService = localizationService;
     }
 
-    public async Task<ServiceResponse<string>> Handle(CreateEventReportCommand request,CancellationToken cancellationToken)
+    public async Task<ServiceResponse<string>> Handle(CreateClubReportCommand request, CancellationToken cancellationToken)
     {
         var userId = currentUser.CurrentUser();
         if (userId == null)
@@ -34,21 +34,22 @@ public class CreateEventReportCommandHandler: IRequestHandler<CreateEventReportC
             return ServiceResponse<string>.Fail(await localizationService.Get(ValidationKeys.NotAuthorized));
         }
 
-        var eventEntity = await eventRepository.GetByIdAsync(request.EventId);
-        if (eventEntity is null)
-            return ServiceResponse<string>.Fail("Event not found");
+        var eventEntity = await clubRepository.GetByIdAsync(request.ClubId);
 
-        var alreadyReported = await reportRepository.GetReportEventAsync(userId.Value, request.EventId);
+        if (eventEntity is null)
+            return ServiceResponse<string>.Fail(await localizationService.Get(ValidationKeys.EventNotFound));
+
+        var alreadyReported = await reportRepository.GetReportClubAsync(userId.Value, request.ClubId);
 
         if (alreadyReported)
-            return ServiceResponse<string>.Fail("You already reported this event");
+            return ServiceResponse<string>.Fail(await localizationService.Get(ValidationKeys.EventAlreadyReported));
 
-        var report = new Report
+        var report = new UniTrack.Domain.Entities.Report
         {
             Id = Guid.NewGuid(),
             ReporterUserId = userId.Value,
             TargetType = ReportTargetType.Event,
-            EventId = request.EventId,
+            ClubId = request.ClubId,
             Reason = request.Reason,
             Description = request.Description,
             Status = ReportStatus.Pending

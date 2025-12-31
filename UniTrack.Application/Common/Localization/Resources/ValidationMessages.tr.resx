@@ -135,6 +135,9 @@
   <data name="AlreadyLiked" xml:space="preserve">
     <value>Bu yorumu zaten beğendiniz.</value>
   </data>
+  <data name="AlreadyReviewed" xml:space="preserve">
+    <value>Bu şikayet zaten incelendi.</value>
+  </data>
   <data name="CheckInSuccess" xml:space="preserve">
     <value>Etkinliğe başarılı bir şekilde giriş yapıldı.</value>
   </data>
@@ -206,6 +209,9 @@
   </data>
   <data name="EmailAlreadyUsed" xml:space="preserve">
     <value>Bu e-posta adresi zaten kullanılıyor.</value>
+  </data>
+  <data name="EventAlreadyReported" xml:space="preserve">
+    <value>Bu etkinliği zaten bildirdiniz.</value>
   </data>
   <data name="EventCityRequired" xml:space="preserve">
     <value>Etkinlik şehri zorunludur.</value>
@@ -324,6 +330,9 @@
   <data name="LoginSuccess" xml:space="preserve">
     <value>Giriş başarılı</value>
   </data>
+  <data name="MarkedAsReviewed" xml:space="preserve">
+    <value>Şikayet incelendi olarak kaydedildi.</value>
+  </data>
   <data name="MaxLength100" xml:space="preserve">
     <value>En fazla 100 karakter olabilir.</value>
   </data>
@@ -332,6 +341,9 @@
   </data>
   <data name="MinLength2" xml:space="preserve">
     <value>En az 2 karakter olmalıdır.</value>
+  </data>
+  <data name="NoComplaintsAtTheMoment" xml:space="preserve">
+    <value>Henüz şikayet yok.</value>
   </data>
   <data name="NotAuthorized" xml:space="preserve">
     <value>Bu işlemi gerçekleştirmeye yetkiniz yok.</value>
@@ -383,6 +395,9 @@
   </data>
   <data name="ProfileUpdatedSuccessfully" xml:space="preserve">
     <value>Profil başarıyla güncellendi.</value>
+  </data>
+  <data name="ReportNotFound" xml:space="preserve">
+    <value>Şikayet bulunamadı.</value>
   </data>
   <data name="SupportEmailNotConfigured" xml:space="preserve">
     <value>Destek e-posta adresi yapılandırılmamış.</value>
