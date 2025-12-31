@@ -11,135 +11,121 @@ namespace UniTrack.Application.Feature.Profile.Command
 {
     public class UserProfileUpdateCommandHandler : IRequestHandler<UserProfileUpdateCommand, ServiceResponse<UserProfileUpdateResponseDTO>>
     {
-        private readonly ICurrentUserServices currentUserServices;
-        private readonly IUserDetailRepository userDetailRepository;
-        private readonly IUserRepository userRepository;
-        private readonly ILocalizationService localizationService;
+        private readonly ICurrentUserServices _currentUserServices;
+        private readonly IUserDetailRepository _userDetailRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly ILocalizationService _localizationService;
+
         public UserProfileUpdateCommandHandler(
             ICurrentUserServices currentUserServices,
             IUserDetailRepository userDetailRepository,
             IUserRepository userRepository,
             ILocalizationService localizationService)
         {
-            this.currentUserServices = currentUserServices;
-            this.userDetailRepository = userDetailRepository;
-            this.userRepository = userRepository;
-            this.localizationService = localizationService;
+            _currentUserServices = currentUserServices;
+            _userDetailRepository = userDetailRepository;
+            _userRepository = userRepository;
+            _localizationService = localizationService;
         }
+
         public async Task<ServiceResponse<UserProfileUpdateResponseDTO>> Handle(UserProfileUpdateCommand request, CancellationToken cancellationToken)
         {
-            var userId = currentUserServices.CurrentUser();
+            var userId = _currentUserServices.CurrentUser();
             if (userId == null)
-            {
-                return new ServiceResponse<UserProfileUpdateResponseDTO>
-                {
-                    IsSuccess = false,
-                    Data = null,
-                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
-                };
-            }
-            var role = currentUserServices.Role();
-            if (role == null || role == Role.Club)
-            {
-                return new ServiceResponse<UserProfileUpdateResponseDTO>
-                {
-                    IsSuccess = false,
-                    Data = null,
-                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
-                };
-            }
-            bool isUpdated = false;
-            var userDetail = await userDetailRepository.GetAsync(ud => ud.UserId == userId);
-            var user = await userRepository.GetAsync(u => u.Id == userId);
+                return ServiceResponse<UserProfileUpdateResponseDTO>.Fail(await _localizationService.Get(ValidationKeys.NotAuthorized));
 
-            if (!string.IsNullOrWhiteSpace(request.Name) && request.Name != userDetail.Name)
+            var role = _currentUserServices.Role();
+            if (role == null || role == Role.Club)
+                return ServiceResponse<UserProfileUpdateResponseDTO>.Fail(await _localizationService.Get(ValidationKeys.NotAuthorized));
+
+            var user = await _userRepository.GetAsync(u => u.Id == userId);
+            var userDetail = await _userDetailRepository.GetAsync(ud => ud.UserId == userId);
+
+            if (user == null || userDetail == null)
+                return ServiceResponse<UserProfileUpdateResponseDTO>.Fail(await _localizationService.Get(ValidationKeys.UserNotFound));
+
+            bool isUpdated = false;
+
+            // Temel bilgiler
+            if (!string.IsNullOrWhiteSpace(request.Name) && userDetail.Name != request.Name)
             {
                 userDetail.Name = request.Name;
                 isUpdated = true;
             }
-            if (!string.IsNullOrWhiteSpace(request.Surname) && request.Surname != userDetail.Surname)
+            if (!string.IsNullOrWhiteSpace(request.Surname) && userDetail.Surname != request.Surname)
             {
                 userDetail.Surname = request.Surname;
                 isUpdated = true;
             }
-            if (request.DepartmentId.HasValue && request.DepartmentId.Value != userDetail.DepartmentId)
+
+            // Nullable alanlar
+            if (request.DepartmentId.HasValue && userDetail.DepartmentId != request.DepartmentId.Value)
             {
                 userDetail.DepartmentId = request.DepartmentId.Value;
                 isUpdated = true;
             }
-
-            if (request.UniverstiyId.HasValue && request.UniverstiyId.Value != userDetail.UniverstiyId)
+            if (request.UniverstiyId.HasValue && userDetail.UniverstiyId != request.UniverstiyId.Value)
             {
                 userDetail.UniverstiyId = request.UniverstiyId.Value;
                 isUpdated = true;
             }
-            if (!string.IsNullOrWhiteSpace(request.Email) && request.Email != user.Email)
-            {
-                user.Email = request.Email;
-                isUpdated = true;
-            }
-            if (request.Gender.HasValue && request.Gender.Value != userDetail.Gender)
-            {
-                userDetail.Gender = request.Gender.Value;
-                isUpdated = true;
-            }
-            if (request.BirthDate.HasValue && request.BirthDate.Value != userDetail.BirthDate)
+            if (request.BirthDate.HasValue && userDetail.BirthDate != request.BirthDate.Value)
             {
                 userDetail.BirthDate = request.BirthDate.Value;
                 isUpdated = true;
             }
-
-            if (request.ProfileImageUrl != null && request.ProfileImageUrl.Any())
+            if (request.Gender.HasValue && userDetail.Gender != request.Gender.Value)
             {
-                // Mevcut resimlerle yeni gelen resimler aynı mı? (Sıralama dahil kontrol eder)
-                if (userDetail.ProfileImageUrl == null || !userDetail.ProfileImageUrl.SequenceEqual(request.ProfileImageUrl))
-                {
-                    userDetail.ProfileImageUrl = request.ProfileImageUrl;
-                    isUpdated = true;
-                }
-            }
-            if (!string.IsNullOrWhiteSpace(request.Password) && request.Password != user.Password)
-            {
-                user.Password = request.Password;
+                userDetail.Gender = request.Gender.Value;
                 isUpdated = true;
             }
-            if(!bool.Parse(request.IsNotified.ToString()).Equals(userDetail.IsNotified))  // TO DO: Kontrol et frontentte gelen veri ile
-            {
-                userDetail.IsNotified = bool.Parse(request.IsNotified.ToString());
-                isUpdated = true;
-            }
-            if(request.Graduaiton_Date.HasValue && request.Graduaiton_Date.Value != userDetail.Graduaiton_Date)
+            if (request.Graduaiton_Date.HasValue && userDetail.Graduaiton_Date != request.Graduaiton_Date.Value)
             {
                 userDetail.Graduaiton_Date = request.Graduaiton_Date.Value;
                 isUpdated = true;
             }
-            if(request.PhoneNumber.HasValue && request.PhoneNumber.Value != userDetail.PhoneNumber)
+            if (request.PhoneNumber.HasValue && userDetail.PhoneNumber != request.PhoneNumber.Value)
             {
                 userDetail.PhoneNumber = request.PhoneNumber.Value;
                 isUpdated = true;
             }
 
-            var allMail = await userRepository.GetAllAsync();
-            var mailExists = allMail.Any(c => c.Email == request.Email);
-            var ue = await userRepository.GetAllAsync();
-            var a = ue.Any(u => u.Email == request.Email);
-
-            if (mailExists || a)
+            // Email kontrolü
+            if (!string.IsNullOrWhiteSpace(request.Email) && user.Email != request.Email)
             {
-                return new ServiceResponse<UserProfileUpdateResponseDTO>
-                {
-                    IsSuccess = false,
-                    Data = null,
-                    Message = await localizationService.Get(ValidationKeys.UserEmailAlreadyExists)
-                };
+                var allUsers = await _userRepository.GetAllAsync();
+                if (allUsers.Any(u => u.Id != userId && u.Email == request.Email))
+                    return ServiceResponse<UserProfileUpdateResponseDTO>.Fail(await _localizationService.Get(ValidationKeys.UserEmailAlreadyExists));
+
+                user.Email = request.Email;
+                isUpdated = true;
+            }
+
+            // Password
+            if (!string.IsNullOrWhiteSpace(request.Password) && user.Password != request.Password)
+            {
+                user.Password = request.Password;
+                isUpdated = true;
+            }
+
+            // Fotoğraf alanları: güncelleme veya silme
+            if (request.ProfileImageUrl != null)
+            {
+                userDetail.ProfileImageUrl = string.IsNullOrWhiteSpace(request.ProfileImageUrl) ? null : request.ProfileImageUrl;
+                isUpdated = true;
+            }
+
+            // Notification
+            if (request.IsNotified.HasValue && userDetail.IsNotified != request.IsNotified.Value)
+            {
+                userDetail.IsNotified = request.IsNotified.Value;
+                isUpdated = true;
             }
 
             if (!isUpdated)
             {
-                return new ServiceResponse<UserProfileUpdateResponseDTO>
-                {
-                    IsSuccess = true,
-                    Data = new UserProfileUpdateResponseDTO
+                return ServiceResponse<UserProfileUpdateResponseDTO>.Success(await _localizationService.Get(ValidationKeys.OperationSuccessful),
+                    new UserProfileUpdateResponseDTO
                     {
                         Name = userDetail.Name,
                         Surname = userDetail.Surname,
@@ -147,18 +133,35 @@ namespace UniTrack.Application.Feature.Profile.Command
                         UniverstiyId = userDetail.UniverstiyId,
                         Email = user.Email,
                         BirthDate = userDetail.BirthDate,
-                        Gender = userDetail.Gender
+                        Gender = userDetail.Gender,
+                        ProfileImageUrl = userDetail.ProfileImageUrl,
+                        IsNotified = userDetail.IsNotified
                     }
-                };
+                    
+                );
             }
-            await userDetailRepository.UpdateAsync(userDetail);
-            await userRepository.UpdateAsync(user);
+
+            await _userDetailRepository.UpdateAsync(userDetail);
+            await _userRepository.UpdateAsync(user);
+
             return new ServiceResponse<UserProfileUpdateResponseDTO>
             {
-                Data = null,
                 IsSuccess = true,
-                Message = await localizationService.Get(ValidationKeys.ProfileUpdatedSuccessfully)
+                Data = new UserProfileUpdateResponseDTO
+                {
+                    Name = userDetail.Name,
+                    Surname = userDetail.Surname,
+                    DepartmentId = userDetail.DepartmentId,
+                    UniverstiyId = userDetail.UniverstiyId,
+                    Email = user.Email,
+                    BirthDate = userDetail.BirthDate,
+                    Gender = userDetail.Gender,
+                    ProfileImageUrl = userDetail.ProfileImageUrl,
+                    IsNotified = userDetail.IsNotified
+                },
+                Message = await _localizationService.Get(ValidationKeys.ProfileUpdatedSuccessfully)
             };
-        }
+        }      
+            
     }
 }

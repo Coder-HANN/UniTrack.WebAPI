@@ -5,7 +5,6 @@ using UniTrack.Application.Abstraction.Services.CurrentUserServices;
 using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
 using UniTrack.Application.Common.Constants;
-using UniTrack.Application.DTOs.Comment;
 using UniTrack.Application.DTOs.Event;
 
 namespace UniTrack.Application.Feature.Event.Query
@@ -51,7 +50,9 @@ namespace UniTrack.Application.Feature.Event.Query
             var responses = events.Select(e => new GetAllEventQueryResponseDTO
             {
 
-                ImageUrl = e.ImageUrl,
+                CoverImageUrl = e.Images?
+                    .OrderBy(i => i.Order)
+                    .FirstOrDefault(i => i.IsCover)?.ImageUrl,
                 Title = e.Title,
                 Description = e.Description,
                 StartDate = e.StartDate,

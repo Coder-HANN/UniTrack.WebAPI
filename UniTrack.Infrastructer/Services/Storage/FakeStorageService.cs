@@ -1,18 +1,52 @@
-﻿using UniTrack.Application.Abstraction.Services.Storage;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Configuration;
+using System.Diagnostics;
+using UniTrack.Application.Abstraction.Services.Storage;
+using UniTrack.Domain.Enums;
 
-namespace UniTrack.Infrastructure.Services.Storage
+public class FakeStorageService : IStorageService
 {
-    public class FakeStorageService : IStorageService
+    private readonly string baseUrl;
+
+    public FakeStorageService(IConfiguration configuration)
     {
-        public Task<string> UploadFileAsync(byte[] data, string fileName, string contentType = "image/png")
+        baseUrl = configuration["Storage:BaseUrl"];
+    }
+
+    public Task<string> UploadFileAsync(
+        byte[] data,
+        string fileName,
+        string contentType = "image/png")
+    {
+        return Task.FromResult(
+            $"{baseUrl}/storage/fake/qr/{fileName}"
+        );
+    }
+
+    public Task<string> UploadFileAsync(
+        byte[] data,
+        string fileName,
+        StorageFileType fileType,
+        string contentType = "image/png")
+    {
+        var path = fileType switch
         {
-            // TO DO :GERÇEK DEPOLAMA İŞLEMİ (Azure, AWS, Google Cloud) bu kısma gelecektir.
+            StorageFileType.EventImage => "events",
+            StorageFileType.ClubImage => "clubs",
+            StorageFileType.QrCode => "qr",
+            _ => "others"
+        };
 
-            // Şimdilik, benzersiz bir URL döndürüyoruz.
-            string fakeUrl = $"https://unitrackstorage.mock/qr/events/{fileName}";
+        return Task.FromResult(
+            $"{baseUrl}/storage/fake/{path}/{fileName}"
+        );
+    }
 
-            return Task.FromResult(fakeUrl);
-        }
+    public async Task DeleteFileAsync(string fileUrl)
+    {
+        // Fake storage olduğu için fiziksel silme yok
+        // Ama loglamak çok faydalı olur
+        Debug.WriteLine($"[FAKE STORAGE] File deleted: {fileUrl}");
+
+        await Task.CompletedTask;
     }
 }

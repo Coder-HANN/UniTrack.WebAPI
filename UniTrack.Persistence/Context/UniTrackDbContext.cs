@@ -36,11 +36,26 @@ namespace UniTrack.Persistence.Context
         public DbSet<UserNotification> UserNotifications { get; set; }
         public DbSet<ClubNotification> ClubNotifications { get; set; }
         public DbSet<Report> Reports { get; set; }
+        public DbSet<EventImage> EventImages { get; set; }
         public DbSet<AdminNotification> AdminNotifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<EventImage>(builder =>
+            {
+                builder.HasKey(x => x.Id);
+                builder.Property(x => x.ImageUrl).IsRequired().HasMaxLength(500);
+                builder.Property(x => x.IsCover).HasDefaultValue(false);
+                builder.Property(x => x.Order).HasDefaultValue(0);
+
+                builder.HasOne(x => x.Event)
+                    .WithMany(x => x.Images)
+                    .HasForeignKey(x => x.EventId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+            });
 
             modelBuilder.Entity<AdminNotification>(builder =>
             {
@@ -395,7 +410,6 @@ namespace UniTrack.Persistence.Context
                 builder.Property(e => e.Clock);
                 builder.Property(e => e.EventTag);
                 builder.Property(e => e.Description);
-                builder.Property(e => e.ImageUrl);
                 builder.Property(e => e.Title);
                 builder.Property(e => e.EndDate);
                 builder.Property(e => e.Location);

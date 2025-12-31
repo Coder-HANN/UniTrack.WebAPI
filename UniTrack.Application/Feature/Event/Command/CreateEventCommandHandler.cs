@@ -68,10 +68,24 @@ namespace UniTrack.Application.Feature.Event.Command
             string? qrUrl = null;
             string? sheetsId = null;
 
+            if (request.ImageUrls != null && request.ImageUrls.Any())
+            {
+                var images = request.ImageUrls.Select((url, index) => new Domain.Entities.EventImage
+                {
+                    EventId = createdEvent.Id,
+                    ImageUrl = url,
+                    IsCover = index == 0, // ilk foto cover
+                    Order = index + 1
+                }).ToList();
+
+                createdEvent.Images = images;
+            }
+
+
             // 4. QR KODU OLUŞTURMA VE DEPOLAMA
-            
-                // A. QR Görüntüsünü Byte Olarak Oluştur
-                var qrCodeBytes = await qrCodeService.GenerateQrCodeAsync(createdEvent.CheckInToken.Value);
+
+            // A. QR Görüntüsünü Byte Olarak Oluştur
+            var qrCodeBytes = await qrCodeService.GenerateQrCodeAsync(createdEvent.CheckInToken.Value);
 
                 // B. Benzersiz Dosya Adı Oluştur
                 var qrFileName = $"event-{createdEvent.Id}-qr.png";

@@ -57,7 +57,9 @@ namespace UniTrack.Application.Feature.Event.Query
                     EventName = e.Title,
                     EventDate = e.StartDate,
                     EventLocation = e.Location,
-                    EventImageUrl = e.ImageUrl,
+                    CoverImageUrl = e.Images?
+                        .OrderBy(i => i.Order)
+                        .FirstOrDefault(i => i.IsCover)?.ImageUrl,
                     joinerCount = e.Joiner, 
                     Qouta = e.Quota,
                     Time = e.Time,

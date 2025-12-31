@@ -14,6 +14,8 @@
     <Folder Include="Feature\ClubTeam\Validator\" />
     <Folder Include="Feature\Contect\Query\" />
     <Folder Include="Feature\Department\Query\" />
+    <Folder Include="Feature\EventImage\Validation\" />
+    <Folder Include="Feature\EventImage\Query\" />
     <Folder Include="Feature\Like\Validator\" />
     <Folder Include="Feature\Like\Query\" />
     <Folder Include="Feature\Report\Validation\" />

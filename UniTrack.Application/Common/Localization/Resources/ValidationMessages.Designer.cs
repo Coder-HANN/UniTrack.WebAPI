@@ -646,6 +646,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  Image not found..
+        /// </summary>
+        internal static string ImageNotFound {
+            get {
+                return ResourceManager.GetString("ImageNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid date.
         /// </summary>
         internal static string InvalidDate {

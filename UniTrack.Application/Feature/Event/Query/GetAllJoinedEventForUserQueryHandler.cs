@@ -69,7 +69,10 @@ namespace UniTrack.Application.Feature.Event.Query
 
                 return new GetAllJoinedEventForUserQueryResponseDTO
                 {
-                    EventImage = e.Event.ImageUrl,
+                    CoverImageUrl = e.Event.Images?
+                        .OrderBy(i => i.Order)
+                        .FirstOrDefault(i => i.IsCover)?.ImageUrl,
+
                     EventName = e.Event.Title,
                     ShortDescription = e.Event.Description,
                     EventDate = e.Event.StartDate,

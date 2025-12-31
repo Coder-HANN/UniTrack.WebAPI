@@ -312,6 +312,9 @@
   <data name="GoogleSheetsTableNotFound" xml:space="preserve">
     <value>This event’s Google Sheets spreadsheet ID could not be found.</value>
   </data>
+  <data name="ImageNotFound" xml:space="preserve">
+    <value> Image not found.</value>
+  </data>
   <data name="InvalidDate" xml:space="preserve">
     <value>Invalid date</value>
   </data>

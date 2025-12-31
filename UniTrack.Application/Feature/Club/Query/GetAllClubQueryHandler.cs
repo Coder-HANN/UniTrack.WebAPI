@@ -32,17 +32,10 @@ namespace UniTrack.Application.Feature.Club.Query
         {
             var userId = currentUserServices.CurrentUser();
             var clubId = currentUserServices.CurrentClub();
+
             if (userId == null && clubId == null)
             {
-                return new ServiceResponse<IPagingExecutionResult<GetAllClubQueryResponseDTO>>
-                {
-
-
-                    IsSuccess = false,
-                    Data = null,
-                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
-
-                };
+                return ServiceResponse<IPagingExecutionResult<GetAllClubQueryResponseDTO>>.Fail(await localizationService.Get(ValidationKeys.NotAuthorized));
             }
 
             var clubs = await clubRepository.GetAllAsync();
@@ -51,7 +44,7 @@ namespace UniTrack.Application.Feature.Club.Query
                 return new ServiceResponse<IPagingExecutionResult<GetAllClubQueryResponseDTO>>{
  
                     
-                        IsSuccess = false,
+                        IsSuccess = true,
                         Data = null,
                         Message = await localizationService.Get(ValidationKeys.ClubFansNotFound)
                     

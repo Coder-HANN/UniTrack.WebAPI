@@ -1,9 +1,4 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
 using UniTrack.Application.Abstraction.Services.Localization;
@@ -16,59 +11,55 @@ namespace UniTrack.Application.Feature.Profile.Command
 {
     public class ClubProfileUpdateCommandHandler : IRequestHandler<ClubProfileUpdateCommand, ServiceResponse<ClubProfileUpdateResponseDTO>>
     {
-        private readonly ICurrentUserServices currentUserServices;
-        private readonly IClubRepository clubRepository;
-        private readonly IUserRepository userRepository;
-        private readonly ILocalizationService localizationService;
+        private readonly ICurrentUserServices _currentUserServices;
+        private readonly IClubRepository _clubRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly ILocalizationService _localizationService;
+
         public ClubProfileUpdateCommandHandler(
             ICurrentUserServices currentUserServices,
             IClubRepository clubRepository,
             IUserRepository userRepository,
             ILocalizationService localizationService)
         {
-            this.currentUserServices = currentUserServices;
-            this.clubRepository = clubRepository;
-            this.userRepository = userRepository;
-            this.localizationService = localizationService;
+            _currentUserServices = currentUserServices;
+            _clubRepository = clubRepository;
+            _userRepository = userRepository;
+            _localizationService = localizationService;
         }
+
         public async Task<ServiceResponse<ClubProfileUpdateResponseDTO>> Handle(ClubProfileUpdateCommand request, CancellationToken cancellationToken)
         {
-            var userId = currentUserServices.CurrentClub();
-            if (userId == null)
+            var clubId = _currentUserServices.CurrentClub();
+            if (clubId == null)
             {
-                return new ServiceResponse<ClubProfileUpdateResponseDTO>
-                {
-                    IsSuccess = false,
-                    Data = null,
-                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
-                };
-            }
-            var role = currentUserServices.Role();
-            if (role == null || role == Role.User)
-            {
-                return new ServiceResponse<ClubProfileUpdateResponseDTO>
-                {
-                    IsSuccess = false,
-                    Data = null,
-                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
-                };
+                return ServiceResponse<ClubProfileUpdateResponseDTO>.Fail(
+                    await _localizationService.Get(ValidationKeys.NotAuthorized)
+                );
             }
 
-            var existingClub = await clubRepository.GetAsync(c => c.Id == userId);
-            var allMail = await clubRepository.GetAllAsync();
-           
+            var role = _currentUserServices.Role();
+            if (role == null || role == Role.User)
+            {
+                return ServiceResponse<ClubProfileUpdateResponseDTO>.Fail(
+                    await _localizationService.Get(ValidationKeys.NotAuthorized)
+                );
+            }
+
+            var existingClub = await _clubRepository.GetAsync(c => c.Id == clubId);
             if (existingClub == null)
             {
-                return new ServiceResponse<ClubProfileUpdateResponseDTO>
-                {
-                    IsSuccess = false,
-                    Data = null,
-                    Message = await localizationService.Get(ValidationKeys.ClubNotFound)
-                };
+                return ServiceResponse<ClubProfileUpdateResponseDTO>.Fail(
+                    await _localizationService.Get(ValidationKeys.ClubNotFound)
+                );
             }
+
+            var allClubs = await _clubRepository.GetAllAsync();
+            var allUsers = await _userRepository.GetAllAsync();
 
             bool isUpdated = false;
 
+            // Temel alanlar
             if (!string.IsNullOrEmpty(request.Name) && existingClub.Name != request.Name)
             {
                 existingClub.Name = request.Name;
@@ -84,49 +75,6 @@ namespace UniTrack.Application.Feature.Profile.Command
                 existingClub.LongDescription = request.LongDescription;
                 isUpdated = true;
             }
-            if(!string.IsNullOrEmpty(request.LinkedlnLink) &&( existingClub.LinkedlnLink != request.LinkedlnLink))
-            {
-                existingClub.LinkedlnLink = request.LinkedlnLink;
-                isUpdated = true;
-            }
-            if(!string.IsNullOrEmpty(request.InstagramLink) && (existingClub.InstagramLink != request.InstagramLink))
-            {
-                existingClub.InstagramLink = request.InstagramLink;
-                isUpdated = true;
-            }
-            if(!string.IsNullOrEmpty(request.WebsiteLink) && (existingClub.WebsiteLink != request.WebsiteLink))
-            {
-                existingClub.WebsiteLink = request.WebsiteLink;
-                isUpdated = true;
-            }
-            if(!string.IsNullOrEmpty(request.TwitterLink) && (existingClub.TwitterLink != request.TwitterLink))
-            {
-                existingClub.TwitterLink = request.TwitterLink;
-                isUpdated = true;
-            }
-            if (!request.Tag.HasValue && request.Tag.Value != existingClub.Tag)
-            {
-                existingClub.Tag = request.Tag.Value;
-                isUpdated = true;
-            }
-            if (request.LogoUrl != null && request.LogoUrl.Any())
-            {
-                // Mevcut resimlerle yeni gelen resimler aynı mı? (Sıralama dahil kontrol eder)
-                if (existingClub.LogoUrl == null || !existingClub.LogoUrl.SequenceEqual(request.LogoUrl))
-                {
-                    existingClub.LogoUrl = request.LogoUrl;
-                    isUpdated = true;
-                }
-            }
-            if (request.CoverImageUrl != null && request.CoverImageUrl.Any())
-            {
-                // Mevcut resimlerle yeni gelen resimler aynı mı? (Sıralama dahil kontrol eder)
-                if (existingClub.CoverImageUrl == null || !existingClub.CoverImageUrl.SequenceEqual(request.CoverImageUrl))
-                {
-                    existingClub.CoverImageUrl = request.CoverImageUrl;
-                    isUpdated = true;
-                }
-            }
             if (!string.IsNullOrEmpty(request.President) && existingClub.President != request.President)
             {
                 existingClub.President = request.President;
@@ -134,69 +82,120 @@ namespace UniTrack.Application.Feature.Profile.Command
             }
             if (!string.IsNullOrEmpty(request.PresidentMail) && existingClub.PresidentMail != request.PresidentMail)
             {
-                existingClub.PresidentMail = request.PresidentMail;
-                isUpdated = true;
-            }
+                // Mail çakışma kontrolü
+                bool mailExists = allClubs.Any(c => c.Id != existingClub.Id &&
+                                                   (c.PresidentMail == request.PresidentMail || c.ContectEmail == request.PresidentMail)) ||
+                                  allUsers.Any(u => u.Email == request.PresidentMail);
 
-            if(request.PresidentMail == existingClub.PresidentMail)
-            if (!request.UniversityId.HasValue && request.UniversityId.Value != existingClub.UniversityId)
-            {
-                existingClub.UniversityId = request.UniversityId.Value;
+                if (mailExists)
+                {
+                    return ServiceResponse<ClubProfileUpdateResponseDTO>.Fail(
+                        await _localizationService.Get(ValidationKeys.EmailAlreadyUsed)
+                    );
+                }
+
+                existingClub.PresidentMail = request.PresidentMail;
                 isUpdated = true;
             }
             if (!string.IsNullOrEmpty(request.ContectEmail) && existingClub.ContectEmail != request.ContectEmail)
             {
+                // Mail çakışma kontrolü
+                bool mailExists = allClubs.Any(c => c.Id != existingClub.Id &&
+                                                   (c.ContectEmail == request.ContectEmail || c.PresidentMail == request.ContectEmail)) ||
+                                  allUsers.Any(u => u.Email == request.ContectEmail);
+
+                if (mailExists)
+                {
+                    return ServiceResponse<ClubProfileUpdateResponseDTO>.Fail(
+                        await _localizationService.Get(ValidationKeys.EmailAlreadyUsed)
+                    );
+                }
+
                 existingClub.ContectEmail = request.ContectEmail;
                 isUpdated = true;
             }
-            if(!request.ClubCreatedDate.HasValue && request.ClubCreatedDate != existingClub.ClubCreatedDate)
+
+            // Sosyal ve web linkleri
+            if (!string.IsNullOrEmpty(request.LinkedlnLink) && existingClub.LinkedlnLink != request.LinkedlnLink)
+            {
+                existingClub.LinkedlnLink = request.LinkedlnLink;
+                isUpdated = true;
+            }
+            if (!string.IsNullOrEmpty(request.InstagramLink) && existingClub.InstagramLink != request.InstagramLink)
+            {
+                existingClub.InstagramLink = request.InstagramLink;
+                isUpdated = true;
+            }
+            if (!string.IsNullOrEmpty(request.TwitterLink) && existingClub.TwitterLink != request.TwitterLink)
+            {
+                existingClub.TwitterLink = request.TwitterLink;
+                isUpdated = true;
+            }
+            if (!string.IsNullOrEmpty(request.WebsiteLink) && existingClub.WebsiteLink != request.WebsiteLink)
+            {
+                existingClub.WebsiteLink = request.WebsiteLink;
+                isUpdated = true;
+            }
+
+            // Tag
+            if (request.Tag.HasValue && existingClub.Tag != request.Tag.Value)
+            {
+                existingClub.Tag = request.Tag.Value;
+                isUpdated = true;
+            }
+
+           // Logo ve kapak: güncelleme veya silme
+            if (request.LogoUrl != null)
+            {
+                existingClub.LogoUrl = string.IsNullOrWhiteSpace(request.LogoUrl) ? null : request.LogoUrl;
+                isUpdated = true;
+            }
+            if (request.CoverImageUrl != null)
+            {
+                existingClub.CoverImageUrl = string.IsNullOrWhiteSpace(request.CoverImageUrl) ? null : request.CoverImageUrl;
+                isUpdated = true;
+            }
+            // University & ClubCreatedDate
+            if (request.UniversityId.HasValue && existingClub.UniversityId != request.UniversityId.Value)
+            {
+                existingClub.UniversityId = request.UniversityId.Value;
+                isUpdated = true;
+            }
+            if (request.ClubCreatedDate.HasValue && existingClub.ClubCreatedDate != request.ClubCreatedDate.Value)
             {
                 existingClub.ClubCreatedDate = request.ClubCreatedDate.Value;
                 isUpdated = true;
             }
+
             if (!isUpdated)
             {
-                var response = new ClubProfileUpdateResponseDTO
-                {
-                        Name = existingClub.Name,
-                        Description = existingClub.Description,
-                        LongDescription = existingClub.LongDescription,
-                        LinkedlnLink = existingClub.LinkedlnLink,
-                        InstagramLink = existingClub.InstagramLink,
-                        WebsiteLink = existingClub.WebsiteLink,
-                        TwitterLink = existingClub.TwitterLink,
-                        Tag = existingClub.Tag,
-                        LogoUrl = existingClub.LogoUrl,
-                        CoverImageUrl = existingClub.CoverImageUrl,
-                        President = existingClub.President,
-                        PresidentMail = existingClub.PresidentMail,
-                        UniversityId = existingClub.UniversityId,
-                        ContectEmail = existingClub.ContectEmail   
-                };
+                return ServiceResponse<ClubProfileUpdateResponseDTO>.Success(await _localizationService.Get(ValidationKeys.OperationSuccessful),
+                    null
+                );
             }
 
-            var mailExists = allMail.Any(c => c.PresidentMail == request.PresidentMail || c.ContectEmail == request.ContectEmail);
-            var ue = await userRepository.GetAllAsync();
-            var user = ue.Any(u => u.Email == request.ContectEmail || u.Email == request.PresidentMail);
+            await _clubRepository.UpdateAsync(existingClub);
 
-            if (user || mailExists)
+            var responseDto = new ClubProfileUpdateResponseDTO
             {
-                return new ServiceResponse<ClubProfileUpdateResponseDTO>
-                {
-                    IsSuccess = false,
-                    Data = null,
-                    Message =  await localizationService.Get(ValidationKeys.EmailAlreadyUsed)
-                };
-            }
-
-            await clubRepository.UpdateAsync(existingClub);
-
-            return new ServiceResponse<ClubProfileUpdateResponseDTO>
-            {
-                IsSuccess = true,
-                Data = null,
-                Message = await localizationService.Get(ValidationKeys.ProfileUpdatedSuccessfully)
+                Name = existingClub.Name,
+                Description = existingClub.Description,
+                LongDescription = existingClub.LongDescription,
+                LinkedlnLink = existingClub.LinkedlnLink,
+                InstagramLink = existingClub.InstagramLink,
+                WebsiteLink = existingClub.WebsiteLink,
+                TwitterLink = existingClub.TwitterLink,
+                Tag = existingClub.Tag,
+                LogoUrl = existingClub.LogoUrl,
+                CoverImageUrl = existingClub.CoverImageUrl,
+                President = existingClub.President,
+                PresidentMail = existingClub.PresidentMail,
+                UniversityId = existingClub.UniversityId,
+                ContectEmail = existingClub.ContectEmail
             };
+
+            return ServiceResponse<ClubProfileUpdateResponseDTO>.Success(await _localizationService.Get(ValidationKeys.ProfileUpdatedSuccessfully, responseDto)
+            );
         }
     }
 }

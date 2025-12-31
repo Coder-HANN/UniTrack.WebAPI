@@ -20,7 +20,6 @@ using UniTrack.Domain.Entities;
 using UniTrack.Infrastructure.Localization;
 using UniTrack.Infrastructure.Services;
 using UniTrack.Infrastructure.Services.Sheets;
-using UniTrack.Infrastructure.Services.Storage;
 using UniTrack.Persistence.Context;
 using UniTrack.Persistence.Repositories;
 using UniTrack.WebAPI.Extensions;
@@ -95,6 +94,7 @@ builder.Services.AddScoped<ITargetNotificationClubRepository, TargetNotification
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IAdminNotificationRepository, AdminNotificationRepository>();
+builder.Services.AddScoped<IEventImageRepository, EventImageRepository>();
 
 
 builder.Services.AddSignalR();

@@ -9,7 +9,6 @@ namespace UniTrack.Domain.Entities
         public string? Description { get; set; }
         public DateTimeOffset StartDate { get; set; }  
         public DateTimeOffset EndDate { get; set; }
-        public string[]? ImageUrl { get; set; }
         public long Quota { get; set; }
         public long Joiner { get; set; }
         public EventTag EventTag { get; set; }
@@ -32,5 +31,7 @@ namespace UniTrack.Domain.Entities
         public string? QrCodeUrl  { get; set; }
         public ICollection<Report> Reports { get; set; }
         public bool IsDoping { get; set; } = false;
+        public ICollection<EventImage> Images { get; set; }
+
     }
 }

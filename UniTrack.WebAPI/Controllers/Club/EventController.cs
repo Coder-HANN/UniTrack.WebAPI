@@ -4,6 +4,7 @@ using UniTrack.Application.Common;
 using UniTrack.Application.DTOs.Event;
 using UniTrack.Application.Feature.Event.Command;
 using UniTrack.Application.Feature.Event.Query;
+using UniTrack.Application.Feature.EventImage.Command;
 
 namespace UniTrack.WebAPI.Controllers.Club
 {
@@ -58,6 +59,18 @@ namespace UniTrack.WebAPI.Controllers.Club
         public async Task<ServiceResponse<long>> GetAllEventJoinerCount([FromQuery] GetAllClubEventJoinerCountQuery query)
         {
             return await mediator.Send(query);
+        }
+
+        [HttpPost("UpdateEventImages")]
+        public async Task<ServiceResponse<string>> UpdateEventImages([FromBody] UpdateEventImagesCommand command)
+        {
+            return await mediator.Send(command);
+        }
+
+        [HttpPost("ChangeEventCoverImage")]
+        public async Task<string> ChangeEventCoverImage([FromBody] ChangeEventCoverImageCommand command)
+        {
+            return await mediator.Send(command);
         }
     }
 }

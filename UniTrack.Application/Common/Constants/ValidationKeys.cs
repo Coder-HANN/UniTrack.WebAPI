@@ -173,5 +173,6 @@
         public static string AlreadyReviewed = "AlreadyReviewed";
 
         public static string MarkedAsReviewed = "MarkedAsReviewed";
+        public static string ImageNotFound = "ImageNotFound";
     }
 }

@@ -312,6 +312,9 @@
   <data name="GoogleSheetsTableNotFound" xml:space="preserve">
     <value>Bu etkinlik için Google Sheets e-tablo ID'si bulunamadı.</value>
   </data>
+  <data name="ImageNotFound" xml:space="preserve">
+    <value>Resim bulunamadı</value>
+  </data>
   <data name="InvalidDate" xml:space="preserve">
     <value>Geçersiz tarih</value>
   </data>

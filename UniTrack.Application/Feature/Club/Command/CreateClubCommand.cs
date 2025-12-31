@@ -11,7 +11,6 @@ namespace UniTrack.Application.Feature.Club.Command
         public string President { get; set; }
         public string ContectEmail { get; set; }
         public string? Description { get; set; }
-        public byte? Logo { get; set; }
         public DateOnly ClubCreatedDate { get; set; }
         public Tag Tag { get; set; }
     }

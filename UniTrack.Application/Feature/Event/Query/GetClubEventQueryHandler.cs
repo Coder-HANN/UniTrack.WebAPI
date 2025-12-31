@@ -48,7 +48,10 @@ namespace UniTrack.Application.Feature.Event.Query
             }
             var response = events.Select(e => new GetClubEventQueryResponseDTO
             {
-                    ImageUrl = e.ImageUrl,
+                    CoverImageUrl = e.Images?
+                    .OrderBy(i => i.Order)
+                    .FirstOrDefault(i => i.IsCover)?.ImageUrl,
+
                     Title = e.Title,
                     Description = e.Description,
                     StartDate = e.StartDate,

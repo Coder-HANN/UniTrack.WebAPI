@@ -36,7 +36,7 @@ namespace UniTrack.Persistence.Repositories
 
         public async Task<List<Event>> GetAllEventAsync(Expression<Func<Event, bool>> expression)
         {
-            return await dbSet.Where(expression).ToListAsync();
+            return await dbSet.Include(e => e.Images).Where(expression).ToListAsync();
         }
 
         public Task<long> GetAllEventFeatureCountAsync()
