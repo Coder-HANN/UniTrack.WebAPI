@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using UniTrack.Application.Abstraction.Repositories;
+using UniTrack.Application.Feature.Event.Models;
 using UniTrack.Domain.Entities;
 using UniTrack.Persistence.Context;
 
@@ -42,14 +43,14 @@ namespace UniTrack.Persistence.Repositories
         public Task<long> GetAllEventFeatureCountAsync()
         {
             return context.Set<Event>()
-                .Where(e => e.EndDate >= DateTime.Today) 
+                .Where(e => e.EndDate >= DateTime.Today)
                 .LongCountAsync();
         }
 
         public Task<long> GetAllPastEventCountAsync()
         {
             return context.Set<Event>()
-                .Where(e => e.EndDate < DateTime.Today) 
+                .Where(e => e.EndDate < DateTime.Today)
                 .LongCountAsync();
         }
 
@@ -58,12 +59,12 @@ namespace UniTrack.Persistence.Repositories
             return await dbSet.FirstOrDefaultAsync(e => e.Id == Id);
         }
 
-         public async Task<int> GetClubEventCountAsync(Guid clubId)
-         {
+        public async Task<int> GetClubEventCountAsync(Guid clubId)
+        {
             return await context.Set<Event>()
                 .Where(e => e.ClubId == clubId) // Sadece bu kulübün etkinlikleri
                 .CountAsync();
-         }
+        }
 
         public async Task<long> GetCountAsync()
         {
@@ -86,7 +87,7 @@ namespace UniTrack.Persistence.Repositories
         public async Task<List<Event>> GetPastEventsAsync()
         {
             return await context.Set<Event>()
-                .Where(e => e.EndDate < DateTime.Today && e.IsDeleted == false) 
+                .Where(e => e.EndDate < DateTime.Today && e.IsDeleted == false)
                 .ToListAsync();
         }
 
@@ -98,5 +99,6 @@ namespace UniTrack.Persistence.Repositories
                 .Take(3)
                 .ToListAsync();
         }
+
     }
 }

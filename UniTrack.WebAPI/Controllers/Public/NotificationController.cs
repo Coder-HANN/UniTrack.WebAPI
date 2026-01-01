@@ -33,5 +33,5 @@ namespace UniTrack.WebAPI.Controllers.Public
             return mediator.Send(command); 
         }
 
-    }
+    } 
 }

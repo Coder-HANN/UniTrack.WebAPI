@@ -55,5 +55,11 @@ namespace UniTrack.WebAPI.Controllers.Admin
         {
             return await mediator.Send(command);
         }
+
+        [HttpPost("PushAllUserSendNotificationsOrMail")]
+        public async Task<ServiceResponse<string>> PushAllPeopleSendNotificationsOrMail([FromBody] SendNotificationCommand command )  // Burada mail atabilirsin veya sadece bildirim atabilirsin
+        {
+            return await mediator.Send(command);
+        }
     }
 }
