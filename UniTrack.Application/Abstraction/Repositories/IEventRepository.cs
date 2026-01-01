@@ -16,7 +16,6 @@ namespace UniTrack.Application.Abstraction.Repositories
          public Task<List<Event>> GetTopThreeFavoriteEventsByClubIdAsync(Guid clubId);
          public Task<List<Event>> GetAllEventAsync(Expression<Func<Event, bool>> expression);
          public Task<Event> GetEventByIdAndClubIdAsync(Guid eventId, Guid clubId);
-
         public Task<bool> CountaddedAsync(Guid EventId);
         public Task<long> GetAllClubEventJoinerCountAsync(Guid? clubId);
     }

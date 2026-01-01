@@ -2,6 +2,7 @@
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
 using UniTrack.Application.Abstraction.Services.Localization;
+using UniTrack.Application.Abstraction.Services.Mail;
 using UniTrack.Application.Common;
 using UniTrack.Application.Common.Constants;
 using UniTrack.Domain.Entities;
@@ -20,6 +21,9 @@ namespace UniTrack.Application.Feature.Notification.Command
         private readonly ITargetNotificationClubRepository clubRepo;
         private readonly ICurrentUserServices currentUserServices;
         private readonly ILocalizationService localizationService;
+        private readonly INotificationDispatcher dispatcher;
+
+
 
         public SendNotificationCommandHandler(
             INotificationRepository notificationRepository,
@@ -29,7 +33,8 @@ namespace UniTrack.Application.Feature.Notification.Command
             ITargetNotificationUniversityRepository targetNotificationUniversityRepository,
             ITargetNotificationClubRepository targetNotificationClubRepository,
             ICurrentUserServices currentUserServices,
-            ILocalizationService localizationService)
+            ILocalizationService localizationService,
+            INotificationDispatcher dispatcher)
         {
             this.notificationRepository = notificationRepository;
             this.targetRepository = targetNotificationRepository;
@@ -39,8 +44,9 @@ namespace UniTrack.Application.Feature.Notification.Command
             this.clubRepo = targetNotificationClubRepository;
             this.currentUserServices = currentUserServices;
             this.localizationService = localizationService;
+            this.dispatcher = dispatcher;
         }
-        // genel bildirim gönderimi
+        // genel bildirim gönderimi- kullanıcılara 
         public async Task<ServiceResponse<string>>Handle(SendNotificationCommand request,CancellationToken cancellationToken)
         {
             var adminId = currentUserServices.CurrentUser();
@@ -62,8 +68,15 @@ namespace UniTrack.Application.Feature.Notification.Command
                 Title = request.Title,
                 Message = request.Message,
                 Type = request.Type,
-                RelatedEntityId = request.RelatedEntityId
-            };
+                RelatedEntityId = request.RelatedEntityId,
+            }; 
+
+             notification.Channels = request.Channels
+                .Select(c => new NotificationChannelType
+                {
+                    NotificationId = notification.Id,
+                    Channel = c
+                }).ToList();
 
             await notificationRepository.AddAsync(notification);
 
@@ -122,12 +135,16 @@ namespace UniTrack.Application.Feature.Notification.Command
                         }).ToList());
             }
 
+            await dispatcher.DispatchAsync(notification,request.CityIds,request.UniversityIds,request.DepartmentIds,request.ClubIds);
+
             return new ServiceResponse<string>
             {
                 IsSuccess = true,
                 Data = null,
                 Message = await localizationService.Get(ValidationKeys.NotificationSendSuccess)
             };
+
+
         }
     }
 

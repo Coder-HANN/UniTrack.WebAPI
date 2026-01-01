@@ -26,7 +26,7 @@ namespace UniTrack.Application.Feature.Notification.Command
             this.localizationService = localizationService;
             this.currentUserServices = currentUserServices;
         }
-
+        // Tek bir kulübe bildiirm gönderir
         public async Task<ServiceResponse<bool>> Handle(PushNotificationForClubCommand request,CancellationToken cancellationToken)
         {
             var adminId = currentUserServices.CurrentUser();

@@ -15,5 +15,6 @@ namespace UniTrack.Domain.Entities
         public ICollection<TargetNotification> Targets { get; set; }
         public ICollection<UserNotification> UserNotifications { get; set; }
         public ICollection<ClubNotification> ClubNotifications { get; set; }
+        public ICollection<NotificationChannelType> Channels { get; set; }
     }
 }

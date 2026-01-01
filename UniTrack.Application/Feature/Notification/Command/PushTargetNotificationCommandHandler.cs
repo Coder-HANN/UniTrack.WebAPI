@@ -122,6 +122,8 @@ namespace UniTrack.Application.Feature.Notification.Command
                 await targetNotificationClubRepository.AddRangeAsync(clubs);
             }
 
+            
+
             return ServiceResponse<bool>.Success(null,true);
         }
     }

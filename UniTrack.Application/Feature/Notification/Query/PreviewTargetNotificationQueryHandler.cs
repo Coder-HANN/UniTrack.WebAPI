@@ -9,7 +9,7 @@ using UniTrack.Domain.Enums;
 
 namespace UniTrack.Application.Feature.Notification.Query
 {
-    public class PreviewTargetNotificationQueryHandler: IRequestHandler<PreviewTargetNotificationQuery,ServiceResponse<PreviewTargetNotificationResponseDTO>>
+    public class PreviewTargetNotificationQueryHandler : IRequestHandler<PreviewTargetNotificationQuery,ServiceResponse<PreviewTargetNotificationResponseDTO>>
     {
         private readonly IClubRepository clubRepository;
         private readonly IUserRepository userRepository;
@@ -20,7 +20,6 @@ namespace UniTrack.Application.Feature.Notification.Query
             IClubRepository clubRepository,
             IUserRepository userRepository,
             ICurrentUserServices currentUserServices,
-
             ILocalizationService localizationService)
         {
             this.clubRepository = clubRepository;
@@ -28,23 +27,47 @@ namespace UniTrack.Application.Feature.Notification.Query
             this.currentUserServices = currentUserServices;
             this.localizationService = localizationService;
         }
-        // bildirim sayısını döner (kullanıcıya gidecek)
 
         public async Task<ServiceResponse<PreviewTargetNotificationResponseDTO>> Handle(PreviewTargetNotificationQuery request,CancellationToken cancellationToken)
         {
+            // 🔐 AUTH
             var adminId = currentUserServices.CurrentUser();
             var role = currentUserServices.Role();
 
             if (adminId == null || role != Role.Admin)
             {
-                return ServiceResponse<PreviewTargetNotificationResponseDTO>.Fail(await localizationService.Get(ValidationKeys.NotAuthorized));
+                return ServiceResponse<PreviewTargetNotificationResponseDTO>.Fail(
+                    await localizationService.Get(ValidationKeys.NotAuthorized));
             }
 
-            var clubIds = await clubRepository.GetFilteredClubIdsAsync(request.CityIds,request.UniversityIds,request.ClubIds);
+            // 🔎 FİLTRE VAR MI?
+            bool hasAnyFilter =
+                (request.CityIds != null && request.CityIds.Any()) ||
+                (request.UniversityIds != null && request.UniversityIds.Any()) ||
+                (request.ClubIds != null && request.ClubIds.Any());
 
+            List<Guid> clubIds;
+
+            if (!hasAnyFilter)
+            {
+                // 🚀 HİÇ FİLTRE YOK → TÜM KULÜPLER
+                clubIds = await clubRepository.GetAllClubIdsAsync();
+            }
+            else
+            {
+                // 🎯 FİLTRELİ KULÜPLER
+                clubIds = await clubRepository.GetFilteredClubIdsAsync(
+                    request.CityIds,
+                    request.UniversityIds,
+                    request.ClubIds
+                );
+            }
+
+            // ❌ EŞLEŞEN KULÜP YOK
             if (!clubIds.Any())
             {
-                return ServiceResponse<PreviewTargetNotificationResponseDTO>.Success(null,
+                return ServiceResponse<PreviewTargetNotificationResponseDTO>.Success(
+                    null,
                     new PreviewTargetNotificationResponseDTO
                     {
                         ClubCount = 0,
@@ -52,16 +75,19 @@ namespace UniTrack.Application.Feature.Notification.Query
                     });
             }
 
-            var userCount = await userRepository.CountUsersByClubIdsAsync(clubIds,request.DepartmentIds);
+            // 👥 USER COUNT
+            var userCount = await userRepository.CountUsersByClubIdsAsync(
+                clubIds,
+                request.DepartmentIds
+            );
 
-            return ServiceResponse<PreviewTargetNotificationResponseDTO>.Success(null,
+            return ServiceResponse<PreviewTargetNotificationResponseDTO>.Success(
+                null,
                 new PreviewTargetNotificationResponseDTO
                 {
                     ClubCount = clubIds.Count,
                     UserCount = userCount
                 });
-
         }
     }
-
 }

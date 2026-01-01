@@ -24,6 +24,8 @@ namespace UniTrack.Application.Feature.Notification.Command
             this.localizationService = localizationService;
         }
 
+        // Tek bir kullanıcıya bildirim gönderir 
+
         public async Task<ServiceResponse<bool>> Handle(PushNotificationForUserCommand request,CancellationToken cancellationToken)
         {
             var adminId = currentUserServices.CurrentUser();

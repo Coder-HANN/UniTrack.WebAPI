@@ -1,9 +1,4 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UniTrack.Application.Common;
 using UniTrack.Domain.Enums;
 
@@ -21,6 +16,8 @@ namespace UniTrack.Application.Feature.Notification.Command
         public List<Guid>? UniversityIds { get; set; }
         public List<int>? DepartmentIds { get; set; }
         public List<Guid>? ClubIds { get; set; }
+        public List<NotificationChannel> Channels { get; set; }
+
     }
 
 }

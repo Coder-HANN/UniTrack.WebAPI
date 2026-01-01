@@ -19,6 +19,7 @@ using UniTrack.Application.Feature.Auth.Command;
 using UniTrack.Domain.Entities;
 using UniTrack.Infrastructure.Localization;
 using UniTrack.Infrastructure.Services;
+using UniTrack.Infrastructure.Services.Background;
 using UniTrack.Infrastructure.Services.Sheets;
 using UniTrack.Persistence.Context;
 using UniTrack.Persistence.Repositories;
@@ -95,6 +96,13 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IAdminNotificationRepository, AdminNotificationRepository>();
 builder.Services.AddScoped<IEventImageRepository, EventImageRepository>();
+builder.Services.AddScoped<INotificationDispatcher, NotificationDispatcher>();
+builder.Services.AddSingleton<IBackgroundMailQueue, BackgroundMailQueue>();
+builder.Services.AddScoped<IMailNotificationService, MailNotificationService>();
+
+builder.Services.AddHostedService<MailWorker>();
+
+
 
 
 builder.Services.AddSignalR();

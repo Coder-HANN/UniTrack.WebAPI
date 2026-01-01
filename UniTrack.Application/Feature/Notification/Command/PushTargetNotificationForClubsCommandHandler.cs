@@ -32,6 +32,7 @@ namespace UniTrack.Application.Feature.Notification.Command
             this.currentUserServices = currentUserServices;
             this.localizationService = localizationService;
         }
+        // Kulüplere bildirim gönderir
 
         public async Task<ServiceResponse<bool>> Handle(PushTargetNotificationForClubsCommand request,CancellationToken cancellationToken)
         {

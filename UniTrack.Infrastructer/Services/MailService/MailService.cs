@@ -46,6 +46,7 @@ namespace UniTrack.Infrastructure.Services
             {
                 Credentials = new NetworkCredential(configuration["MailSettings:Username"], configuration["MailSettings:Password"]),
                 EnableSsl = true,
+                Timeout = 10000 // 10 sn
             };
             await smtp.SendMailAsync(mail);
         }

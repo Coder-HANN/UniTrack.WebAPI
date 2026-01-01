@@ -42,6 +42,15 @@ namespace UniTrack.Persistence.Repositories
             return dbSet.ToListAsync();
         }
 
+        public async Task<List<Guid>> GetAllClubIdsAsync()
+        {
+            return await context.Clubs
+                .AsNoTracking()
+                .Select(c => c.Id)
+                .ToListAsync();
+        }
+
+
         public Task<Club> GetByEmailAndVerifyAsync(string presidentEmail)
         {
            return dbSet.FirstOrDefaultAsync(c => c.PresidentMail == presidentEmail && c.IsVerified == true);
