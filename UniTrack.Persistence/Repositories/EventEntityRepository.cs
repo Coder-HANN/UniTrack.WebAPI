@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using UniTrack.Application.Abstraction.Repositories;
-using UniTrack.Application.Feature.Event.Models;
 using UniTrack.Domain.Entities;
 using UniTrack.Persistence.Context;
 

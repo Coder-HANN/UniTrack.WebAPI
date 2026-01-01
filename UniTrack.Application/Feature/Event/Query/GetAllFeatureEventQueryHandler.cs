@@ -7,6 +7,8 @@ using UniTrack.Application.Common;
 using UniTrack.Application.Common.Constants;
 using UniTrack.Application.DTOs.Comment;
 using UniTrack.Application.DTOs.Event;
+using UniTrack.Domain.Entities;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace UniTrack.Application.Feature.Event.Query
 {
@@ -30,15 +32,7 @@ namespace UniTrack.Application.Feature.Event.Query
         public async Task<ServiceResponse<IPagingExecutionResult<GetAllFeatureEventQueryResponseDTO>>> Handle(GetAllFeatureEventQuery request, CancellationToken cancellationToken)
         {
             var userId = currentUserServices.CurrentUser();
-            if (userId == null)
-            {
-               return new ServiceResponse<IPagingExecutionResult<GetAllFeatureEventQueryResponseDTO>>
-               {
-                    IsSuccess = false,
-                    Data = null,
-                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
-               };
-            }
+
             var events = await eventRepository.GetFeatureEventsAsync();
             if (events == null || events.Count == 0)
             {
@@ -70,7 +64,32 @@ namespace UniTrack.Application.Feature.Event.Query
                 Time = e.Time,
                 Status = e.Status,
             }).ToList();
-            
+
+
+            if (userId != null)
+            {
+                // Kullanıcının takip ettiği kulüp Id'lerini al
+                var followedClubIds = events
+                    .SelectMany(e => e.Club.UserClubs)
+                    .Where(uc => uc.UserId == userId.Value)
+                    .Select(uc => uc.ClubId)
+                    .Distinct()
+                    .ToList();
+
+                // Önce takip edilen kulüplerin etkinlikleri, sonra tarih sırası
+                responses = responses
+                    .OrderByDescending(e => followedClubIds.Contains(e.ClubId))
+                    .ThenByDescending(e => e.StartDate)
+                    .ToList();
+            }
+            else
+            {
+                // Misafir kullanıcılar sadece tarih sırasına göre
+                responses = responses
+                    .OrderByDescending(e => e.StartDate)
+                    .ToList();
+            }
+
             var result = await baseEntityRepository.GetPagedResult(
               responses,
               pageSize: request.PageSize,
