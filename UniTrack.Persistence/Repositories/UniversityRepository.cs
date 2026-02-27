@@ -15,5 +15,13 @@ namespace UniTrack.Persistence.Repositories
         {
             return dbSet.Where(u => u.Id == id).FirstOrDefaultAsync();
         }
+
+        public async Task<IEnumerable<University>> GetAllAsync()
+        {
+            return await context.Universities
+            .AsNoTracking()
+            .OrderBy(u => u.Name)
+            .ToListAsync();
+        }
     }
 }

@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using UniTrack.Application.Common;
 using UniTrack.Application.DTOs.Auth;
-using UniTrack.Application.Feature.ActiveDetail.Query;
 using UniTrack.Application.Feature.Auth.Command;
 
 namespace UniTrack.WebAPI.Controllers.Public
@@ -24,10 +23,6 @@ namespace UniTrack.WebAPI.Controllers.Public
             return await mediator.Send(command);
         }
 
-        [HttpGet("total-user-count")]
-        public async Task<long> TotalUserCount([FromQuery] GetUserCountQuery query)
-        {
-            return await mediator.Send(query);
-        }
+       
     }
 }

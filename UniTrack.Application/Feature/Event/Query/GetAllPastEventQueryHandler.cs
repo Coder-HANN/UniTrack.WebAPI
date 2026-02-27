@@ -31,6 +31,7 @@ namespace UniTrack.Application.Feature.Event.Query
             var userId = currentUserServices.CurrentUser();
           
             var events = await eventRepository.GetPastEventsAsync();
+
             if (events == null || events.Count == 0)
             {
                 return new ServiceResponse<IPagingExecutionResult<GetAllPastEventQueryResponseDTO>>
@@ -45,6 +46,7 @@ namespace UniTrack.Application.Feature.Event.Query
                     Message = await localizationService.Get(ValidationKeys.EventNotFound)
                 };
             }
+
             var responses = events.Select(e => new GetAllPastEventQueryResponseDTO
             {
                 CoverImageUrl = e.Images?

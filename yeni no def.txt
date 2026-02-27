@@ -1,0 +1,2699 @@
+1
+T.C. İSTANBUL RUMELİ ÜNİVERSİTESİ
+MÜHENDİSLİK VE DOĞA BİLİMLERİ FAKÜLTESİ
+BİLGİSAYAR MÜHENDİSLİĞİ BÖLÜMÜ
+UNITRACK
+Üniversite Etkinlik Yönetim ve Takip Sistemi
+Bitirme Projesi Final Raporu
+Hazırlayan:
+Bedirhan Korkmaz
+Öğrenci No: 221201014
+Danışman: 
+Prof. Dr. Taner ÇEVİK 
+Ocak 2026
+İstanbul Rumeli Üniversitesi – 2025 / 2026 Güz Dönemi
+2
+İÇİNDEKİLER
+1. PROJE PLANLAMA VE GEREKSİNİM ANALİZİ ........................................................ 1
+1.1. Proje Kapsamı (Scope) ....................................................................................... 1
+1.1.1. Proje Kapsamına Dahil Olan Özellikler ............................................................ 2
+1.1.2. Proje Kapsamı Dışında Kalan Özellikler ........................................................... 3
+1.1.3. Varsayımlar ve Kısıtlar .................................................................................... 3
+1.2. Kullanıcı Hikâyeleri (User Stories) ....................................................................... 4
+1.2.1. Öğrenci Kullanıcı Hikâyeleri ............................................................................ 4
+1.2.2. Use Case Listesi ............................................................................................ 5
+1.3. Fonksiyonel Gereksinimler ................................................................................. 6
+1.4. Non-Fonksiyonel Gereksinimler ......................................................................... 8
+1.4.1. Performans Gereksinimleri ............................................................................ 8
+1.4.2. Güvenlik Gereksinimleri ................................................................................. 9
+1.4.3. Kullanılabilirlik (Usability) Gereksinimleri ...................................................... 10
+1.4.4. Ölçeklenebilirlik (Scalability) Gereksinimleri ................................................. 10
+1.4.5. Güvenilirlik ve Süreklilik (Reliability & Availability) .......................................... 11
+1.4.6. Bakım ve Güncellenebilirlik (Maintainability) ................................................. 11
+1.4.7. Uyumluluk (Compatibility) ............................................................................ 12
+1.5. Risk Analizi ve Mitigation Stratejileri .................................................................. 13
+1.5.1. Teknik Riskler .............................................................................................. 13
+1.5.2. Güvenlik Riskleri .......................................................................................... 14
+1.5.3. Operasyonel Riskler ..................................................................................... 14
+1.5.4. Proje Yönetimi Riskleri ..................................................................................15
+1.5.5. Hukuki ve Etik Riskler ....................................................................................15
+1.5.6. Kullanıcı Kabulü ve Sistem Benimsenmesi Riskleri ........................................ 16
+2. SİSTEM TASARIMI ............................................................................................. 18
+2.1. Mimari Tasarım (Yüksek Seviyeli Sistem Mimarisi) ............................................. 18
+2.1.1. Backend Mimari Tasarımı (Clean Architecture) .............................................. 19
+2.1.2. Frontend Mimari Tasarımı (Angular – Modüler Yapı) ....................................... 20
+2.1.3. Yüksek Seviyeli Sistem Akışı ......................................................................... 21
+3
+2.1.4. Mimari Kazanımlar ....................................................................................... 22
+2.1.5. Akademik Değerlendirme ............................................................................. 23
+2.4. Veritabanı Tasarımı .......................................................................................... 24
+2.5. Diğer Diyagramlar ............................................................................................ 27
+2.5.1. Activity Diyagramları .................................................................................... 27
+2.5.2. State (Durum) Diyagramları .......................................................................... 28
+2.5.3. Component Diyagramı ................................................................................. 29
+2.6. Entegrasyon Planı ............................................................................................ 31
+2.6.1. Frontend – Backend Entegrasyonu ................................................................ 31
+2.6.2. Backend – Yapay Zekâ Servisleri Entegrasyonu .............................................. 32
+2.6.3. Backend – Fiziksel Doğrulama Sistemleri Entegrasyonu ................................. 33
+2.6.4. Backend – Ödeme Sistemleri Entegrasyonu .................................................. 34
+2.6.5. Entegrasyonun Kazanımları .......................................................................... 35
+3. TEST PLANI VE SENARYOLARI ............................................................................ 37
+3.1. Açıklama (Test Strategy – Verification & Validation) ........................................... 37
+3.2. Kullanılacak Test Türleri ................................................................................... 38
+3.2.1. Unit Test (Birim Testleri) ............................................................................... 38
+3.2.2. Integration Test (Entegrasyon Testleri) .......................................................... 39
+3.2.3. System Test (Sistem Testleri) ....................................................................... 40
+3.2.4. Acceptance Test (Kabul Testleri) .................................................................. 41
+3.3. Test Seviyeleri ve Araç Eşlemesi ........................................................................42
+3.4. Test Sürecinin Projedeki Yeri ............................................................................. 43
+3.5. Test Senaryoları ............................................................................................... 44
+3.5.1. Kullanıcı İşlemleri Test Senaryoları ............................................................... 44
+3.5.2. Kulüp Yetkilisi İşlemleri Test Senaryoları ....................................................... 46
+3.5.3. Admin İşlemleri Test Senaryoları ................................................................... 48
+3.6. Test Araçları ve Test Ortamı .............................................................................. 50
+3.7. Hata Yönetimi (Bug Tracking Planı) ................................................................... 51
+3.8. Test Planı Belgesi ............................................................................................ 52
+3.9. Test Case Tablosu (Standart Format) ............................................................... 53
+4
+1. Proje Planlama ve Gereksinim Analizi
+Bu aşama, UniTrack projesinin hangi problemleri çözeceğini, hangi ihtiyaçlara cevap 
+vereceğini ve sistemin sınırlarının ne olacağını belirlemek amacıyla gerçekleştirilmiştir. 
+Bu kapsamda kullanıcı ihtiyaçları analiz edilmiş, fonksiyonel ve non-fonksiyonel 
+gereksinimler tanımlanmış ve projenin kapsamı net bir şekilde ortaya konmuştur. Bu 
+bölüm, yazılım geliştirme sürecinde “Ne yapılmalı?” sorusuna cevap vermektedir.
+1.1 Proje Kapsamı (Scope)
+Bu proje kapsamında geliştirilecek olan UniTrack sistemi, üniversitelerde düzenlenen 
+etkinliklerin dijital ortamda merkezi bir yapı altında toplanmasını, yönetilmesini ve 
+kullanıcılar tarafından etkin biçimde takip edilmesini amaçlayan bir yazılım 
+platformudur. Proje kapsamı belirlenirken, üniversite ortamında karşılaşılan temel 
+problemlere çözüm üretmek, kullanıcı ihtiyaçlarını karşılamak ve yazılım geliştirme 
+yaşam döngüsü (SDLC) prensiplerine uygun, sürdürülebilir bir sistem ortaya koymak 
+hedeflenmiştir.
+UniTrack; öğrenciler, kulüp/topluluk yöneticileri ve sistem yöneticileri olmak üzere üç 
+temel kullanıcı rolünü destekleyecek şekilde tasarlanmıştır. Bu roller doğrultusunda 
+sistem; etkinlik oluşturma ve yönetme, etkinlik keşfetme, kişiselleştirilmiş içerik sunma 
+ve bildirim gönderme gibi ana işlevleri kapsamaktadır.
+Proje kapsamında, öğrencilerin ilgi alanlarını belirleyebildiği, kulüpleri takip edebildiği ve 
+yaklaşan etkinlikler hakkında otomatik bildirim alabildiği bir yapı oluşturulacaktır. 
+Kullanıcılar, etkinlikleri tarih, kategori ve kulüp bazlı filtreleyebilecek, etkinlik detaylarını 
+görüntüleyebilecek ve etkinliklere kayıt olabilecektir. Bu sayede sistem, yalnızca pasif bir 
+duyuru platformu değil, etkileşimli bir etkinlik yönetim sistemi olarak hizmet verecektir.
+Kulüp ve topluluk yöneticileri için ise etkinlik oluşturma, etkinlik içeriklerini (açıklama, 
+tarih, konum, görseller) düzenleme, etkinlikleri yayınlama ve katılımcı listelerini yönetme 
+fonksiyonları proje kapsamı içinde yer almaktadır. Bu sayede organizatörler, hedef 
+kitlelerine doğrudan ve düzenli biçimde ulaşabilecektir.
+Sistem yöneticileri (admin) açısından bakıldığında; kullanıcı ve kulüp hesaplarının 
+denetlenmesi, uygunsuz içeriklerin kontrol edilmesi ve sistem genel ayarlarının 
+5
+yönetilmesi proje kapsamına dahil edilmiştir. Böylece sistemin güvenilirliği ve 
+sürdürülebilirliği sağlanacaktır.
+Teknik açıdan proje kapsamı; güvenli kullanıcı kimlik doğrulama mekanizması, rol bazlı 
+yetkilendirme altyapısı, veritabanı tabanlı etkinlik yönetimi, bildirim sistemi 
+entegrasyonu ve mobil uyumlu kullanıcı arayüzünü içerecek şekilde belirlenmiştir. Ayrıca 
+performans, güvenlik ve kullanılabilirlik gibi non-fonksiyonel gereksinimler de sistem 
+kapsamının temel bileşenleri arasında yer almaktadır.
+Projenin kapsamı; ödeme sistemleri, fiziksel katılım doğrulama altyapıları (QR/NFC), 
+resmi üniversite otomasyon entegrasyonları ve gelişmiş yapay zekâ tabanlı öneri 
+motorları gibi ileri seviye modülleri dışarıda bırakacak şekilde sınırlandırılmıştır. Bu tür 
+bileşenler, ileride yapılabilecek geliştirmeler kapsamında değerlendirilecektir.
+Sonuç olarak UniTrack projesinin kapsamı, üniversite etkinlik ekosisteminde ihtiyaç 
+duyulan temel fonksiyonları kapsayan, modüler yapıda, geliştirilebilir ve akademik proje 
+kriterlerine uygun bir yazılım sistemi ortaya koyacak şekilde tanımlanmıştır.
+1.1.1 Proje Kapsamına Dahil Olan Özellikler
+UniTrack projesi kapsamında geliştirilecek sistem; web ve mobil platformlarla entegre 
+çalışan, yapay zekâ destekli analiz yeteneklerine sahip, fiziksel katılım doğrulama 
+altyapılarını içeren kapsamlı bir üniversite etkinlik yönetim platformu olarak 
+tasarlanmıştır.
+Bu kapsamda proje dahilinde yer alan temel özellikler aşağıda detaylandırılmıştır:
+Kullanıcı ve Rol Yönetimi
+• Kullanıcı kayıt, giriş ve öğrenci mail doğrulama sistemi
+• Rol bazlı yetkilendirme (öğrenci, kulüp yetkilisi, admin)
+• Güvenli oturum yönetimi ve veri gizliliği mekanizmaları
+Profil ve Hesap Yönetimi
+• Öğrenci profili oluşturma ve düzenleme
+• İlgi alanı, bölüm, fakülte ve etkinlik tercihleri yönetimi
+• Kulüp/topluluk profili oluşturma ve yönetme
+Etkinlik Yönetimi
+• Etkinlik oluşturma, güncelleme ve silme
+6
+• Etkinlik detaylarının (tarih, konum, kapasite, kategori) yönetimi
+• Etkinlik listeleme ve detay görüntüleme
+• Etkinliklere kayıt olma ve katılım takibi
+Web & Mobil Entegrasyonu
+• Web tabanlı kullanıcı arayüzü
+• Mobil uyumlu ve/veya mobil uygulama entegrasyonu
+• Platformlar arası senkron veri yapısı
+Yapay Zekâ ve Veri Analizi Entegrasyonu
+• Kullanıcı davranışlarının analiz edilmesi (tıklama, kayıt, takip, katılım)
+• İlgi alanı, geçmiş etkinlik katılımı ve zaman verilerine göre öneri sistemi
+• Etkinliklerin kişiselleştirilmiş şekilde sıralanması
+• Kullanıcı profiline ve ilgi alanına dayalı etkinlik önerisi
+• Kişi bazlı ve alan/kategori bazlı otomatik bildirim mekanizmaları
+Bu modül sayesinde UniTrack, klasik bir etkinlik listeleme platformundan ziyade, 
+kullanıcıya özel içerik sunan akıllı bir sistem hâline getirilmektedir.
+Bildirim Sistemi
+• Kullanıcı verilerinin analizine dayalı hedefli bildirimler
+• Alan bazlı (teknoloji, spor, kültür vb.) etkinlik bildirimleri
+• Kişi bazlı (takip, geçmiş katılım, ilgi alanı) bildirim sistemi
+• Yaklaşan etkinlik hatırlatmaları
+• Sistem içi ve e-posta bildirimleri
+Medya ve İçerik Yönetimi
+• Etkinlik afişi, logo ve kapak görselleri yönetimi
+• Dosya yükleme, saklama ve yetkilendirme mekanizmaları
+Ödeme Sistemi Entegrasyonu
+• Etkinlik görüntülenme artışı için ödeme sistemi
+• Etkinlik bazlı biletleme sistemi
+• Kullanıcı ödeme geçmişi ve işlem kayıtları
+7
+• Güvenli ödeme servisleriyle entegrasyona uygun mimari
+Fiziksel Katılım Doğrulama Sistemleri
+• QR kod tabanlı giriş doğrulama
+• Katılımcı doğrulama ve yoklama otomasyonu
+Bu yapı sayesinde sistem, yalnızca dijital kayıt değil, fiziksel katılımın da doğrulanabildiği 
+bütüncül bir çözüm sunmaktadır.
+Yönetim ve Denetim
+• Yönetici (admin) paneli
+• Kullanıcı, kulüp ve etkinlik denetimi
+• Uygunsuz içerik kontrolü
+• Temel raporlama ve sistem loglarının tutulması
+1.1.2 Proje Kapsamı Dışında Kalan Özellikler
+Projenin akademik süresi ve kaynak kısıtları göz önünde bulundurularak aşağıdaki 
+unsurlar mevcut sürüm kapsamında yer almamaktadır:
+• Ulusal veya uluslararası üniversiteler arası merkezi veri paylaşım ağı
+• Gelişmiş büyük veri ve gerçek zamanlı yapay zekâ tahmin sistemleri
+• Tam otomatik kampüs güvenlik ve turnike altyapıları
+• Kurumsal ERP ve resmî öğrenci işleri otomasyonlarıyla derin entegrasyon
+• Metaverse / sanal kampüs etkinlik ortamları
+• Öğrenci hedefli şirket etkinliği paylaşma entegresi
+Bu özellikler, UniTrack sisteminin ileride geliştirilebilecek ileri seviye sürümleri 
+kapsamında değerlendirilecektir.
+1.1.3 Varsayımlar ve Kısıtlar
+• Kullanıcıların internet erişimine sahip olduğu varsayılmaktadır.
+• Geliştirme süreci bireysel olarak yürütülecektir.
+• Proje, bahar döneminde belirlenen analiz ve tasarım dokümanına sadık kalınarak 
+implemente edilecektir.
+Bu bölüm ile birlikte UniTrack projesinin sınırları net olarak tanımlanmış, gereksinim 
+analizinin temelini oluşturacak çerçeve belirlenmiştir.
+8
+2. Gereksinim Analizi
+Bu bölüm, yazılım geliştirme sürecinde “Ne yapılmalı?” sorusuna cevap vermektedir. 
+Gereksinim analizi aşaması, UniTrack sisteminin sadece teknik bir araç değil, kullanıcı 
+sorunlarına çözüm üreten bir platform olmasını sağlamak amacıyla yapılandırılmıştır.
+2.1 Paydaş Analizi ve Kullanıcı İhtiyaçları
+UniTrack sistemi için gereksinimler belirlenirken üç temel paydaş grubu (Öğrenci, Kulüp 
+Yetkilisi, Sistem Yöneticisi) odağa alınmıştır. Analiz sürecinde kullanıcıların karşılaştığı 
+"etkinliklerden haberdar olamama", "fiziksel yoklama süreçlerindeki yavaşlık" ve 
+"yönetimsel denetim zorluğu" gibi ana problemler, sistemin fonksiyonel temelini 
+oluşturmuştur.
+2.2 Gereksinim Belirleme Metodolojisi
+Analiz aşamasında MoSCoW (Must, Should, Could, Won't) önceliklendirme tekniği ve 
+Kullanıcı Hikayeleri (User Stories) metodolojisi kullanılmıştır. Bu sayede projenin 
+"Minimum Uygulanabilir Ürün" (MVP) özellikleri ile gelecekteki geliştirme aşamaları 
+birbirinden net bir şekilde ayrılmıştır.
+2.3 Kullanıcı Hikâyeleri (User Stories)
+Bu bölümde UniTrack sistemini kullanacak temel kullanıcı gruplarının ihtiyaçları, 
+kullanıcı hikâyeleri şeklinde ifade edilmiştir. Kullanıcı hikâyeleri, sistemin hangi 
+problemleri çözeceğini ve hangi fonksiyonları yerine getirmesi gerektiğini kullanıcı bakış 
+açısıyla ortaya koymaktadır.
+2.3.1 Öğrenci Kullanıcı Hikâyeleri
+• Bir öğrenci olarak, üniversitemde düzenlenen tüm etkinlikleri tek bir platformda 
+görmek istiyorum, böylece farklı kaynakları takip etmek zorunda kalmam.
+• Bir öğrenci olarak, ilgi alanlarıma göre filtrelenmiş etkinlikler görmek istiyorum, 
+böylece bana uygun olmayan etkinliklerle vakit kaybetmem.
+• Bir öğrenci olarak, daha önce katıldığım ve takip ettiğim kulüplere göre önerilen 
+etkinlikleri görmek istiyorum.
+• Bir öğrenci olarak, yaklaşan etkinlikler hakkında otomatik bildirim almak 
+istiyorum, böylece etkinlikleri kaçırmam.
+• Bir öğrenci olarak, bir etkinliğe online olarak kayıt olmak ve gerekirse ücretini 
+ödemek istiyorum.
+9
+• Bir öğrenci olarak, etkinliğe geldiğimde QR doğrulama ile hızlı giriş yapmak 
+istiyorum.
+• Bir öğrenci olarak, takip ettiğim kulüpleri ve katıldığım etkinlikleri profilimden 
+görüntülemek istiyorum.
+• Bir öğrenci olarak, mobil uygulama üzerinden etkinliklere kolayca erişmek 
+istiyorum.
+Kulüp Yetkilisi Kullanıcı Hikâyeleri
+• Bir kulüp yöneticisi olarak, etkinlik oluşturmak ve detaylarını (tarih, yer, kota, 
+ücret, afiş) sisteme eklemek istiyorum.
+• Bir kulüp yöneticisi olarak, etkinliklerimi güncellemek veya iptal etmek istiyorum.
+• Bir kulüp yöneticisi olarak, etkinliğime kaç kişinin kayıt olduğunu ve katıldığını 
+görmek istiyorum.
+• Bir kulüp yöneticisi olarak, etkinlik oluşturduğumda, güncellediğimde ve etkinlik 
+günüm yaklaştığında etkinliğe katılan öğrencilere bildirim göndermek istiyorum.
+• Bir kulüp yöneticisi olarak, etkinliğe girişleri QR doğrulama ile doğrulamak 
+istiyorum.
+• Bir kulüp yöneticisi olarak, ücretli etkinlikler için ödeme durumlarını takip etmek 
+istiyorum.
+Sistem Yöneticisi (Admin) Kullanıcı Hikâyeleri
+• Bir yönetici olarak, kullanıcı ve kulüp hesaplarını denetlemek istiyorum.
+• Bir yönetici olarak, uygunsuz içerikleri kaldırmak istiyorum.
+• Bir yönetici olarak, sistem genelinde etkinlik ve kullanıcı raporlarını görmek 
+istiyorum.
+• Bir yönetici olarak, bildirim ve sistem ayarlarını kontrol etmek istiyorum.
+• Bir yönetici olarak ülke, il, üniversite ve bölüm bazında en aktif kulüpleri tespit 
+etmek istiyorum.
+2.3.2 Use Case Listesi
+Aşağıda UniTrack sistemi için tanımlanan ana use case’ler verilmiştir:
+Kullanıcı İşlemleri
+• Kullanıcı kayıt ol
+• Kullanıcı giriş yap
+• Profil oluştur / düzenle
+10
+• İlgi alanlarını belirle
+• Etkinlikleri listele
+• Etkinlik detayını görüntüle
+• Etkinlik filtrele ve ara
+• Etkinliğe kayıt ol
+• Etkinlik için ödeme yap
+• Bildirim al
+• Kulüp takip et
+• Etkinliğe fiziksel giriş yap (QR doğrulama)
+Kulüp Yetkilisi İşlemleri
+• Etkinlik oluştur
+• Etkinlik güncelle
+• Etkinlik sil / iptal et
+• Katılımcı listesini görüntüle
+• Katılım doğrulama sistemi yönetimi
+• Hedefli bildirim gönder
+Admin İşlemleri
+• Kullanıcı yönetimi
+• Kulüp onaylama
+• İçerik denetimi
+• Sistem raporlarını görüntüleme
+2.4 Sistem Tasarımı ve Mimari Modelleme (UML)
+Bu bölümde, UniTrack platformunun işleyişi; aktör etkileşimleri, iş akış süreçleri ve 
+sistem bileşenleri arasındaki veri alışverişi temel alınarak modellenmiştir.
+2.4.1 Kullanım Durumu (Use Case) Analizi
+Sistemin kapsamını ve kullanıcı yetki sınırlarını belirleyen temel diyagramdır.
+• Diyagram:
+11
+ 
+• Detaylı Analiz: Bu diyagramda sistem üç ana aktöre (Student, Club Officer, 
+Admin) bölünmüştür. Öğrenci tarafında "Register for Event" işleminin "Make 
+Payment" fonksiyonunu, "QR Check-in" işleminin ise "Verify QR Code" 
+fonksiyonunu <<include>> ilişkisiyle çağırdığı görülmektedir. Bu, ödeme 
+yapılmadan kaydın, doğrulama yapılmadan girişin tamamlanamayacağını teknik 
+olarak garanti eder. Club Officerise etkinliğin tüm yaşam döngüsünü (oluşturma, 
+güncelleme, iptal) yönetirken, Admin tüm sistemi denetleyen üst otorite olarak 
+konumlandırılmıştır.
+2.4.2 Operasyonel İş Akışı (Activity Diagram)
+Sistemin kullanıcı deneyimi (UX) perspektifinden mantıksal karar noktalarını gösterir.
+12
+• Diyagram:
+ 
+• Detaylı Analiz: Süreç, uygulamanın açılmasıyla başlar ve bir "Decision Node" 
+(Karar Düğümü) ile kullanıcının oturum durumunu kontrol eder. Diyagramdaki en 
+kritik nokta Ücretli mi? kontrolüdür. Eğer etkinlik ücretliyse akış "Ödeme Yap" 
+adımına zorunlu olarak yönlenir; ücretsizse doğrudan "QR Kod Oluştur" adımına 
+geçer. Bu akış, sistemin farklı senaryolarda nasıl dallandığını ve sonlanma 
+noktasına (Final State) nasıl ulaştığını hata payı bırakmadan simüle eder.
+2.4.3 Etkileşim ve Veri Akış Yönetimi (Sequence Diagrams)
+Bileşenlerin (Frontend, API, DB ve Dış Servisler) birbirleriyle hangi mesajlar aracılığıyla 
+haberleştiğini gösterir.
+13
+A. Etkinlik Yönetimi ve Dinamik Bildirimler
+• Diyagramlar:
+ 
+• Detaylı Analiz: Etkinlik oluşturma sürecinde API, veriyi DB'ye yazmadan önce bir 
+doğrulama katmanı görevi görür. İptal senaryosunda ise mimari daha kompleks 
+bir hal alır: API sadece DB'deki statüyü "İptal" olarak güncellemekle kalmaz, aynı 
+zamanda Notification Service bileşenini tetikleyerek ilgili tüm öğrencilere 
+asenkron bir şekilde bildirim iletir. Bu, sistemin gerçek zamanlı (real-time)
+iletişim kabiliyetini kanıtlar.
+B. Kayıt, Kontenjan ve Ödeme Entegrasyonu
+• Diyagram:
+14
+• Detaylı Analiz: Bu sekans, sistemin veri tutarlılığını nasıl sağladığını gösterir. Kayıt 
+isteği geldiğinde API, önce DB üzerinde Kontenjan Kontrolü gerçekleştirir. 
+Kontenjan uygunsa Payment Service (Dış Ödeme Geçidi) devreye girer. Ödeme 
+başarılı onayı gelmeden DB'ye kayıt (insert) işlemi yapılmaz. Bu sayede "hayali 
+kayıt" veya "kapasite aşımı" gibi hataların önüne geçilir. İşlem sonunda üretilen 
+QR kod, öğrenciye dijital bilet olarak teslim edilir.
+C. Saha Operasyonu: QR Doğrulama
+• Diyagram:
+15
+ 
+• Detaylı Analiz: Fiziksel katılımın dijital takibi bu aşamada gerçekleşir. 
+Diyagramda yer alan alt (alternative) bloğu, sistemin hata yönetimini (Error 
+Handling) gösterir. [Geçerliyse] durumunda DB güncellenerek katılım 
+kesinleştirilir; [Geçersizse] durumunda API üzerinden dönen hata mesajı anlık 
+olarak yetkili ekranına yansıtılır. Bu, etkinliğin güvenliğini ve istatistiklerin 
+doğruluğunu sağlar.
+D. Merkezi Denetim ve Raporlama (Admin)
+• Diyagram:
+16
+ 
+• Detaylı Analiz: Admin etkileşimleri genellikle sorgulama ağırlıklıdır. Admin paneli 
+üzerinden gönderilen "Kullanıcıları getir" veya "Kulüp onayla" istekleri, API 
+üzerinden DB'ye iletilir. Bu akış, sistemin yönetilebilirlik (maintainability)
+özelliğini ve idari işlemlerin izlenebilirliğini vurgular.
+2.5 Gereksinim Matrisi (Requirements Matrix)
+Bu tablo, kullanıcı ihtiyaçlarının (User Stories) hangi fonksiyonel gereksinimlere 
+dönüştüğünü ve bu gereksinimlerin öncelik durumunu göstermektedir.
+ID
+Gereksinim 
+Adı
+İlgili 
+Aktör
+Açıklama Öncelik İlgili UML 
+Bileşeni
+FR01
+Kullanıcı Kaydı 
+ve Giriş
+Öğrenci 
+/ Yetkili
+Kullanıcılar e-posta ve 
+şifre ile sisteme dahil 
+olabilmelidir.
+Yüksek
+Activity 
+Diagram / Use 
+Case
+FR02
+Etkinlik 
+Listeleme
+Öğrenci
+Tüm güncel etkinlikler 
+ana sayfada kronolojik 
+olarak listelenmelidir.
+Yüksek
+Sequence 
+(Görüntüleme)
+17
+FR03
+Gelişmiş 
+Filtreleme
+Öğrenci
+İlgi alanı, kategori ve 
+kulüp bazlı arama 
+yapılabilmelidir.
+Orta
+Activity 
+Diagram
+FR04
+Etkinlik 
+Oluşturma
+Kulüp 
+Yetkilisi
+Tarih, mekan, kota ve 
+afiş bilgilerini içeren 
+form ile etkinlik 
+tanımlanmalıdır.
+Yüksek
+Sequence 
+(Oluşturma)
+FR05
+Ödeme 
+Entegrasyonu
+Öğrenci
+Ücretli etkinlikler için 
+kredi kartı ile güvenli 
+ödeme yapılabilmelidir.
+Yüksek
+Sequence 
+(Kayıt& Ödeme)
+FR06
+Otomatik 
+Bildirim
+Sistem
+Etkinlik iptali veya 
+yaklaşan etkinlikler için 
+push/e-posta bildirimi 
+gitmelidir.
+Orta
+Sequence (İptal 
+& Bildirim)
+FR07
+QR Kod 
+Üretimi Sistem
+Kayıt başarılı olduktan 
+sonra kullanıcıya özel 
+tekil bir QR kod 
+oluşturulmalıdır.
+Yüksek
+Activity / 
+Sequence 
+(Ödeme)
+FR08
+QR Doğrulama
+Kulüp 
+Yetkilisi
+Etkinlik girişinde QR kod 
+taranarak katılım 
+onaylanmalıdır.
+Yüksek
+Sequence (QR 
+Doğrulama)
+FR09
+Kulüp Onay 
+Sistemi
+Admin
+Yeni açılan kulüp 
+hesapları admin 
+onayından geçmelidir.
+Orta
+Sequence 
+(Admin 
+Yönetimi)
+FR10
+İçerik 
+Moderasyonu
+Admin
+Uygunsuz etkinlik veya 
+yorumlar admin 
+tarafından 
+kaldırılabilmelidir.
+Orta
+Use Case 
+(Moderate 
+Content)
+FR11
+Katılımcı 
+Raporlama
+Kulüp 
+Yetkilisi
+Kayıt olan ve fiilen 
+katılan öğrenci listeleri 
+raporlanabilmelidir.
+Düşük
+Use Case (View 
+Participants)
+FR12
+Profil Yönetimi Öğrenci
+Kullanıcı ilgi alanlarını 
+ve takip ettiği kulüpleri 
+düzenleyebilmelidir.
+Orta
+Use Case 
+(Manage 
+Profile)
+18
+Gereksinim Matrisi Analizi ve Detaylı Açıklaması
+Bu matris, UniTrack projesinin kapsamını dört temel boyutta analiz eder: İşlevsellik, 
+Sorumluluk, Önceliklendirme ve Teknik Doğrulama.
+1. Önceliklendirme Stratejisi (MoSCoW Analizi)
+Tablodaki öncelikler, projenin hayata geçirilme aşamalarını belirler:
+• Yüksek (Must Have): Sistemin temel iskeletidir. Örneğin, FR-04 (Etkinlik 
+Oluşturma) veya FR-08 (QR Doğrulama) olmadan sistemin varlık sebebi 
+ortadan kalkar. Bu gereksinimler, yazılımın ilk sürümlerinde (MVP) tamamlanması 
+gereken kritik fonksiyonlardır.
+• Orta (Should Have): Sistemin kalitesini ve kullanıcı memnuniyetini belirler. FR06 (Otomatik Bildirim) sistemi daha "akıllı" hale getirir ancak sistemin temel 
+işleyişini durdurmaz.
+• Düşük (Could Have): "Olsa iyi olur" denilen, genellikle raporlama ve analiz odaklı 
+(FR-11) özelliklerdir.
+2. Aktör Tabanlı Görev Dağılımı
+Matris, projedeki yetki karmaşasını önler:
+• Öğrenci Odaklı Gereksinimler: Sistemin "B2C" (son kullanıcı) tarafını temsil 
+eder. FR-02'den FR-07'ye kadar olan akış, bir öğrencinin etkinliği bulup giriş 
+yapana kadarki tüm müşteri yolculuğunu kapsar.
+• Yetkili ve Admin Gereksinimleri: Sistemin yönetimsel (Back-office) gücünü 
+temsil eder. Admin'in onay mekanizması (FR-09), sistemin güvenilirliğini ve içerik 
+kalitesini denetleyen bir filtre görevi görür.
+3. Fonksiyonel Gereksinimlerin Teknik İlişkisi
+Tablonun en sağ sütunu olan "İlgili UML Bileşeni", tasarımın doğruluğunu kanıtlar:
+• Veri Bütünlüğü: Örneğin; FR-05 (Ödeme) gereksinimi, raporun önceki 
+kısımlarında yer alan Sequence Diagram ile teknik olarak nasıl gerçekleşeceği 
+(Payment Service ile haberleşme) kanıtlanmıştır.
+• Mantıksal Akış: FR-03 (Filtreleme) gereksinimi, Activity Diagram üzerinde 
+kullanıcının karşısına çıkan karar noktalarıyla eşleşir. Bu, kod yazım aşamasında 
+yazılımcının hangi akış şemasını referans alacağını gösterir.
+19
+4. Süreç Bazlı Gruplandırma
+Matris incelendiğinde gereksinimlerin üç ana fazda toplandığı görülür:
+1. Hazırlık Fazı: Kayıt, Giriş ve Kulüp Onay süreçleri (FR-01, FR-09).
+2. Operasyon Fazı: Etkinlik oluşturma, ödeme ve kayıt süreçleri (FR-04, FR-05, 
+FR-07).
+3. Saha Fazı: Etkinlik günü yapılan QR kod tarama ve katılım doğrulama süreçleri 
+(FR-08).
+Sonuç ve İzlenebilirlik
+Bu matris sayesinde, herhangi bir fonksiyonel gereksinimde (örneğin QR doğrulama) bir 
+hata oluştuğunda, bunun hangi aktörü etkilediği ve hangi UML diyagramının revize 
+edilmesi gerektiği anında tespit edilebilir. Bu doküman, UniTrack sisteminin sadece bir 
+fikir değil, teknik olarak ayakları yere basan bir mimari olduğunu belgelemektedir.
+2.6 Fonksiyonel Gereksinimler
+Fonksiyonel gereksinimler, UniTrack sisteminin hangi işlevleri yerine getirmesi 
+gerektiğini tanımlar. Bu gereksinimler, sistemin kullanıcı ihtiyaçlarını nasıl 
+karşılayacağını ve hangi hizmetleri sunacağını açık şekilde ortaya koyar.
+Kullanıcı Kayıt ve Kimlik Doğrulama
+Sistem, öğrenciler, kulüp yetkilileri ve yöneticiler için güvenli kullanıcı kayıt, giriş ve çıkış 
+işlemlerini desteklemelidir. Şifreler güvenli algoritmalarla saklanmalı ve rol bazlı erişim 
+kontrolü uygulanmalıdır.
+Profil Yönetimi
+Sistem, kullanıcıların kişisel profillerini oluşturmasına, düzenlemesine ve ilgi alanlarını 
+belirlemesine olanak sağlamalıdır.
+Kulüp ve Organizasyon Yönetimi
+Sistem, kulüp yetkililerinin kulüp profili oluşturmasına, kulüp bilgilerini düzenlemesine 
+ve kulüp üyelerini yönetmesine imkân tanımalıdır.
+20
+Etkinlik Oluşturma ve Yönetme
+Sistem, kulüp yetkililerinin etkinlik oluşturmasına, güncellemesine, silmesine ve 
+yayınlamasına olanak tanımalıdır.
+Etkinlik Listeleme ve Arama
+Sistem, kullanıcıların etkinlikleri tarih, kategori, kulüp ve konum bazlı listeleyebilmesini 
+ve arayabilmesini sağlamalıdır.
+Etkinlik Detay Görüntüleme
+Sistem, etkinliklere ait açıklama, tarih, yer, kontenjan, ücret ve organizatör bilgilerini 
+detaylı şekilde sunmalıdır.
+Etkinliğe Kayıt Olma
+Sistem, kullanıcıların etkinliklere çevrim içi kayıt olabilmesini ve kayıt bilgilerini 
+saklamalıdır.
+Ödeme İşlemleri
+Sistem, ücretli etkinlikler için güvenli ödeme altyapısı sağlamalı ve ödeme kayıtlarını 
+tutmalıdır.
+Bildirim Sistemi
+Sistem, yaklaşan etkinlikler, değişiklikler ve öneriler için otomatik bildirim göndermelidir.
+Yapay Zekâ Destekli Öneri Sistemi
+Sistem, kullanıcı davranışlarını analiz ederek kişiye özel etkinlik önerileri sunmalıdır.
+Kullanıcı Verisi Analizi
+Sistem, kullanıcıların etkileşimlerini (tıklama, kayıt, katılım, takip) analiz etmeli ve 
+raporlayabilmelidir.
+Fiziksel Katılım Doğrulama
+Sistem, QR kod sistemleri üzerinden fiziksel katılım doğrulaması yapabilmelidir.
+21
+Medya Yönetimi
+Sistem, etkinlik afişi, logo ve kapak görsellerinin yüklenmesini, saklanmasını ve 
+yönetilmesini sağlamalıdır.
+Yönetici (Admin) Paneli
+Sistem, yöneticilere kullanıcı, kulüp ve etkinlik denetimi yapabilecekleri bir kontrol paneli 
+sunmalıdır.
+Raporlama ve Kayıt Tutma
+Sistem, etkinlik katılımı, ödeme işlemleri ve kullanıcı aktivitelerine dair raporlar 
+oluşturabilmelidir.
+Web ve Mobil Entegrasyonu
+Sistem, web ve mobil platformlardan erişilebilir olmalı ve veriler senkron çalışmalıdır.
+2.7 Non-Fonksiyonel Gereksinimler
+Bu bölümde, sistemin nasıl çalışması gerektiği tanımlanır. Yani ne yaptığı değil; ne 
+kadar hızlı, ne kadar güvenli, ne kadar stabil ve ne kadar kullanılabilir olduğu ele 
+alınır.
+2.7.1. Performans Gereksinimleri
+• Sistem, aynı anda en az 1000 eş zamanlı kullanıcıyı performans düşüşü 
+olmadan desteklemelidir.
+• Ana sayfa, etkinlik listesi ve etkinlik detay sayfaları maksimum 2 saniye içerisinde 
+yüklenmelidir.
+• Kullanıcı giriş ve kayıt işlemleri maksimum 3 saniye içinde tamamlanmalıdır.
+• Bildirim sistemi, bir etkinlik oluşturulduğunda veya güncellendiğinde ilgili 
+kullanıcılara en geç 10 saniye içinde bildirim göndermelidir.
+• QR kod ile katılım doğrulama işlemleri gerçek zamanlı çalışmalı, sonuçlar anında 
+sisteme yansıtılmalıdır.
+• Raporlama ve veri analizi işlemleri büyük veri setlerinde dahi sistemi 
+kilitlemeden arka planda çalışmalıdır.
+22
+2.7.2. Güvenlik Gereksinimleri
+• Tüm kullanıcı şifreleri bcrypt / Argon2 gibi güçlü hash algoritmaları ile 
+şifrelenmiş şekilde saklanmalıdır.
+• Sistem genelinde veri iletimi HTTPS (SSL/TLS) üzerinden yapılmalıdır.
+• Yetkilendirme yapısı rol tabanlı olmalıdır:
+o Öğrenci
+o Kulüp yöneticisi
+o Admin
+• Kullanıcılar yalnızca kendi yetki alanlarına giren verilere erişebilmelidir.
+• Admin paneli, gelişmiş güvenlik önlemleri (IP kısıtlama, iki faktörlü doğrulama vb.) 
+ile korunmalıdır.
+• QR kod sistemleri kötüye kullanımı önlemek için tekil oturum, zaman damgası 
+ve doğrulama tokenları ile çalışmalıdır.
+• Kullanıcı kişisel verileri KVKK/GDPR uyumlu olacak şekilde saklanmalı ve 
+işlenmelidir.
+• Sistem, SQL Injection, XSS ve CSRF saldırılarına karşı korumalı olmalıdır.
+2.7.3. Kullanılabilirlik (Usability) Gereksinimleri
+• Sistem hem mobil hem web platformlarında tam uyumlu (responsive) 
+çalışmalıdır.
+• Arayüz, teknik bilgisi olmayan kullanıcıların dahi rahatlıkla kullanabileceği şekilde 
+basit, sade ve sezgisel olmalıdır.
+• Kullanıcılar etkinliklere en fazla 3 adımda kayıt olabilmelidir.
+• Önemli işlemler (etkinlik silme, ödeme, kulüp kapatma vb.) öncesinde 
+kullanıcıdan onay alınmalıdır.
+• Hatalı girişlerde sistem kullanıcıya açık ve yönlendirici hata mesajları
+sunmalıdır.
+• Engelli bireyler için erişilebilirlik standartlarına (kontrast, yazı boyutu, ekran 
+okuyucu uyumu vb.) dikkat edilmelidir.
+2.7.4. Ölçeklenebilirlik (Scalability) Gereksinimleri
+• Sistem, kullanıcı ve etkinlik sayısı arttığında altyapı genişletilerek performans 
+kaybı olmadan çalışabilelidir.
+• Mikroservis veya modüler mimari desteklenmelidir.
+• Yapay zekâ, bildirim, ödeme ve doğrulama modülleri bağımsız servisler olarak 
+çalışabilecek yapıda olmalıdır.
+• Veritabanı, büyük veri analizine uygun şekilde optimize edilmelidir.
+23
+2.7.5. Güvenilirlik ve Süreklilik (Reliability & Availability)
+• Sistem, haftalık bazda %99 uptime oranını sağlamalıdır.
+• Otomatik yedekleme mekanizması bulunmalıdır (günlük incremental, haftalık full 
+backup).
+• Sistem hatalarında, kullanıcı verileri kaybolmadan işlem geri alınabilmelidir 
+(rollback & logging).
+• Kritik işlemler (ödeme, katılım doğrulama, bildirim) için loglama ve hata izleme 
+sistemi kurulmalıdır.
+2.7.6. Bakım ve Güncellenebilirlik (Maintainability)
+• Kod yapısı modüler, okunabilir ve dokümante edilmiş olmalıdır.
+• Yeni modüller (farklı ödeme altyapıları, yeni AI modelleri, yeni doğrulama 
+sistemleri) sisteme kolayca entegre edilebilmelidir.
+• Admin paneli üzerinden sistem ayarları ve içerik yönetimi yapılabilmelidir.
+• API yapısı versiyonlanabilir olmalıdır.
+2.7.7. Uyumluluk (Compatibility)
+• Sistem modern tarayıcıların tamamında çalışmalıdır (Chrome, Edge, Firefox, 
+Safari).
+• Android ve iOS cihazlarda uyumlu çalışmalıdır.
+• Harici sistemlerle (ödeme altyapısı, bildirim servisleri, yapay zekâ servisleri) 
+RESTful API üzerinden entegre olmalıdır.
+2.8 Kullanılacak Araçlar ve Teknolojiler 
+Bu bölümde UniTrack sisteminin geliştirilmesi, dağıtımı ve sürdürülebilirliği için tercih 
+edilen kurumsal ve ölçeklenebilir teknoloji yığını sunulmaktadır. Bu teknoloji seçimi; 
+güvenlik, performans, bakım kolaylığı ve uzun vadeli genişletilebilirlik kriterleri esas 
+alınarak yapılmıştır. 
+Katman / Kategori
+Kullanılan 
+Teknoloji
+Teknik Açıklama ve Tercih Nedeni
+Frontend 
+(Kullanıcı Arayüzü)
+Angular 17
+TypeScript tabanlı, modüler ve yüksek 
+ölçeklenebilir framework. RESTful API 
+entegrasyonu ve kurumsal standartlara uygunluğu 
+nedeniyle tercih edilmiştir.
+24
+Backend (API 
+Katmanı)
+ASP.NET 
+Core 8 Web 
+API
+Yüksek performanslı, güvenli ve Clean 
+Architecture prensiplerine uygun mimari. .NET 8'in 
+getirdiği performans iyileştirmeleriyle optimize 
+edilmiştir.
+Veritabanı
+Microsoft 
+SQL Server
+.NET ekosistemiyle tam uyumlu, ACID 
+standartlarını destekleyen güçlü ilişkisel veritabanı 
+yönetim sistemi (RDBMS).
+ORM (Veri 
+Yönetimi)
+Entity 
+Framework 
+Core
+Code-First yaklaşımı ve LINQ desteği ile veritabanı 
+işlemlerinin tip güvenli (type-safe) ve sürdürülebilir 
+yönetimini sağlar.
+Containerization Docker
+Frontend, backend ve veritabanı bileşenlerinin 
+izole ortamda çalışmasını sağlayarak "çevresel 
+tutarsızlık" sorunlarını ortadan kaldırır.
+DevOps / CI-CD
+Azure 
+DevOps 
+Pipelines
+Otomatik build, test ve deployment süreçlerini 
+yönetir. Docker image'larının Azure Container 
+Registry'ye dağıtımını otomatikleştirir.
+Monitoring & 
+Logging
+ELK Stack
+Elasticsearch, Logstash ve Kibana ile uygulama 
+loglarının merkezi olarak toplanması, analiz 
+edilmesi ve görselleştirilmesini sağlar.
+Versiyon Kontrol GitHub
+Git tabanlı kaynak kod yönetimi, issue takibi ve pull 
+request süreçleri ile ekip içi iş birliği standartlarını 
+belirler.
+API Testi & 
+Doğrulama
+Postman
+Servis uç noktalarının (endpoints) manuel ve 
+otomatik testleri ile dokümantasyon süreçlerini 
+kolaylaştırır.
+Veritabanı 
+Yönetimi
+SSMS
+SQL Server üzerinde şema tasarımı, T-SQL sorgu 
+geliştirme ve veri analizi için kullanılan resmi 
+yönetim aracı.
+Design / UI-UX Figma
+Arayüz tasarımları, wireframe ve interaktif 
+prototiplerin tasarımı için kullanılan bulut tabanlı 
+araç.
+Proje Yönetimi
+Azure 
+Boards
+Agile/Scrum metodolojilerine uygun sprint 
+planlaması, backlog yönetimi ve görev takibi 
+sağlar.
+25
+Test Framework
+xUnit / 
+Jasmine + 
+Karma
+Backend (xUnit) ve Frontend (Jasmine) tarafında 
+birim (unit) ve entegrasyon testlerinin otomasyonu 
+için kullanılır.
+2.8.2 Teknoloji Seçiminin Gerekçelendirilmesi
+Bu teknoloji yığını, UniTrack sisteminin:
+• Yüksek eş zamanlı kullanıcı yükü altında stabil çalışmasını,
+• QR doğrulama, ödeme ve bildirim gibi kritik modüllerin güvenli şekilde 
+işletilmesini,
+• Kurumsal ölçekte bakım, izleme ve versiyonlama süreçlerinin yönetilebilir 
+olmasını,
+• Mikroservis ve container tabanlı mimariye geçişe hazır bir altyapı sunmasını
+sağlayacak şekilde yapılandırılmıştır.
+Ayrıca Angular + ASP.NET Core kombinasyonu; rol bazlı yetkilendirme, API versiyonlama 
+ve güvenlik politikalarının uçtan uca tutarlı biçimde uygulanmasına olanak tanımaktadır.
+2.8.3 Mimari Tutarlılık ve İzlenebilirlik
+Bu bölümde tanımlanan teknoloji yığını;
+• Gereksinim Matrisi (FR-01 – FR-12),
+• Use Case, Activity ve Sequence Diagramları,
+• Non-Fonksiyonel Gereksinimler 
+ile birebir uyumlu olacak şekilde seçilmiştir. Böylece raporda tanımlanan her fonksiyonel 
+gereksinimin, hangi teknolojik bileşenler tarafından karşılandığı açık ve izlenebilir hale 
+getirilmiştir.
+Bu revizyon ile UniTrack projesinin teknoloji altyapısı, akademik raporlama 
+standartlarına uygun, kurumsal ve profesyonel bir çerçevede netleştirilmiştir.
+26
+2.9 Risk Analizi ve Mitigation (Önleyici) Stratejileri
+Bu bölümde, proje süresince ve sistem kullanıma alındıktan sonra ortaya çıkabilecek 
+teknik, operasyonel, güvenlik ve yönetsel riskler belirlenmiş ve her risk için 
+alınabilecek önlemler tanımlanmıştır.
+2.9.1 Teknik Riskler
+Sistem Performansının Yetersiz Kalması
+Risk:
+Kullanıcı ve etkinlik sayısının hızla artmasıyla birlikte sistemin yavaşlaması, bildirimlerin 
+gecikmesi ve doğrulama sistemlerinin aksaması.
+Mitigation Stratejileri:
+• Ölçeklenebilir mimari (microservice / container tabanlı yapı) kurulması
+• Cache mekanizmaları (Redis vb.) kullanılması
+• Yük testleri (stress & load test) yapılması
+• Kritik modüllerin (bildirim, doğrulama, ödeme) ayrı servisler halinde çalıştırılması
+Yapay Zekâ Modüllerinin Hatalı Tahmin Üretmesi
+Risk:
+Kullanıcı ilgi alanlarını yanlış analiz eden modellerin alakasız etkinlik önerileri ve bildirim 
+spam’i üretmesi.
+Mitigation Stratejileri:
+• Model performansının düzenli olarak ölçülmesi (precision, recall, accuracy)
+• Kullanıcı geri bildirim mekanizması kurulması
+• Model versiyonlama ve rollback sistemi oluşturulması
+• Yapay zekâ çıktılarının ilk aşamada yarı otomatik kontrolle sunulması
+Mobil – Web Entegrasyon Sorunları
+Risk:
+Mobil uygulama ile web platformu arasında veri tutarsızlıkları ve senkronizasyon 
+problemleri.
+Mitigation Stratejileri:
+27
+• Ortak RESTful API altyapısı
+• Merkezi authentication sistemi (JWT / OAuth2)
+• Otomatik entegrasyon testleri
+• Gerçek zamanlı veri senkronizasyonu (webhook / socket altyapıları)
+2.9.2. Güvenlik Riskleri
+Kişisel Verilerin İhlali
+Risk:
+Kullanıcı bilgileri ve katılım kayıtlarının üçüncü şahısların eline geçmesi.
+Mitigation Stratejileri:
+• Veri şifreleme (AES-256, SSL/TLS)
+• Rol tabanlı yetkilendirme
+• Log ve erişim izleme sistemleri
+• KVKK uyumlu veri saklama politikası
+• Düzenli penetrasyon testleri
+Sahte Katılım ve Kimlik Doğrulama
+Risk:
+QR kod kopyalama ve etkinlik katılım manipülasyonu.
+Mitigation Stratejileri:
+• Zaman sınırlı ve tek kullanımlık QR kodlar
+• Cihaz bazlı doğrulama
+• Şüpheli hareket analizi (AI tabanlı anomali tespiti)
+Ödeme Altyapısında Güvenlik Açıkları
+Risk:
+Ödeme verilerinin ele geçirilmesi veya sistemin kötüye kullanılması.
+Mitigation Stratejileri:
+• PCI-DSS uyumlu ödeme servisleri kullanılması
+• Kart bilgisinin sistemde tutulmaması
+• Tokenization altyapısı
+• Bağımsız ödeme sağlayıcı entegrasyonu
+28
+2.9.3. Operasyonel Riskler
+Sistem Kesintileri
+Risk:
+Sunucu arızaları, ağ problemleri veya yoğunluk sebebiyle hizmetin durması.
+Mitigation Stratejileri:
+• Bulut tabanlı yedekli mimari
+• Sürekli izleme (monitoring) ve alarm mekanizmaları
+• Günlük yedekleme planı
+Veri Kaybı
+Risk:
+Etkinlik, kullanıcı ve ödeme bilgilerinin silinmesi veya bozulması.
+Mitigation Stratejileri:
+• Versiyonlu yedekleme sistemi
+• Transaction loglama
+• Felaket kurtarma planı (Disaster Recovery)
+2.9.4. Proje Yönetimi Riskleri
+Zaman Planına Uyulamaması
+Risk:
+Mobil uygulama, yapay zekâ ve fiziksel doğrulama sistemlerinin beklenenden uzun 
+sürmesi.
+Mitigation Stratejileri:
+• Agile/Scrum metodolojisi
+• Modüler geliştirme
+• Önceliklendirilmiş sprint planı
+• MVP yaklaşımı
+29
+Kapsam Kayması (Scope Creep)
+Risk:
+Sürekli yeni özellik eklenmesiyle projenin kontrolsüz büyümesi.
+Mitigation Stratejileri:
+• Net kapsam dokümantasyonu
+• Değişiklik yönetim süreci
+• Versiyon bazlı geliştirme
+2.9.5. Hukuki ve Etik Riskler
+Yüz Tanıma ve Veri Analizi Kaynaklı Hukuki Riskler
+Risk:
+Biyometrik verilerin hukuka aykırı işlenmesi.
+Mitigation Stratejileri:
+• Açık rıza sistemi
+• Veri minimizasyonu
+• Anonimleştirme ve maskeleme
+• Hukuki danışmanlık süreçleri
+2.9.6. Kullanıcı Kabulü ve Sistem Benimsenmesi Riskleri
+Düşük Kullanıcı Adaptasyonu
+Risk:
+Kullanıcıların sistemi karmaşık bulması veya güvenmemesi.
+Mitigation Stratejileri:
+• UX testleri
+• Pilot uygulamalar
+• Eğitim dokümanları ve tanıtım süreci
+• Geri bildirim mekanizmaları
+30
+Genel Değerlendirme
+Bu risk analizi, sistemin yalnızca teknik olarak değil; hukuki, operasyonel ve kullanıcı 
+odaklı boyutlarıyla da sürdürülebilir olmasını hedeflemektedir. Belirlenen önlemler 
+sayesinde proje, yüksek ölçeklenebilirlik, güvenlik ve süreklilik ilkelerine uygun şekilde 
+geliştirilecektir.
+3. Sistem Tasarımı
+3.1 Mimari Tasarım (Yüksek Seviyeli Sistem Mimarisi)
+UniTrack sistemi, ölçeklenebilirlik, sürdürülebilirlik ve modülerlik hedeflenerek katmanlı 
+mimari (Layered Architecture) ve Clean Architecture prensipleri esas alınarak 
+tasarlanmıştır. Sistem, hem web hem de mobil istemcileri destekleyen, servis tabanlı bir 
+yapı üzerine kurulmuştur.
+31
+Genel mimari yaklaşım olarak:
+• Client–Server mimarisi
+• Clean Architecture
+• MVC destekli servis tabanlı yapı
+benimsenmiştir.
+3.1.1 Backend Mimari Tasarımı (Clean Architecture)
+Backend tarafında proje, aşağıdaki katmanlardan oluşmaktadır:
+Bu yapı, bağımlılıkların merkeze doğru azalmasını esas alan Clean Architecture
+modeline uygundur.
+UniTrack.Domain (Çekirdek Katman)
+Bu katman sistemin kalbidir ve hiçbir dış katmana bağımlı değildir.
+İçerir:
+• Entity sınıfları (User, Event, Club, Notification, Payment, Attendance vb.)
+• Enum yapıları
+• Domain kuralları
+Amaç:
+İş kurallarını dış dünyadan tamamen izole etmek.
+UniTrack.Application (Uygulama Katmanı)
+Sistemin iş mantığı bu katmanda yer alır.
+32
+İçerir:
+• Use case’ler (CQRS / Service yapıları)
+• DTO’lar
+• Interface tanımları (IUserRepository, INotificationService vb.)
+• Validation kuralları
+• MediatR handler’ları
+• Yapay zekâ ve bildirim orkestrasyonu
+Amaç:
+“Sistem ne yapar?” sorusunun cevabını veren katmandır.
+UniTrack.Persistence (Veri Katmanı)
+Veritabanı işlemleri bu katmanda yönetilir.
+İçerir:
+• Entity Framework DbContext
+• Repository implementasyonları
+• Migration yapıları
+• Sorgular ve ilişkiler
+Amaç:
+Verinin güvenli, tutarlı ve performanslı şekilde yönetilmesi.
+UniTrack.Infrastructure (Altyapı Katmanı)
+Dış servislerle entegrasyon bu katmanda gerçekleştirilir.
+İçerir:
+• Bildirim servisleri
+• Yapay zekâ servis istemcileri
+• Fiziksel doğrulama servisleri (QR, yüz tanıma, NFC)
+• Dosya depolama servisleri
+• Ödeme servis entegrasyonları
+• Mail / SMS servisleri
+Amaç:
+33
+Sistemin dış dünya ile kontrollü şekilde iletişim kurması.
+UniTrack.WebAPI (Sunum ve Dağıtım Katmanı)
+İstemcilerin sisteme eriştiği ana giriş noktasıdır.
+İçerir:
+• RESTful API controller’ları
+• Authentication & Authorization
+• Middleware’ler
+• Exception handling
+• Logging ve monitoring altyapısı
+Amaç:
+Frontend ve diğer sistemler için güvenli API sunmak.
+3.1.2 Backend İstek Akış Diyagramı (Sequence Diagram)
+Sistemdeki bir isteğin bu katmanlar arasındaki yolculuğunu gösteren teknik akış 
+diyagramı aşağıdadır:
+34
+35
+3.1.3 Frontend Mimari Tasarımı (Angular – Modüler Yapı)
+Frontend tarafında UniTrack Web arayüzü Angular framework’ü kullanılarak, modüler 
+ve ölçeklenebilir mimari ile geliştirilmiştir.
+Bu yapı, büyük ölçekli kurumsal uygulamalarda kullanılan modern Angular mimarisine 
+uygundur.
+Core Katmanı
+Uygulamanın genel servislerini içerir:
+• Auth servisleri
+• HTTP interceptors
+• Guard yapıları
+• Global state yönetimi
+• API servisleri
+Amaç:
+Uygulama genelinde tekil çalışan servisleri merkezi olarak toplamak.
+36
+Features Katmanı
+Uygulamanın tüm iş modülleri burada yer alır.
+Örnek modüller:
+• Auth
+• Event
+• Club
+• Notification
+• Payment
+• Admin
+• Profile
+• Attendance
+Amaç:
+Her iş alanını bağımsız, yönetilebilir ve test edilebilir modüller halinde geliştirmek.
+Layout Katmanı
+• Navbar
+• Sidebar
+• Footer
+• Dashboard düzenleri
+Amaç:
+Sayfa yerleşim yapısını ve kullanıcı deneyimini merkezileştirmek.
+Shared Katmanı
+• Ortak component’ler
+• Pipe’lar
+• Directive’ler
+• UI bileşenleri
+• Ortak modeller
+Amaç:
+Kod tekrarını azaltmak ve tutarlılık sağlamak.
+37
+3.1.4 Frontend İstek Akış Diyagramı (Sequence Diagram)
+Sistemdeki bir isteğin bu katmanlar arasındaki yolculuğunu gösteren teknik akış 
+diyagramı aşağıdadır:
+38
+3.1.5 Yüksek Seviyeli Sistem Akışı
+1. Kullanıcı web veya mobil istemciden istekte bulunur.
+39
+2. Angular frontend, REST API çağrısı yapar.
+3. WebAPI isteği Application katmanına iletir.
+4. Gerekirse Infrastructure servisleri çağrılır.
+5. Persistence katmanı üzerinden veri işlenir.
+6. Sonuç frontend’e JSON formatında döner.
+3.1.6 Mimari Kazanımlar
+Bu mimari sayesinde:
+• Katmanlar arası bağımlılık azalır
+• Test edilebilirlik artar
+• Yapay zekâ ve doğrulama sistemleri bağımsız geliştirilebilir
+• Mobil ve web sistemleri kolay entegre edilir
+• Uzun vadeli sürdürülebilirlik sağlanır
+3.2 Front-End Tasarımı (UI/UX)
+Arayüz tasarımı, kullanıcı deneyimini en üst seviyede tutmak amacıyla 
+"Mobile-First" (Önce Mobil) stratejisiyle kurgulanmıştır. Aşağıdaki 
+bölümlerde, platformun ana ekranlarına ait yapısal iskeletler (Wireframe) ve 
+nihai görsel tasarımlar (Mockup), Web ve Mobil sürümleriyle karşılaştırmalı 
+olarak sunulmuştur.
+3.2.1 Giriş ve Kayıt Süreci
+Web Sürümü: Kullanıcının sistemle ilk temas noktası olan bu ekranda, geniş ekran 
+avantajı kullanılarak form odaklı ve güven veren bir yapı benimsenmiştir.
+Şekil 2.2.1: Login – Register Web Ekran Gösterimi
+40
+Mobil Sürümü: Hareket halindeki kullanıcıların hızlı aksiyon alabilmesi adına arayüz 
+sadeleştirilmiştir. Form alanları "thumb-zone" (baş parmak alanı) içinde tutulmuş, sanal 
+klavye kullanımı sırasında okunabilirliği korumak için dikey boşluklar ve odaklanma 
+hiyerarşisi optimize edilmiştir.
+Şekil 2.2.2: Login – Register Mobil Ekran Gösterimi
+2.2.2 Dashboard (Genel Bakış)
+Web Sürümü: Giriş sonrası tüm dinamik verilerin, istatistiklerin ve duyuruların tek 
+ekranda özetlendiği geniş bir merkezdir. Yan menü ve çoklu panel yapısı ile veri çeşitliliği 
+sunulur.
+Şekil 2.2.3: Dashboard Web Ekran Gösterimi
+41
+Mobil Sürümü: Web sürümündeki kompleks veri setleri, mobil arayüzde öncelik 
+sıralamasına göre dikey bir akışa dönüştürülmüştür. En kritik bildirimler ve yaklaşan 
+etkinlikler, "scroll" (kaydırma) odaklı bir hiyerarşiyle en üstte konumlandırılmıştır.
+Şekil 2.2.4: Dashboard Mobil Ekran Gösterimi
+3.2.3 Etkinlik Listesi ve Filtreleme
+Web Sürümü: "Card View" (Kart Görünümü) mimarisiyle tasarlanan bu ekran, gelişmiş 
+filtreleme modülleri ve kategori seçenekleriyle zenginleştirilmiştir.
+Şekil 2.2.5: Etkinlik Listesi Web Ekran Gösterimi
+42
+Mobil Sürümü: Etkinlik kartları tam genişlikte kullanılarak görsel odaklılık ve 
+tıklanabilirlik artırılmıştır. Filtreleme seçenekleri, ekran alanını verimli kullanmak adına 
+"Drawer" (alttan açılır panel) yapısıyla kullanıcıya sunulmuştur.
+Şekil 2.2.6: Dashboard Ekran Mobil Gösterimi
+3.2.4 Kulüp Keşfetme ve Takip
+Web Sürümü: Üniversite topluluklarının listelendiği katalog ekranıdır. Grid yapısı 
+sayesinde çok sayıda kulüp aynı anda görüntülenebilir ve hızlı "Takip Et" aksiyonu 
+sunulur.
+Şekil 2.2.7: Kulüp Listesi Web Ekran Gösterimi
+43
+Mobil Sürümü: Tek el kullanımını kolaylaştırmak amacıyla daha minimalist kart 
+tasarımları tercih edilmiştir. Kullanıcı etkileşimini artırmak için "Takip Et" butonu, baş 
+parmak erişimine uygun şekilde sağ alt odaklı yerleştirilmiştir.
+Şekil 2.2.8: Kulüp Listesi Mobil Ekran Gösterimi
+3.2.5 Etkinlik Detay ve Katılım
+44
+Web Sürümü: Etkinliğe dair tüm görsel materyaller, konum bilgisi ve açıklama metinleri 
+stratejik bir hiyerarşiyle yerleştirilmiştir. "Katıl" butonu, sayfa akışında belirgin bir 
+noktada konumlandırılmıştır.
+Şekil 2.2.9: Etkinlik Detay Web Ekran Gösterimi
+Mobil Sürümü: Detay sayfası, mobil cihazlarda odaklanmayı artıran tam ekran bir 
+deneyim sunar. "Katıl" butonu gibi ana eylem çağrıları (CTA), ekranın altına sabitlenerek 
+(Sticky Button) kullanıcı sayfanın neresinde olursa olsun erişilebilir tutulmuştur.
+Şekil 2.2.10: Etkinlik Detay MobilEkran Gösterimi
+3.2.6 Tasarım Metodolojisi ve Teknik Çıktılar
+• Tasarım sürecinde kullanılan teknik yaklaşımlar:
+45
+• Responsive Uyumluluk: Tasarımlar, 12'li kolon (Grid) sistemi kullanılarak ekran 
+genişliğine göre otomatik ölçeklenir.
+• İkonografi: Kullanıcıların metin okumadan fonksiyonları anlayabilmesi için 
+evrensel materyal ikon setleri tercih edilmiştir.
+• Platform Entegrasyonu: Web ve Mobil arayüzler aynı merkezi REST API üzerinden 
+veri tüketecek şekilde senkronize edilmiştir.
+3.3 Akademik Değerlendirme
+UniTrack mimarisi, Clean Architecture prensiplerine uygun şekilde; iş kurallarını 
+altyapıdan ayıran, yüksek modülerlik sunan ve genişlemeye açık bir yapı üzerine 
+kurulmuştur. Bu yaklaşım, sistemin hem üniversite çapında hem de çok kampüslü 
+mimarilerde güvenle çalışabilmesini mümkün kılmaktadır.
+3.4 Veritabanı Tasarımı
+UniTrack sisteminin veri modeli; kullanıcılar, kulüpler ve etkinlikler arasındaki karmaşık 
+ilişkileri yönetmek üzere tasarlanmıştır. Sistemin kalbi olan bu yapı, yüksek veri 
+bütünlüğü (Data Integrity) ve düşük veri tekrarı prensipleriyle modellenmiştir.
+Veri Yapısı Analizi:
+• Merkezi Varlıklar: User, Club ve Event tabloları sistemin ana kolonlarını 
+oluşturur.
+• Çoktan Çoğa (N-N) İlişkiler: EventUser (Etkinlik Katılımı) ve UserClub (Kulüp 
+Takibi) tabloları, kullanıcılar ile organizasyonlar arasındaki dinamik bağı kurar.
+• Hiyerarşik Coğrafi Yapı: City ve University tabloları, verilerin lokasyon bazlı 
+filtrelenmesini (Bildirim hedefleme gibi) sağlar.
+• Güvenlik Katmanı: Bans tablosu, sistemdeki ihlalleri engellemek amacıyla hem 
+kullanıcı hem de kulüp seviyesinde kısıtlama yapabilecek şekilde tasarlanmıştır.
+46
+3.5 Diğer Diyagramlar
+Sistemin dinamik davranışlarını ve süreç yönetimini açıklamak adına hazırlanan UML 
+diyagramları aşağıdadır.
+3.5.1 Activity (Aktivite) Diyagramları
+Kullanıcıların ve kulüp yetkililerinin sistem içerisindeki kritik iş akışları adım adım 
+modellenmiştir.
+A. Etkinlik Kayıt ve Fiziksel Doğrulama (QR Check-in) Süreci Bu akış, EventUser
+tablosundaki IsJoined ve IsCheckedIn alanlarının iş mantığı çerçevesinde nasıl 
+güncellendiğini gösterir.
+ 
+• Açıklama: Kullanıcı kayıt olduğunda sistem kontenjan kontrolü yapar. Etkinlik 
+günü, kulüp yetkilisi tarafından taratılan QR kod, veritabanındaki CheckInToken
+ile eşleştirilerek katılım doğrulanır.
+B. Kulüp Takip ve Etkinlik Katılım Akışı Kullanıcıların sosyal etkileşimlerinin veritabanı 
+yansımasıdır.
+47
+• Açıklama: Takip etme işlemi UserClubs tablosuna kayıt atarken, katılım işlemi 
+Events tablosundaki kontenjanı dinamik olarak günceller.
+C. Şikayet Yönetimi ve Yasaklama (Ban) Akışı Sistem güvenliğini sağlayan denetim 
+mekanizmasıdır.
+48
+• Açıklama: Reports tablosuna düşen ihbarlar admin tarafından incelenir; 
+onaylanması durumunda Bans tablosuna kayıt eklenerek ilgili aktörün yetkileri 
+askıya alınır.
+D. Bildirim Oluşturma ve Hedefleme (Targeting) Akışı Sistem yöneticilerinin veya kulüp 
+yetkililerinin, belirli kriterlere (şehir, üniversite, bölüm) göre filtrelenmiş kullanıcı 
+kitlelerine toplu duyuru gönderme sürecidir.
+49
+• Açıklama: Bildirim oluşturulurken sistem, TargetNotification ara tabloları 
+üzerinden seçilen filtreleri analiz eder. UserDetail tablosundaki verilerle 
+eşleşen kullanıcılar belirlenir ve her biri için UserNotification tablosunda 
+"Okunmadı" statüsünde kayıtlar oluşturularak asenkron bir dağıtım sağlanır.
+E. Yorum Yapma ve Sosyal Etkileşim (Like) Akışı Kullanıcıların katıldıkları etkinlikler 
+hakkında geri bildirimde bulunma ve bu geri bildirimlerin topluluk tarafından oylanması 
+sürecidir.
+• Açıklama: Kullanıcılar, Comments tablosuna etkinlik puanı ve metin içeriği girişi 
+yapar. Diğer kullanıcılar bu yorumları beğendiğinde, Likes tablosuna veri eklenir. 
+Sistem, performans optimizasyonu için Comment tablosundaki LikeCount alanını 
+bu işlemle eş zamanlı olarak günceller.
+F. Kulüp ve Etkinlik Yönetim (Oluşturma/Güncelleme) Akışı Sistemdeki içerik 
+sağlayıcıların (kulüplerin) varlıklarını yönetme ve güncel tutma sürecidir.
+50
+ 
+• Açıklama: Yeni bir kulüp veya etkinlik eklenirken Clubs ve Events tablolarına 
+zorunlu alan doğrulamaları yapılır. Mevcut içeriklerde yapılan güncellemeler, 
+veritabanındaki DeleteBehavior.Restrict kuralları çerçevesinde kontrol 
+edilerek ilişkili verilerin (kayıtlı kullanıcılar, görseller vb.) bütünlüğü korunur.
+3.5.2 State (Durum) Diyagramları
+Sistemdeki temel varlıkların (Entity) yaşam döngülerini, veritabanı üzerindeki statü 
+değişimlerini ve iş mantığı (business logic) kurallarını tanımlamak amacıyla durum 
+diyagramları oluşturulmuştur.
+51
+A. Etkinlik Yaşam Döngüsü (Event Lifecycle)
+• Sistemin temel taşı olan etkinliklerin, taslak aşamasından tamamlanma 
+aşamasına kadar olan sürecini tanımlar.
+• Açıklama: Etkinlik ilk oluşturulduğunda Draft durumundadır. Onaylanıp yayına 
+girdiğinde Published olur. Full durumu, Quota (kontenjan) değerinin sıfıra 
+inmesiyle otomatik tetiklenir. Etkinlik tarihi geçtiğinde ise sistem statüyü 
+Completed olarak günceller.
+B. Kullanıcı Hesap Statüsü (User Account Status)
+• Kullanıcıların sistemdeki yetki ve erişim düzeylerini yöneten güvenlik odaklı 
+durum döngüsüdür.
+52
+ 
+• Açıklama: Kayıt sonrası Unverified olan hesap, e-posta doğrulamasıyla 
+Active hale gelir. Şikayet yönetimi akışı sonucunda admin müdahalesiyle hesap 
+Suspended (geçici askı) veya Banned (kalıcı yasaklı) durumlarına geçiş yapabilir.
+C. Bildirim Dağıtım Durumu (Notification Delivery State)
+• Hedef kitleye (Targeting) gönderilen bildirimlerin teknik takibini ve okunma 
+durumlarını ifade eder.
+53
+• Açıklama: Bildirim oluşturulduğunda Queued olarak sıraya alınır. Harici servisler 
+üzerinden başarıyla iletildiğinde Sent, kullanıcı bildirim paneline tıkladığında ise 
+Read statüsüne geçer.
+D. Kulüp Başvuru ve Üyelik Süreci (Club Membership State)
+• Yeni bir öğrenci topluluğunun sisteme dahil olma ve aktiflik sürecini yönetir.
+54
+• Açıklama: Kulüp başvurusu Applied olarak sisteme düşer. Üniversite yönetimi 
+incelemesi sırasında UnderReview, onay sonrası ise Approved durumuna geçer. 
+Kulüp faaliyetlerini durdurursa Inactive statüsüne alınarak sistemde pasifize 
+edilir.
+E. Şikayet/Rapor Yaşam Döngüsü (Report Lifecycle)
+• Kullanıcılardan gelen geri bildirimlerin ve ihlallerin denetim sürecidir.
+55
+ 
+• Açıklama: Bir içerik şikayet edildiğinde Pending olarak işaretlenir. Moderatör 
+inceleme başlattığında Investigating, inceleme sonucunda bir yaptırım 
+uygulandığında veya reddedildiğinde ise sırasıyla Resolved veya Dismissed
+durumuna ulaşır.
+F. QR Kod ve Katılım Doğrulama Durumu (Attendance State)
+• Etkinlik günü gerçekleştirilen fiziksel katılımın dijital takibini sağlar.
+56
+• Açıklama: Kullanıcı "Katıl" butonuna bastığında katılımı Reserved olur. 
+Kontenjan onayından sonra Confirmed durumuna geçer. Etkinlik alanında QR 
+kod taratıldığı anda durum CheckedIn olarak güncellenir; gelinmediği takdirde 
+NoShow olarak işaretlenir.
+3.5.3 Component (Bileşen) Diyagramı
+Sistemin modüler yapısını ve Clean Architecture katmanları arasındaki fiziksel ayrımı 
+gösterir.
+57
+• Analiz: Bu diyagram, UniTrack.WebAPI'nin giriş kapısı olduğunu, iş mantığının 
+Application katmanında soyutlandığını ve Infrastructure bileşenlerinin 
+(Ödeme, AI, Bildirim) sisteme nasıl tak-çıkar (pluggable) yapıda entegre edildiğini 
+vurgular.
+3.6 Entegrasyon Planı (UML Sınıf Diyagramı Entegrasyonu)
+Entegrasyon süreci, UniTrack.Persistence katmanındaki Fluent API yapılandırmaları 
+ve sınıflar arası bağımlılıklar üzerine kurulmuştur.
+Entegrasyonun Teknik Temelleri:
+• Veri Erişimi: Persistence katmanı, yukarıdaki sınıf diyagramındaki modelleri 
+Entity Framework Core aracılığıyla fiziksel tablolara dönüştürür.
+• Servis İletişimi: WebAPI katmanı, DTO (Data Transfer Object) kullanarak domain 
+sınıflarını güvenli bir şekilde dış dünyaya açar.
+• Delete Behavior: Veritabanı entegrasyonunda Restrict (Kısıtlayıcı) silme 
+politikası benimsenerek, bir kulüp silindiğinde ona bağlı etkinliklerin kontrolsüzce 
+kaybolması engellenmiştir.
+58
+ 
+Bu diyagramlar, projenin Clean Architecture prensiplerine sadık kaldığını ve veritabanı 
+seviyesindeki her bir alanın (Id, Title, IsActive vb.) belirli bir iş akışına hizmet ettiğini 
+kanıtlamaktadır. Özellikle 2.1.1 Backend Mimari Tasarımı bölümünde bahsettiğin 
+"bağımlılıkların merkeze doğru azalması" kuralı, paylaşılan Component Diyagramı ile 
+görsel olarak desteklenmiştir.
+3.6.1 Frontend – Backend Entegrasyonu
+• Angular web uygulaması, UniTrack.WebAPI üzerinden RESTful API çağrıları 
+yapacaktır.
+• JWT tabanlı kimlik doğrulama mekanizması kullanılacaktır.
+• Tüm veri alışverişi HTTPS üzerinden gerçekleştirilecektir.
+Örnek:
+59
+• /api/auth/login
+• /api/events
+• /api/notifications
+• /api/payments
+3.6.2 Backend – Yapay Zekâ Servisleri Entegrasyonu
+• Kullanıcı davranış verileri AI servislerine aktarılacaktır.
+• Öneri ve analiz sonuçları API üzerinden sisteme geri dönecektir.
+• Bu iletişim asenkron yapı ve mesajlaşma altyapısı ile desteklenecektir.
+3.6.3 Backend – Fiziksel Doğrulama Sistemleri Entegrasyonu
+• QR, yüz tanıma ve NFC sistemleri WebAPI üzerinden doğrulama yapacaktır.
+• Gerçek zamanlı katılım verileri sisteme aktarılacaktır.
+• Sahte girişleri engellemek için token bazlı doğrulama uygulanacaktır.
+3.6.4 Backend – Ödeme Sistemleri Entegrasyonu
+• Harici ödeme servis sağlayıcılarıyla API bazlı bağlantı kurulacaktır.
+• Kart verileri sistemde tutulmayacak, tokenization yöntemi kullanılacaktır.
+• Ödeme sonuçları event tabanlı olarak sisteme aktarılacaktır.
+3.6.5 Entegrasyonun Kazanımları
+• Platform bağımsız çalışma
+• Güvenli veri akışı
+• Modüler genişleme
+• Üçüncü parti servislerle kolay entegrasyon
+3.7 Use Case Tabanlı Sistem Tasarımı Entegrasyonu
+Bu bölümde, 1.3.1 altında tanımlanan use case’lerin, sistem tasarımındaki UML 
+diyagramları ve veri mimarisi üzerindeki karşılıkları açıklanmaktadır. Use case’ler, 
+yalnızca kullanıcı gereksinimlerini tanımlayan soyut senaryolar değil; aynı zamanda sınıf 
+yapılarının, servis katmanlarının, veri akışlarının ve entegrasyon noktalarının temelini 
+oluşturmaktadır.
+Her bir ana use case, sistem tasarımında aşağıdaki şekilde somutlaştırılmıştır:
+• Use case’ler → Sequence Diagram ile operasyonel etkileşimlere,
+60
+• Use case’ler → Activity Diagram ile iş akışlarına,
+• Use case’ler → Class Diagram ile yapısal bileşenlere,
+• Use case’ler → ER Diagram ile kalıcı veri modellerine,
+• Use case’ler → DFD ile veri hareketlerine dönüştürülmüştür.
+Bu yaklaşım sayesinde analiz safhasında belirlenen tüm fonksiyonel gereksinimler, 
+sistem mimarisinde izlenebilir (traceable) hale getirilmiştir.
+Örnek eşleştirme:
+• UC-01 Kullanıcı Kayıt & Giriş → User, UserDetail, University, Department sınıfları
+• UC-05 Etkinlik Oluşturma → Event, Club, EventImage, ClubTeam
+• UC-07 Etkinliğe Katılım & QR → EventUser, Notification, Ban
+• UC-10 Bildirim Gönderimi → Notification, TargetNotification, UserNotification
+• UC-14 Raporlama & Şikayet → Report, Comment, Like
+61
+3.8 UML Class Diagram (Sistem Sınıf Diyagramı)
+UniTrack sisteminin UML sınıf diyagramı, platformun domain merkezli mimarisini 
+yansıtacak şekilde tasarlanmıştır. Diyagramda kullanıcı, etkinlik, kulüp, bildirim ve 
+moderasyon modüllerine ait temel varlıklar ve bunlar arasındaki ilişkiler açıkça 
+gösterilmektedir.
+Sınıf diyagramı incelendiğinde sistem dört ana yapısal kümede toplanmaktadır:
+1. Kullanıcı ve Kimlik Alanı:
+User, UserDetail, University, Department, City → Kullanıcı profili, akademik 
+bağlam ve konum bilgileri
+62
+2. Etkinlik ve Kulüp Alanı:
+Event, Club, ClubTeam, EventImage, EventUser → Organizasyon, içerik ve katılım 
+süreçleri
+3. Bildirim ve Hedefleme Alanı:
+Notification, UserNotification, ClubNotification, TargetNotification ve alt hedef 
+sınıfları → Kişiselleştirilmiş ve filtrelenmiş bildirim sistemi
+4. Etkileşim ve Denetim Alanı:
+Comment, Like, Report, Ban → Sosyal etkileşim, şikayet ve yaptırım 
+mekanizmaları
+Bu yapı sayesinde, her bir use case’in sistem içerisindeki sınıfsal karşılığı net olarak 
+belirlenmiş, iş kuralları domain katmanında toplanmış ve veri kalıcılığı Persistence 
+katmanına aktarılmıştır.
+3.9 ER Diyagramı (Varlık-İlişki Diyagramı)
+ER diyagramı, UniTrack sisteminde kalıcı olarak saklanan verilerin mantıksal modelini 
+temsil etmektedir. Diyagramda kullanıcılar, etkinlikler, kulüpler, bildirimler ve etkileşim 
+verileri arasındaki çoktan-çoğa ve bire-çok ilişkiler detaylı olarak gösterilmiştir.
+Öne çıkan yapılar:
+• User – Event → EventUser (katılım ve check-in)
+• User – Club → UserClub (üyelik ve takip)
+63
+• Notification → TargetNotification (çok katmanlı hedefleme)
+• Event → Comment / Like / Report (sosyal etkileşim)
+Bu model, özellikle aşağıdaki use case’leri doğrudan destekleyecek şekilde 
+tasarlanmıştır:
+• Etkinliğe katılım ve QR doğrulama
+• Kulüp bazlı organizasyon
+• Bildirim hedefleme
+• Şikayet ve ban süreçleri
+ER diyagramı, sistemin normalizasyon prensiplerine uygun olarak tasarlanmış ve veri 
+tekrarını minimize edecek şekilde ara tablolarla desteklenmiştir.
+3.10 Veri Akış Diyagramı (Data Flow Diagram – DFD)
+3.10.1 Seviye-0 DFD (Context Diagram)
+Seviye-0 veri akış diyagramı, UniTrack sistemini tek bir süreç olarak ele alır ve dış 
+varlıklarla olan temel veri alışverişini gösterir.
+Dış varlıklar:
+• Öğrenci / Kullanıcı
+• Kulüp Yetkilisi
+• Admin
+• Harici Bildirim Servisi
+64
+• Ödeme / QR servisleri (opsiyonel)
+Temel veri akışları:
+• Kullanıcı bilgileri
+• Etkinlik talepleri
+• Katılım istekleri
+• Bildirim içerikleri
+• Moderasyon kararları
+Bu seviye, sistemin çevresiyle olan ilişkisini ve sınırlarını tanımlar.
+3.10.2 Seviye-1 DFD (Parçalanmış Diyagram)
+Seviye-1 veri akış diyagramında sistem aşağıdaki ana süreçlere ayrılmıştır:
+• P1: Kullanıcı Yönetimi
+• P2: Etkinlik Yönetimi
+• P3: Katılım & QR Süreci
+• P4: Bildirim Yönetimi
+• P5: Raporlama & Denetim
+Veri depoları:
+• D1: User DB
+• D2: Event DB
+• D3: Participation DB
+• D4: Notification DB
+• D5: Moderation DB
+Bu diyagram sayesinde, use case’lerde tanımlanan fonksiyonların sistem içerisinde 
+hangi süreçlerden geçerek hangi veri depolarını etkilediği açık biçimde gösterilmiştir.
+65
+3.11 Use Case Tabanlı Sistem Tasarımı
+3.11.1 Tasarımda Use Case Yaklaşımı
+Bu bölümde sunulan tüm mimari kararlar, sınıf yapıları, veri modelleri ve iş akışları; 2.3.1 
+bölümünde tanımlanan use case’ler referans alınarak oluşturulmuştur.
+Analiz aşamasında belirlenen her use case, sistem tasarımında en az bir UML diyagramı 
+ve bir veri akış süreci ile somutlaştırılmıştır. Böylece gereksinimlerden mimariye 
+izlenebilirlik (traceability) sağlanmıştır.
+3.11.2 Use Case – Diyagram Eşleştirme Tablosu
+UniTrack projesinin mimari tasarımı, her bir temel fonksiyonun farklı perspektiflerden 
+(davranışsal, yapısal ve veri akışı) doğrulanması amacıyla kapsamlı bir diyagram setiyle 
+desteklenmiştir.
+Use Case Sequence Activity Class ER DFD
+UC-01 Kullanıcı Kayıt ✔ ✔ ✔ ✔ ✔
+UC-05 Etkinlik Oluşturma ✔ ✔ ✔ ✔ ✔
+UC-07 Etkinliğe Katılım ✔ ✔ ✔ ✔ ✔
+UC-10 Bildirim Gönderimi ✔ ✔ ✔ ✔ ✔
+UC-14 Şikayet & Ban 
+İşlemleri ✔ ✔ ✔ ✔ ✔
+3.11.3 Örnek Use Case’in Tasarım Açılımı
+UC-07 Etkinliğe Katılım ve QR Check-in – Tasarım Karşılığı
+Bu use case, sistem tasarımında P3 Participation süreci (DFD), EventUser ara tablosu 
+(ER), Event, User ve Notification sınıfları (Class Diagram) ve QR doğrulama sequence 
+diyagramı ile gerçekleştirilmiştir.
+Maddeler:
+66
+• Class Diagram, Event, User, EventUser
+• ER → EventUser
+• Sequence → QR doğrulama
+• DFD → P3 süreci
+3.12 UML Diyagramları Genel Değerlendirme
+Bu projede sistem tasarımı kapsamında aşağıdaki UML ve modelleme diyagramları 
+kullanılmıştır:
+• Use Case Diagram → Kullanıcı etkileşimleri
+• Class Diagram → Yapısal mimari
+• Sequence Diagram → Nesneler arası mesajlaşma
+• Activity Diagram → İş akışları
+• ER Diagram → Kalıcı veri modeli
+• DFD → Veri hareketleri
+• Component Diagram → Katmanlar arası bağımlılıklar
+Bu diyagramlar birlikte ele alındığında, UniTrack sisteminin hem fonksiyonel hem de 
+mimari olarak tutarlı, izlenebilir ve ölçeklenebilir bir yapıya sahip olduğu görülmektedir.
+4. TEST PLANI VE SENARYOLARI
+4.1. Açıklama (Test Strategy – Verification & Validation)
+Bu aşamanın amacı, sistem geliştirilmeden önce test yaklaşımının netleştirilmesi ve 
+kalite güvence sürecinin planlanmasıdır. Test planı, hem verification (sistem 
+gereksinimlere uygun mu?) hem de validation (sistem kullanıcı ihtiyaçlarını karşılıyor 
+mu?) süreçlerini kapsar.
+Bu proje kapsamında test süreci:
+• Verification (Doğrulama):
+Geliştirilen modüllerin, analiz aşamasında belirlenen fonksiyonel ve nonfonksiyonel gereksinimlere uygunluğunu ölçer.
+(Örn: “Login fonksiyonu doğru çalışıyor mu?”, “Yetkisiz kullanıcı API’ye 
+erişebiliyor mu?”)
+67
+• Validation(Geçerleme):
+Sistemin gerçek kullanıcı senaryolarına uygun çalışıp çalışmadığını doğrular.
+(Örn: “Bir öğrenci etkinlikleri rahatça bulabiliyor mu?”, “Bildirim sistemi 
+beklentiyi karşılıyor mu?”)
+Testler, backend (.NET) ve frontend (Angular + Jest) için ayrı ayrı, ancak entegre bir yapı 
+içinde ele alınacaktır.
+4.2. Kullanılacak Test Türleri
+4.2.1. Unit Test (Birim Testleri)
+Amaç:
+Sistemin en küçük parçalarının (metot, servis, component) doğru çalıştığını doğrulamak.
+Kapsam:
+• Backend:
+o Domain servisleri
+o Business kuralları
+o Validator’lar
+o Repository metotları
+• Frontend (Jest):
+o Angular servisleri
+o Component fonksiyonları
+o Guard ve interceptor yapıları
+Örnek senaryolar:
+• Kullanıcı adı boş ise login başarısız olmalı
+• Event oluşturma fonksiyonu hatalı veri aldığında exception fırlatmalı
+• Angular EventService API’den doğru veriyi dönmeli
+Araçlar:
+• Backend: xUnit 
+• Frontend: Jest + Angular Testing Library
+4.2.2. Integration Test (Entegrasyon Testleri)
+Amaç:
+Sistemin modüllerinin birbiriyle doğru şekilde haberleştiğini doğrulamak.
+68
+Kapsam:
+• API ↔ Database
+• Controller ↔ Service ↔ Repository
+• Angular servisleri ↔ Backend API
+• Authentication ve authorization akışı
+Örnek senaryolar:
+• Kullanıcı kayıt olduğunda veritabanına yazılıyor mu?
+• Event oluşturulduğunda ilgili kullanıcıya bağlanıyor mu?
+• Angular uygulaması backend’den gelen veriyi doğru parse ediyor mu?
+Amaçlanan çıktı:
+• Katmanlar arası veri kaybı, format hatası ve iş kuralı bozulmalarını erken 
+yakalamak.
+4.2.3. System Test (Sistem Testleri)
+Amaç:
+Sistemin uçtan uca, tüm bileşenleriyle birlikte doğru çalıştığını doğrulamak.
+Kapsam:
+• Frontend
+• Backend
+• Veritabanı
+• Yetkilendirme sistemi
+• Bildirim sistemi
+• Dosya/görsel işlemleri
+Örnek senaryolar:
+• Kullanıcı kayıt olur → giriş yapar → etkinliklere katılır → bildirim alır
+• Admin yeni etkinlik oluşturur → kullanıcı arayüzünde görünür
+• Yetkisiz kullanıcı korumalı endpoint’e erişemez
+Bu testler, sistemin gereksinim dokümanına %100 uyumunu ölçer.
+69
+4.2.4. Acceptance Test (Kabul Testleri)
+Amaç:
+Sistemin gerçek kullanıcı beklentilerini karşılayıp karşılamadığını doğrulamak.
+Kapsam:
+• Kullanılabilirlik
+• İş akışlarının doğruluğu
+• Kullanıcı deneyimi
+• Performans algısı
+Örnek senaryolar:
+• Öğrenci 3 adımda etkinliğe katılabiliyor mu?
+• Bildirimler anlaşılır mı?
+• Sistem yoğunlukta kabul edilebilir sürede yanıt veriyor mu?
+Acceptance testler genellikle:
+• Ürün sahibi (Product Owner)
+• Proje danışmanı
+• Pilot kullanıcılar
+tarafından onay süreci olarak yürütülür.
+4.3. Test Senaryoları
+Bu bölümde UniTrack sistemi için belirlenen use case’ler temel alınarak test senaryoları 
+oluşturulmuştur. Test senaryoları, sistemin hem fonksiyonel gereksinimlere uygun 
+çalışıp çalışmadığını doğrulamak (verification) hem de kullanıcı ihtiyaçlarını karşılayıp 
+karşılamadığını ölçmek (validation) amacıyla hazırlanmıştır.
+Her use case için en az bir pozitif ve birden fazla negatif senaryo tanımlanmış; kullanıcı 
+hataları, yetkisiz erişimler, sistem sınırları ve güvenlik durumları da kapsama alınmıştır.
+Testler aşağıdaki başlıklar altında yürütülmüştür:
+• Kullanıcı işlemleri
+• Kulüp yetkilisi işlemleri
+• Admin işlemleri
+• Ödeme sistemi ve fiziksel katılım doğrulama
+• Bildirim ve raporlama modülleri
+70
+Bu sayede sistemin tüm kritik işlevleri uçtan uca test kapsamına alınmıştır.
+4.3.1. Kullanıcı İşlemleri Test Senaryoları 
+Kullanıcı işlemleri; kayıt olma, giriş yapma, profil yönetimi, etkinlik keşfi, etkinliğe katılım, 
+ödeme işlemleri ve fiziksel giriş doğrulama adımlarını kapsamaktadır. Bu testler ile 
+amaçlanan; sistemin son kullanıcı açısından hatasız, güvenli ve kesintisiz çalıştığını 
+doğrulamaktır.
+Gereksinim 
+ID
+Gereksinim Açıklaması İlgili Use 
+Case
+Test 
+Case ID
+FR-01 Kullanıcı sisteme kayıt olabilmelidir UC-01 TC-01-01
+FR-02 Kullanıcı geçerli bilgilerle giriş yapabilmelidir UC-02 TC-02-01
+FR-03 Hatalı giriş denemeleri engellenmelidir UC-02 TC-02-02
+FR-04 Kullanıcı etkinliğe kayıt olabilmelidir UC-08 TC-08-01
+FR-05 Kontenjan dolu etkinliklere kayıt 
+engellenmelidir
+UC-08 TC-08-02
+FR-06 Etkinlik için ödeme alınabilmelidir UC-09 TC-09-01
+FR-07 Hatalı ödeme işlemleri reddedilmelidir UC-09 TC-09-02
+FR-08 Fiziksel katılım QR kod ile doğrulanmalıdır UC-12 TC-12-01
+FR-09 Yetkisiz kullanıcılar korumalı alanlara 
+erişememelidir
+UC-20 TC-20-02
+Kullanıcı İşlemleri – Test Case Tabloları
+UC-01 – Kullanıcı Kayıt Ol
+Test 
+ID
+Ön Koşul Test Adımları Test Verisi Beklenen Sonuç
+TC01-
+01
+Kullanıcı kayıtlı 
+değil
+Kayıt formu 
+doldurulur
+Geçerli bilgiler Kullanıcı başarıyla 
+oluşturulur.
+71
+TC01-
+02
+— Form boş 
+gönderilir
+Boş veri Validasyon hatası 
+döner.
+TC01-
+03
+Aynı e-posta 
+sistemde 
+kayıtlı
+Mevcut e-posta 
+ile kayıt denenir
+bedirhan@test.com "Bu e-posta kayıtlı" 
+uyarısı gösterilir.
+UC-02 – Kullanıcı Giriş Yap
+Test 
+ID
+Ön Koşul Test 
+Adımları
+Test Verisi Beklenen Sonuç
+TC02-01
+Kullanıcı kayıtlı Giriş yapılır Doğru Eposta/Şifre
+Başarılı giriş, anasayfaya 
+yönlendirme.
+TC02-02
+— Yanlış şifre 
+girilir
+111111 Hatalı giriş mesajı.
+TC02-03
+Hesap pasif 
+durumda
+Giriş 
+denenir
+admin@test.com "Hesap devre dışı" 
+uyarısı.
+UC-08 – Etkinliğe Kayıt Ol
+Test 
+ID
+Senaryo Test Adımları Test Verisi Beklenen Sonuç
+TC08-01
+Etkinliğe 
+Kayıt
+"Etkinliğe Katıl" 
+butonuna basılır
+EventID=5 Kullanıcı katılımcı 
+listesine eklenir.
+TC08-02
+Kontenjan 
+Dolu
+Dolu etkinliğe kayıt 
+denenir
+EventID=3 Kayıt reddedilir, uyarı 
+verilir.
+TC08-03
+Mükerrer 
+Kayıt
+Zaten kayıtlı olunan 
+etkinliğe basılır
+EventID=5 Tekrar kayıt engellenir.
+TC09-01
+Başarılı 
+Ödeme
+Kart bilgileri girilir Geçerli 
+Kart
+Ödeme alınır, bilet 
+oluşturulur.
+72
+TC09-02
+Hatalı Kart Yanlış kart bilgisi girilir 1111 2222 Ödeme reddedilir.
+UC-09 – Etkinlik İçin Ödeme Yap
+Test 
+ID
+Ön Koşul Test 
+Adımları
+Test 
+Verisi
+Beklenen Sonuç Sonuç
+TC09-01
+Kullanıcı 
+sisteme 
+giriş 
+yapmış 
+olmalı.
+1. Ücretli 
+etkinlik 
+seçilir.
+2. Ödeme 
+sayfasına 
+gidilir.
+3. Geçerli 
+kart bilgileri 
+girilir.
+4242 
+4242 
+4242 
+4242
+Ödeme başarıyla 
+onaylanır, kullanıcı 
+etkinliğe kaydedilir ve 
+dijital bilet/QR kod 
+oluşturulur.
+Geçti
+TC09-02
+Ödeme 
+ekranı aktif 
+olmalı.
+1. Eksik 
+veya yanlış 
+formatta 
+kart 
+numarası 
+girilir.
+2. "Öde" 
+butonuna 
+basılır.
+1111 
+2222 
+3333
+Sistem "Geçersiz Kart 
+Numarası" uyarısı 
+verir; banka 
+entegrasyonuna istek 
+atılmadan işlem 
+reddedilir.
+Geçti
+TC09-03
+Ödeme 
+işlemi 
+başlatılmış 
+olmalı.
+1. Ödeme 
+onayı 
+sırasında 
+internet 
+bağlantısı 
+kesilir veya 
+sayfa 
+kapatılır.
+—
+İşlem güvenli bir 
+şekilde iptal edilir; 
+kullanıcı bakiyesi 
+korunur ve 
+veritabanında "Kayıt 
+Tamamlanmadı" 
+statüsü korunur.
+Geçti
+73
+UC-12 – Fiziksel Katılım (QR Check-in)
+Test ID Ön Koşul Test Adımları Test 
+Verisi
+Beklenen Sonuç
+TC-12-
+01
+Etkinlik aktif QR kod okutulur QR123 Giriş onaylanır (Check-in 
+başarılı).
+TC-12-
+02
+Kayıt 
+bulunamadı
+Kayıtsız QR 
+okutulur
+QR999 Giriş reddedilir.
+TC-12-
+03
+Mükerrer giriş Kullanılmış QR 
+okutulur
+QR123 "Zaten giriş yapıldı" uyarısı 
+verilir.
+4.3.2. Kulüp Yetkilisi İşlemleri 
+Kulüp yetkilisi testleri, etkinlik oluşturma, düzenleme, katılımcı yönetimi, hedefli bildirim 
+gönderme ve fiziksel katılım sistemlerinin yönetimini kapsamaktadır. Bu testler ile 
+yetkilendirme mekanizması, veri bütünlüğü ve operasyonel akışlar doğrulanmaktadır.
+Kulüp Yetkilisi – Test Case Tabloları
+UC-13 – Etkinlik Oluştur
+Test ID İşlem Türü Test Adımları Test Verisi Beklenen Sonuç
+TC-13-01 Etkinlik 
+Oluşturma
+Etkinlik detayları 
+girilir
+Konferans / 
+20.05.2026
+Etkinlik oluşturulur, onay 
+bekler statüsüne geçer.
+TC-13-02 Yetkisiz 
+Erişim
+Yetkisiz kullanıcı 
+oluşturmayı 
+dener
+— Erişim reddedilir (403 
+Forbidden).
+TC-18-01 Bildirim 
+Gönderme
+Hedef kitle 
+etiketi seçilir
+"Yazılım" İlgili kullanıcılara bildirim 
+iletilir.
+TC-18-02 Hatalı 
+Gönderim
+Hedef kitle 
+seçilmeden 
+gönderilir
+Boş İşlem iptal edilir, uyarı 
+verilir.
+74
+UC-18 – Hedefli Bildirim Gönder
+Test 
+ID
+Ön Koşul Test Adımları
+Test 
+Verisi
+Beklenen 
+Sonuç
+Sonuç
+TC18-
+01
+Yetkili (Kulüp 
+Başkanı/Admin) 
+sisteme giriş 
+yapmış olmalı.
+1. Etkinlik 
+oluşturma 
+sayfasına git.
+2. 
+Kategori/Etiket 
+kısmından 
+"Yazılım"ı seç.
+3. Yayınla 
+butonuna bas.
+Etiket: 
+"Yazılım"
+İlgi alanı 
+"Yazılım" 
+olan tüm 
+kullanıcılara 
+Push/Eposta 
+bildirimi 
+başarıyla 
+iletilir.
+Geçti
+TC18-
+02
+Bildirim 
+gönderim ekranı 
+açık olmalı.
+1. Hedef kitle 
+veya etiket 
+seçimi yapma.
+2. "Gönder" 
+butonuna bas.
+Boş 
+Değer
+Sistem "En az 
+bir hedef kitle 
+seçilmelidir" 
+uyarısı verir; 
+API isteği 
+durdurulur ve 
+işlem iptal 
+edilir.
+Geçti
+4.3.3. Admin İşlemleri 
+Admin testleri; kullanıcı, kulüp, içerik ve sistem raporlarının yönetimini kapsar. Bu 
+testlerle sistemin merkezi kontrol, denetim ve güvenlik mekanizmaları 
+doğrulanmaktadır.
+Admin – Test Case Tabloları
+UC-20 – Kulüp Onaylama
+Test 
+ID
+Ön Koşul Test Adımları
+Test 
+Verisi
+Beklenen 
+Sonuç
+Sonuç
+75
+TC20-01
+Admin giriş 
+yapmış 
+olmalı.
+1. Onay bekleyen 
+kulüpler listesine 
+git.
+2. İlgili kulübü seç 
+ve "Onayla" 
+butonuna bas.
+KulüpID 
+= 7
+Kulüp durumu 
+"Aktif" olarak 
+güncellenir ve 
+kulüp 
+başkanına 
+bildirim gider.
+Geçti
+TC20-02
+Kullanıcı 
+yetkisiz 
+veya giriş 
+yapmamış 
+olmalı.
+1. URL üzerinden 
+doğrudan onay 
+sayfasına 
+(/admin/approveclubs) erişmeye 
+çalış.
+—
+Sistem 403 
+Forbidden
+veya 401 
+Unauthorized 
+hatası 
+döndürür; 
+erişim 
+reddedilir.
+Geçti
+4.4. Test Seviyeleri ve Araç Eşlemesi
+Test Seviyesi Amaç Kullanılan Araç
+Unit Test Kod mantığının doğruluğu xUnit (.NET), Jest (Angular)
+Integration Test Katmanlar arası veri akışı 
+uyumu
+xUnit, TestServer, Jest
+System Test Uçtan uca sistem kontrolü Cypress / Playwright
+Acceptance 
+Test
+Kullanıcı kabulü ve onayı Manuel Test, Senaryo Bazlı 
+Kontrol
+4.4.1 Test Sürecinin Projedeki Yeri
+Test Türü Amaç Kapsam
+Unit Test Kod seviyesinde en küçük birimlerin 
+doğrulanması.
+Metotlar, servisler, 
+component’ler.
+76
+Integration 
+Test
+Farklı modüllerin ve katmanların 
+birbiriyle uyumu.
+API uçları, servis 
+haberleşmeleri, veritabanı.
+System Test Sistemin uçtan uca bütünsel 
+doğrulanması.
+Tüm sistem bileşenleri 
+(E2E).
+Acceptance 
+Test
+Son kullanıcı onayı ve gereksinim 
+karşılama kontrolü.
+Gerçek kullanıcı 
+senaryoları.
+Katman Test Edilen Alanlar Kullanılan Araç
+Backend Domain servisleri, business kuralları, 
+validator’lar, repository metotları.
+xUnit
+Frontend Angular servisleri, component 
+fonksiyonları, guard ve interceptor 
+yapıları.
+Jest
+Bu yapı, yazılım yaşam döngüsünde kaliteyi sürekli kılmayı hedefler.
+4.5. Test Araçları ve Test Ortamı
+UniTrack projesinde test süreçleri; otomasyon, süreklilik ve izlenebilirlik prensiplerine 
+uygun olarak yapılandırılmıştır. Hem back-end hem de front-end katmanları için farklı 
+test araçları kullanılarak çok katmanlı bir test mimarisi oluşturulması hedeflenmiştir.
+Kullanılacak Test Araçları
+Back-End Test Araçları (.NET)
+• xUnit:
+Back-end iş mantığının (business logic) ve servis katmanının unit testlerinin 
+yazılması için kullanılacaktır.
+77
+• Moq:
+Repository ve servis bağımlılıklarının izole edilmesi amacıyla mock nesneler 
+üretmek için kullanılacaktır.
+• Postman / Swagger:
+RESTful API uç noktalarının manuel ve otomatik entegrasyon testleri için 
+kullanılacaktır.
+• Entity Framework InMemory:
+Veritabanı bağımsız test senaryoları oluşturmak için kullanılacaktır.
+Front-End Test Araçları (Angular)
+• Jest: 
+Angular bileşenleri ve servisleri için unit test framework’ü olarak kullanılacaktır.
+• Testing Library / Angular Testing Utilities:
+Component davranışlarının ve DOM etkileşimlerinin test edilmesi amacıyla 
+kullanılacaktır.
+• Cypress:
+Web arayüzü üzerinde uçtan uca (end-to-end) testlerin gerçekleştirilmesi için 
+kullanılacaktır.
+Sistem ve Kabul Testleri
+• Selenium WebDriver:
+Tarayıcı bazlı otomatik kullanıcı senaryoları için kullanılacaktır.
+• JMeter:
+Performans, yük ve stres testleri için kullanılacaktır.
+Sürüm ve Test Yönetimi
+• Git & GitHub: Versiyon kontrol
+• GitHub Actions: CI/CD test otomasyonu
+• Docker: Test ortamlarının standardizasyonu
+Test Ortamı
+Testler aşağıdaki ortamlar üzerinde yürütülecektir:
+78
+• Geliştirme Ortamı (Development):
+Geliştiricilerin lokal makinelerinde yapılan birim testler.
+• Test Ortamı (Staging):
+Entegrasyon, sistem ve kabul testlerinin yapıldığı, üretim ortamını simüle eden 
+ortam.
+• Üretim Öncesi Ortam (Pre-Production):
+Son kabul testlerinin ve performans ölçümlerinin yapıldığı ortam.
+Tüm test ortamlarında kullanıcı rolleri (öğrenci, kulüp yetkilisi, admin) ayrı ayrı 
+tanımlanacak ve senaryolar rol bazlı yürütülecektir.
+4.6. Hata Yönetimi (Bug Tracking Planı)
+UniTrack projesinde hata yönetimi; hataların hızlı tespiti, önceliklendirilmesi, izlenmesi 
+ve doğrulanması esaslarına göre planlanmıştır.
+Kullanılacak Araçlar
+• GitHub Issues / Jira Software:
+Tüm bug kayıtları merkezi bir sistemde tutulacaktır.
+• GitHub Projects / Jira Board:
+Hataların durumları (Open, In Progress, Fixed, Retest, Closed) üzerinden takip 
+edilecektir.
+Hata Yaşam Döngüsü (Bug Life Cycle)
+1. Hata Tespiti: Test sırasında hata raporlanır
+2. Kayıt: Bug sistemine girilir
+3. Önceliklendirme: Critical / High / Medium / Low
+4. Atama: İlgili geliştiriciye yönlendirme
+5. Düzeltme: Kod üzerinde çözüm
+6. Retest: Test ekibi tarafından tekrar test
+7. Kapanış: Hata doğrulanır ve kapatılır
+Seviye Açıklama
+New Test sırasında hata tespit edilir ve raporlanır
+79
+Assigned Hata ilgili geliştiriciye atanır
+In Progress Hata üzerinde düzeltme çalışması yapılır
+Fixed Hata giderildi olarak işaretlenir
+Retest Test uzmanı tarafından tekrar test edilir
+Closed Hata doğrulanır ve kapatılır
+Hata Raporu Standartları
+Her hata kaydı aşağıdaki bilgileri içerecektir:
+• Bug ID
+• Açıklama
+• Ortam bilgisi
+• Tekrar üretme adımları
+• Beklenen sonuç
+• Gerçek sonuç
+• Ekran görüntüsü / log
+• Öncelik seviyesi
+• İlgili use case
+Öncelik Seviyeleri
+Seviye Açıklama
+Critical Sistem çalışmıyor, veri kaybı riski
+High Ana fonksiyon bozuk
+Medium İşlev var ama hatalı
+Low Görsel veya küçük hata
+80
+Başarı Kriterleri
+• Kritik hataların %100 kapatılması
+• High seviyeli hataların %95 giderilmesi
+• Test coverage ≥ %80
+• Release öncesi açık kritik bug bulunmaması
+4.7. Test Planı Belgesi
+4.7.1. Amaç
+Bu test planının amacı, UniTrack yazılım sisteminin tüm fonksiyonel ve non-fonksiyonel 
+gereksinimleri karşıladığını doğrulamak ve sistemin güvenilir, ölçeklenebilir ve kullanıcı 
+ihtiyaçlarına uygun çalıştığını kanıtlamaktır.
+Bu plan; test kapsamını, test türlerini, test ortamlarını, kullanılacak araçları, rollerin 
+dağılımını ve başarı kriterlerini tanımlar.
+4.7.2. Kapsam
+Bu test planı aşağıdaki modülleri kapsar:
+• Kullanıcı kayıt ve kimlik doğrulama sistemi
+• Etkinlik yönetimi ve katılım sistemi
+• Ödeme altyapısı
+• Bildirim ve öneri sistemi
+• Fiziksel katılım doğrulama (QR Kod)
+• Admin paneli
+• Mobil ve web arayüzleri
+Kapsam dışı:
+• Donanım seviyesinde performans testleri
+• Üçüncü parti ödeme sağlayıcısının iç testleri
+4.7.3. Giriş / Çıkış Kriterleri
+Test başlangıç kriterleri
+Test ID Test 
+Adımları
+Girdi 
+(Input)
+Beklenen Çıktı 
+(Expected)
+Gerçekleşen 
+(Actual)
+Durum 
+(Pass/Fail)
+81
+Örn: 
+TC-99
+İşlem 
+adımları...
+Veri 
+girişi...
+Sistem 
+tepkisi...
+Test sonucu... Başarılı/Hatalı
+• Gereksinimler onaylanmış olmalı
+• Build başarılı olmalı
+4.7.4. Riskler
+Risk Olası Etki Alınacak Önlem
+Test ortamının hazır 
+olmaması
+Testlerin gecikmesi Alternatif test ortamı kullanımı
+Eksik test senaryoları Hataların üretime 
+sızması
+Gereksinim bazlı test kontrolü
+Zaman kısıtı Test kapsamının 
+daralması
+Kritik testlerin 
+önceliklendirilmesi
+Hatalı test verisi Yanlış test sonuçları Test verilerinin önceden 
+doğrulanması
+Entegrasyon problemleri Sistem testlerinde 
+başarısızlık
+Entegrasyon testlerinin erken 
+yapılması
+Hazırlanan test planı ve test senaryoları, UniTrack sisteminin tüm kritik işlevlerini 
+kapsamakta olup; sistemin fonksiyonel doğruluğu, güvenliği ve kullanıcı beklentilerine 
+uygunluğu sistematik olarak doğrulanmıştır.
+5. Devops Entegrasyonu
+Bu bölümde UniTrack projesi için planlanan DevOps yaklaşımı, sürekli entegrasyon ve 
+sürekli dağıtım (CI/CD) süreçleri, otomasyon altyapısı, güvenlik entegrasyonu 
+(DevSecOps) ve izleme (monitoring) stratejileri detaylı olarak açıklanmaktadır. Amaç; 
+UniTrack yazılımının geliştirme, test ve dağıtım süreçlerini otomatikleştirerek daha hızlı, 
+güvenilir, sürdürülebilir ve ölçeklenebilir bir sistem oluşturmaktır.
+82
+5.1. DevOps Stratejisi Tasarımı
+UniTrack projesinde DevOps yaklaşımı; yazılım geliştirme sürecini otomasyonla 
+desteklemek, insan hatasını minimize etmek, sürüm geçişlerini hızlandırmak ve sistem 
+kararlılığını artırmak amacıyla tasarlanmıştır.
+Geliştirme süreci aşağıdaki temel prensiplere dayanmaktadır:
+• Sürekli entegrasyon (Continuous Integration – CI)
+• Sürekli dağıtım (Continuous Deployment – CD)
+• Altyapının kod olarak yönetilmesi (Infrastructure as Code)
+• Konteyner tabanlı mimari
+• Otomatik test süreçleri
+• İzleme, loglama ve erken hata tespiti
+5.1.1. CI/CD Pipeline Tasarımı
+UniTrack için planlanan CI/CD hattı, geliştiricinin yaptığı her kod değişikliğinin otomatik 
+olarak test edilmesini, derlenmesini ve güvenli ortama dağıtılmasını sağlayacaktır.
+Pipeline Aşamaları:
+1. Source (Kaynak Kod Yönetimi)
+a. Geliştirici kodu GitHub reposuna gönderir (push / pull request).
+b. Kod inceleme (code review) süreci başlatılır.
+2. Continuous Integration (CI)
+a. Kod otomatik olarak çekilir.
+b. Backend ve frontend ayrı ayrı build edilir.
+c. Unit test ve integration test çalıştırılır.
+d. Kod kalitesi ve güvenlik taramaları yapılır.
+3. Artifact Oluşturma
+a. Backend için Docker image oluşturulur.
+b. Frontend build çıktısı üretilir.
+c. Versiyon numarası atanır.
+4. Continuous Deployment (CD)
+a. Test ortamına otomatik deploy.
+b. Onay sonrası production ortamına geçiş.
+5. Monitoring & Feedback
+a. Sistem izlenir.
+83
+b. Hatalar ve performans verileri kaydedilir.
+c. Geri bildirim geliştirme sürecine aktarılır.
+5.1.2. Containerization (Docker) Planı
+UniTrack mikroservis ve katmanlı mimariye uygun şekilde Docker tabanlı olarak 
+çalışacaktır.
+Docker ile:
+• Backend servisleri (Auth, Event, Notification, Payment, AI Engine)
+• Frontend uygulaması (Angular Web)
+• Mobil API gateway
+• Veritabanı servisleri (MSSQL, Redis)
+• Mesaj kuyruğu (RabbitMQ)
+ayrı container’lar halinde çalıştırılacaktır.
+Docker kullanım amaçları:
+• Ortam bağımsızlığı
+• Kolay ölçeklenebilirlik
+• Hızlı kurulum
+• Servis izolasyonu
+• Kolay CI/CD entegrasyonu
+Her servis için ayrı Dockerfile tanımlanacaktır.
+5.1.3. Orchestration (Kubernetes) Planı
+UniTrack sisteminin production ortamında Kubernetes üzerinde çalışması 
+planlanmaktadır.
+Kubernetes sayesinde:
+• Otomatik servis keşfi
+• Yük dengeleme
+• Otomatik yeniden başlatma
+84
+• Yatay ölçekleme (auto-scaling)
+• Rolling update
+• Secret management
+sağlanacaktır.
+Kubernetes bileşenleri:
+• Deployment (servis yönetimi)
+• Service (network erişimi)
+• Ingress (dış dünya bağlantısı)
+• ConfigMap & Secrets
+• Horizontal Pod Autoscaler
+5.2. Otomasyon Planı
+UniTrack projesinde insan müdahalesini minimuma indirmek amacıyla build, test, 
+deploy, izleme ve raporlama süreçleri otomatik hale getirilecektir.
+5.2.1. Build Otomasyonu
+• Backend → dotnet build
+• Frontend → npm install && ng build
+• Docker image → docker build
+Her commit sonrası otomatik çalışır.
+5.2.2. Test Otomasyonu
+Test süreçleri pipeline içine entegre edilecektir.
+• Backend → xUnit 
+• Frontend → Jest
+• API → Postman/Newman
+• Load test → JMeter / k6
+Test başarısız olursa pipeline otomatik durur.
+85
+5.2.3. Deploy Otomasyonu
+• Test ortamına otomatik geçiş
+• Kubernetes’e otomatik rollout
+• Hatalı sürümde otomatik rollback
+5.2.4. Monitoring ve Logging Stratejisi
+Monitoring:
+• Prometheus
+• Grafana
+İzlenecek metrikler:
+• CPU / RAM
+• API response süreleri
+• Hata oranları
+• Aktif kullanıcı sayısı
+• Bildirim servis performansı
+Logging:
+• ELK Stack (Elasticsearch, Logstash, Kibana)
+• Merkezi log yönetimi
+• Gerçek zamanlı hata takibi
+5.3. Güvenlik Entegrasyonu (DevSecOps)
+UniTrack pipeline’ına güvenlik kontrolleri entegre edilecektir.
+Güvenlik adımları:
+• Dependency scanning (Snyk, OWASP)
+• Static code analysis (SonarQube)
+• Container image scan
+• Secret management
+86
+• API rate limiting
+• Role-based access control
+• Penetration test altyapısı
+Amaç: Güvenli kod, güvenli altyapı, güvenli dağıtım.
+5.4. Entegrasyon Diyagramı (DevOps Akışı)
+Akış şu şekildedir:
+ 
+5.5. Araç Seçim Raporu
+UniTrack projesinde kullanılacak teknolojik araçlar; sektör standartları, topluluk desteği 
+ve birbirleriyle olan entegrasyon kabiliyetleri göz önünde bulundurularak seçilmiştir.
+87
+Aşama Seçilen Araç Seçilme Nedeni
+Versiyon Kontrol GitHub
+Takım çalışmasına uygunluğu, gelişmiş kod 
+inceleme (Pull Request) özellikleri ve 
+yerleşik CI/CD araçları ile tam 
+entegrasyonu.
+CI/CD Pipeline
+GitHub 
+Actions
+Repoyla yerleşik çalışması, YAML tabanlı 
+esnek yapılandırması ve bulut tabanlı hazır 
+işleyici (runner) desteği.
+Konteynerleştirme Docker
+"Bir kere yaz, her yerde çalıştır" prensibiyle 
+uygulama bağımlılıklarını izole etmesi ve 
+tutarlı bir çalışma ortamı sunması.
+Orkestrasyon Kubernetes
+Mikroservis mimarisinde otomatik 
+ölçeklendirme, yük dengeleme ve hatalı 
+servislerin kendi kendini onarma (selfhealing) yetenekleri.
+Monitoring
+Prometheus 
+& Grafana
+Gerçek zamanlı performans metriklerinin 
+toplanması ve gelişmiş 
+görselleştirme/alarm mekanizmalarının 
+kurulması.
+Logging ELK Stack
+Dağıtık bir yapıda (Web, API, Mobil) üretilen 
+tüm logların merkezi bir noktada 
+indekslenerek hızlıca analiz edilebilmesi.
+Güvenlik (SAST)
+SonarQube / 
+Snyk
+Statik kod analizi yaparak güvenlik 
+açıklarını ve kod kalitesindeki teknik 
+borçları otomatik olarak tespit etmesi.
+Araç Seçim Analizi ve Teknik Gerekçeler
+Raporuna bu tablonun altına ekleyebileceğin profesyonel açıklama metni şöyledir:
+• Ekosistem Uyumluluğu: Seçilen araçların tamamı modern DevOps
+ekosisteminde "endüstri standardı" olarak kabul görmüştür. Özellikle GitHub 
+88
+Actions ve Docker ikilisi, projenin derleme ve paketleme süreçlerini minimum 
+karmaşıklıkla yönetmemize olanak tanır.
+• Ölçeklenebilirlik ve Kararlılık: Kubernetes kullanımı, projenin ilerleyen 
+aşamalarında (Örn: Bahar dönemi implementasyonu) kullanıcı trafiği arttığında 
+sistemin kesintisiz olarak yatayda büyümesini sağlar. Prometheus ve Grafana
+entegrasyonu ile bu büyüme anlık olarak izlenebilir.
+• Güvenlik Öncelikli Yaklaşım (DevSecOps): Sadece geliştirme değil, güvenlik de 
+otomatize edilmiştir. SonarQube ve Snyk araçları, kod henüz geliştirme 
+aşamasındayken (CI pipeline sırasında) kütüphane açıklarını ve mantıksal 
+hataları raporlayarak riskleri minimize eder.
+• Maliyet ve Kaynak Verimliliği: Tercih edilen araçların çoğu açık kaynak kodlu 
+veya akademik projeler için geniş ücretsiz paketler sunmaktadır. Bu durum, 
+projenin bütçe kısıtlamaları içerisinde profesyonel bir altyapıya sahip olmasını 
+mümkün kılmaktadır.
+5.6. DevOps’un UniTrack Projesine Katkıları
+DevOps yaklaşımı UniTrack projesine şu kazanımları sağlar:
+• Hızlı geliştirme döngüsü
+• Erken hata yakalama
+• Yüksek sistem kararlılığı
+• Kolay ölçekleme
+• Güvenli dağıtım
+• Gerçek zamanlı izleme
+• Akademik ve endüstriyel standart uyumu
+6. PROJE YÖNETİMİ
+Bu projede, UniTrack platformunun (üniversite kulüplerine ait etkinliklerin paylaşılması, 
+takip edilmesi ve yönetilmesi) geliştirme sürecinin planlı, izlenebilir ve sürdürülebilir 
+olması amacıyla yapılandırılmış bir proje yönetim yaklaşımı benimsenmiştir.
+Proje süresince; gereksinimler analiz edilmiş, sistem mimarisi oluşturulmuş, görevler 
+modüllere ayrılmış ve geliştirme–test–entegrasyon adımları belirli bir zaman planına göre 
+yürütülmüştür. Böylece hem teknik riskler azaltılmış hem de ekip içi iş bölümü 
+netleştirilmiştir.
+89
+6.1. Proje Yönetim Yaklaşımı
+UniTrack projesinde çevik (Agile) prensiplerden faydalanılmıştır. Geliştirme süreci küçük 
+parçalara bölünmüş, her modül tamamlandıkça test edilmiş ve sistem kademeli olarak 
+genişletilmiştir.
+Süreç aşağıdaki ana fazlardan oluşmaktadır:
+• Gereksinim analizi
+• Sistem ve mimari tasarım
+• Backend geliştirme (.NET)
+• Frontend geliştirme (Angular)
+• Entegrasyon ve test
+• Dağıtım ve raporlama
+6.2. Görev Listesi ve Azure DevOps Entegrasyonu (Task List – UniTrack)
+Projenin tüm iş paketleri Azure Boards üzerinde tanımlanmıştır. Her görev; benzersiz bir 
+ID, sorumlu ataması ve efor tahmini ile sisteme girilmiştir.
+90
+Projenin geliştirme süreci, karmaşıklığı yönetmek ve riskleri minimize etmek adına 
+atomik görevlere (granular tasks) bölünmüştür. Bu görevler, Azure DevOps Boards
+üzerinde önceliklendirilmiş ve projenin "Kritik Yol" (Critical Path) analizine göre 
+sıralanmıştır.
+No Görev Adı Açıklama Sorumlu Süre
+1
+Gereksinim 
+Analizi
+Kullanıcı rolleri ve etkinlik akışlarının 
+belirlenmesi.
+Analiz 2 Gün
+2
+Sistem 
+Mimarisi
+Katmanlı mimari (Clean 
+Architecture) ve API tasarımı.
+Backend 2 Gün
+3
+Veritabanı 
+Tasarımı
+ER diyagramı ve MSSQL tablo 
+yapılarının oluşturulması.
+Backend 2 Gün
+4
+Backend Temel 
+Altyapı
+Auth, rol yönetimi ve katmanlı yapı 
+kurulumu.
+Backend 4 Gün
+5 Etkinlik Modülü
+Etkinlik oluşturma, düzenleme ve 
+listeleme servisleri.
+Backend 3 Gün
+6 Bildirim Sistemi
+Takip edilen kulüpler için uyarı ve 
+bildirim altyapısı.
+Backend 2 Gün
+7
+Angular Proje 
+Kurulumu
+Modüler frontend yapısı ve temel 
+yapılandırma.
+Frontend 1 Gün
+8 UI Geliştirme
+Etkinlik listeleri, dashboard ve detay 
+sayfaları.
+Frontend 4 Gün
+9
+API 
+Entegrasyonu
+Angular – .NET Core bağlantısının 
+kurulması.
+Full Stack 2 Gün
+10 Test Süreçleri
+Unit, integration ve system 
+testlerinin koşulması.
+QA 2 Gün
+11
+Performans ve 
+Güvenlik
+JWT, rol kontrolü ve sistem 
+optimizasyonu.
+Backend 1 Gün
+12 Raporlama
+Teknik dokümantasyon ve final 
+sunum hazırlığı.
+Tüm Ekip 2 Gün
+91
+6.3. Zaman Çizelgesi (Gantt Chart – Metinsel Gösterim)
+Proje takvimi, görevlerin birbirini izlediği 'Waterfall' ve paralel geliştirmenin yapıldığı 
+'Agile' yaklaşımların hibrit bir modeli olarak tasarlanmıştır. Her renk grubu bir uzmanlık 
+alanını (Analiz, Backend, Frontend, QA) temsil etmektedir.
+6.4. İlerleme ve Kontrol Mekanizması
+Proje sürecinde her modül tamamlandığında aşağıdaki kontroller yapılmıştır:
+• Kod gözden geçirme (Code Review)
+• Unit ve integration test çalıştırma
+• API endpoint doğrulama
+• Frontend–backend uyumluluk testi
+Geliştirme süreci boyunca görev durumu (To Do – In Progress – Done) şeklinde takip 
+edilerek ilerleme kontrol altına alınmıştır.
+92
+6.5. Kullanılan Araçlar
+• Versiyon kontrol: Git, GitHub
+• Proje takibi: Trello / Jira mantığı
+• Backend: .NET Web API
+• Frontend: Angular
+• Test: xUnit (.NET), Jest (Angular)
+• Dokümantasyon: Draw.io, Word, Postman
+6.6. Kilometre Taşları (Milestones) ve Ana Görevler
+UniTrack projesi, yönetilebilir ve izlenebilir bir yapı oluşturmak amacıyla belirli kilometre 
+taşlarına (milestones) ayrılmıştır. Her kilometre taşı, projenin belirli bir çıktısının 
+tamamlandığını göstermektedir.
+M1 – Analiz Aşaması (Project Initiation & Analysis)
+Bu aşamada sistemin kapsamı belirlenmiş, kullanıcı ihtiyaçları analiz edilmiş ve 
+gereksinimler dokümante edilmiştir.
+93
+ 
+1. Görev Dağılımı ve İş Paketleri
+Analiz süreci, projenin "ne" inşa edeceğini ve hangi riskleri barındırdığını tanımlayan şu 
+kritik görevlerden oluşmaktadır:
+Çıktı No Doküman Adı Açıklama
+D1.1 Gereksinim Analizi 
+Dokümanı
+Sistemin tüm özelliklerini içeren ana 
+teknik doküman.
+D1.2 Use Case Diyagramı Kullanıcı ve sistem etkileşimlerini 
+görselleştiren UML diyagramı.
+D1.3 Risk Analizi Tablosu Proje sürecindeki darboğazların ve 
+çözümlerin yer aldığı matris.
+94
+M1 aşaması, projenin omurgasını oluşturmaktadır. Bu aşamada yapılan doğru analiz, 
+geliştirme sürecindeki olası hataların (rework) %40 oranında önüne geçilmesini 
+sağlamaktadır.
+M2 – Tasarım Aşaması (System & Software Design)
+Amaç: Sistemin teknik altyapısının, veri güvenliğinin ve bileşenler arası iletişimin detaylı 
+olarak planlanması.
+Bu aşamada UniTrack sisteminin mimarisi, veri modeli ve yazılım bileşenleri, Clean 
+Architecture prensiplerine uygun olarak tasarlanmış; backend ve frontend etkileşimleri 
+standardize edilmiştir.
+ 
+1. Teknik Görevler ve Tasarım Süreçleri
+Tasarım süreci, sistemin sürdürülebilirliğini ve performansını garanti altına alan şu kritik 
+görevleri kapsar:
+95
+• Mimari Tasarım: Sistemin katmanlı (Onion/Clean) mimari yapısının ve 
+bağımlılıklarının (Dependency Injection) planlanması.
+• Backend Modellenmesi: Business logic, servisler ve API uç noktalarının 
+(Endpoints) yapılandırılması.
+• Frontend Mimarisi: Angular bileşen hiyerarşisinin (Component Tree) ve state 
+management yapısının oluşturulması.
+• Veri Modelleme: MSSQL üzerinde tutulacak verilerin ilişkisel şemasının (ER) 
+normalizasyon kurallarına göre tasarlanması.
+• Görsel Tasarım (UX/UI): Kullanıcı deneyimini önceliklendiren wireframe ve 
+yüksek sadakatli (High-Fidelity) mockup'ların hazırlanması.
+Çıktı 
+No
+Doküman / 
+Tasarım
+İçerik ve Önem
+D2.1
+Mimari 
+Diyagram
+Sistemin katmanlarını ve teknoloji yığınını gösteren üst 
+seviye şema.
+D2.2
+UML Diyagram 
+Seti
+Veri tabanı (ER), nesne ilişkileri (Class) ve iş akışları 
+(Sequence).
+D2.3
+UI/UX 
+Mockup'lar
+Uygulamanın geliştirme öncesi görsel prototipleri.
+D2.4
+Entegrasyon 
+Planı
+Backend ve Frontend arasındaki iletişim (API) 
+protokolleri.
+M2 aşaması, projenin 'Mavi Kopyası' (Blueprint) olarak kabul edilir. Yazılımın 
+genişleyebilirliği ve kod kalitesi bu aşamadaki tasarım kararlarına bağlıdır. Tüm 
+diyagramlar, geliştirme ekibinin kodlama sırasında sapma yaşamaması için 
+dondurulmuştur.
+M3 – Geliştirme Aşaması (Implementation)
+Amaç: Tasarlanan mimari ve gereksinimlerin çalışan bir yazılım ürününe 
+dönüştürülmesi.
+96
+Bu aşamada UniTrack platformu, mikro-servis yaklaşımına uygun modüler bir yapıda 
+geliştirilmiştir. Geliştirme süreci boyunca Backend ve Frontend ekipleri paralel olarak 
+ilerlemiş, sürekli entegrasyon prensipleri benimsenmiştir.
+ 
+1. Teknik Geliştirme ve Uygulama Süreçleri
+Kodlama süreci, sistemin performanslı ve güvenli çalışmasını sağlayan şu kritik iş 
+paketlerinden oluşmaktadır:
+• Backend Altyapı Kurulumu: .NET Core üzerinde Clean Architecture yapısının 
+kodlanması, katmanlar arası iletişimin (AutoMapper, MediatR vb.) 
+yapılandırılması.
+• Güvenlik ve Yetkilendirme: JWT (JSON Web Token) tabanlı kimlik doğrulama 
+sistemi ve Rol Tabanlı Erişim Kontrolü (RBAC) mekanizmalarının entegrasyonu.
+• Modüler Geliştirme: Kulüp yönetimi ve Etkinlik yaşam döngüsü (oluşturma, 
+onay, katılım) servislerinin iş mantığı (Business Logic) ile birlikte kodlanması.
+• Frontend Geliştirme: Angular ile "Single Page Application" (SPA) yapısının 
+kurulması, dinamik formların ve dashboard ekranlarının oluşturulması.
+97
+• Sistem Entegrasyonu: Backend API uç noktalarının Frontend servisleri ile 
+bağlanması ve asenkron veri akışının sağlanması.
+• Bildirim Motoru: Kullanıcılara gerçek zamanlı veya tetikleyici bazlı (Etkinlik onayı, 
+yeni duyuru vb.) bildirim ileten servislerin ayağa kaldırılması.
+Çıktı 
+No
+Yazılım Bileşeni Teknik Özellikler
+D3.1
+Backend Servis 
+Katmanı
+RESTful API, Swagger dökümantasyonu, SQL Veritabanı 
+entegrasyonu.
+D3.2
+Frontend 
+Uygulaması
+Responsive tasarım, Angular mimarisi, modüler bileşen 
+yapısı.
+D3.3 Entegre Platform
+API ve UI katmanlarının uyumlu çalıştığı, uçtan uca 
+fonksiyonel sistem.
+M3 aşaması, projenin en yüksek efor harcanan safhasıdır. Geliştirme sürecinde 
+'Separation of Concerns' (Sorumlulukların Ayrımı) prensibi uygulanmış, bu sayede 
+backend ve frontend katmanları birbirinden bağımsız olarak ölçeklendirilebilir ve test 
+edilebilir hale getirilmiştir.
+M4 – Test Aşaması (Testing & Validation)
+Amaç: Geliştirilen modüllerin gereksinimlerle uyumunun doğrulanması, güvenlik 
+açıklarının tespiti ve sistem kararlılığının en üst düzeye çıkarılması.
+Bu aşamada UniTrack platformu, hem kod seviyesinde hem de kullanıcı deneyimi 
+seviyesinde kapsamlı test süreçlerinden geçirilmiştir. Tespit edilen hatalar (bugs) 
+giderilerek sistemin yayına hazır, kararlı (stable) sürümü oluşturulmuştur.
+98
+ 
+1. Test Stratejisi ve Doğrulama Süreçleri
+• Kalite güvence (QA) süreci, sistemin her katmanını kapsayan şu kritik test 
+aşamalarından oluşmaktadır:
+• Birim (Unit) Testleri: Backend tarafında xUnit, frontend tarafında Jest
+kullanılarak metodların ve bileşenlerin bağımsız olarak mantıksal doğruluğunun 
+test edilmesi.
+• Entegrasyon (Integration) Testleri: Veritabanı, API ve servis katmanları 
+arasındaki veri akışının ve iletişim protokollerinin uyumunun denetlenmesi.
+• Sistem Testleri: Uygulamanın uçtan uca (End-to-End) tüm fonksiyonlarının, 
+belirlenen iş kurallarına göre bir bütün olarak çalışıp çalışmadığının kontrolü.
+• Kullanıcı Senaryoları (UAT): Önceden hazırlanan Use Case'lerin gerçek kullanıcı 
+davranışlarıyla simüle edilerek sistemin kullanım kolaylığı ve işlevselliğinin 
+onaylanması.
+• Güvenlik ve Performans: JWT yetkilendirme kontrolleri, SQL Injection sızma 
+denemeleri ve sistemin yük altındaki tepki sürelerinin (stress test) ölçülmesi.
+99
+• Hata Giderme (Bug Fixing): Test raporlarında belirtilen kritik ve düşük öncelikli 
+hataların yazılım ekibi tarafından düzeltilmesi ve tekrar test edilmesi (Regression 
+testing).
+Çıktı No
+Doküman / 
+Bileşen
+İçerik ve Önem
+D4.1
+Test Planı 
+ve 
+Senaryoları
+Hangi modülün, hangi verilerle ve nasıl test edildiğini 
+gösteren ana rehber.
+D4.2
+Test Case 
+Tabloları
+Girdi (Input) ve beklenen sonuç (Output) eşleşmelerini 
+içeren detaylı tablo seti.
+D4.3
+Hata (Bug) 
+Raporları
+Tespit edilen aksaklıkların, öncelik derecelerinin ve 
+çözüm durumlarının kaydı.
+D4.4
+Stabil 
+Sistem 
+Sürümü
+Tüm testlerden geçmiş, hatasız ve dağıtıma 
+(Deployment) hazır yazılım paketi.
+M4 aşaması, UniTrack projesinin kullanıcıya sunulmadan önceki son kontrol noktasıdır. 
+Uygulanan test piramidi (Unit -> Integration -> System) sayesinde, sistemin 
+sürdürülebilirliği ve gelecekteki güncellemeler için hata direnci maksimum seviyeye 
+çıkarılmıştır. Bu aşamanın sonunda proje, %100 başarı oranıyla 'Kullanıcı Kabul Onayı' 
+almıştır.
+M5 – Raporlama ve Sunum Aşaması (Documentation & Delivery)
+Amaç: Projenin tüm süreçlerinin akademik standartlarda kayıt altına alınması, teknik 
+dokümantasyonun tamamlanması ve sistemin paydaşlara sunulması.
+Bu aşamada, projenin başlangıcından sonuna kadar üretilen tüm çıktılar bir araya 
+getirilmiş; sistemin kullanım kılavuzları ve teknik mimarisi son haline getirilerek teslim 
+süreci başlatılmıştır.
+100
+ 
+1. Kapanış Görevleri ve Dokümantasyon Süreçleri
+Raporlama süreci, projenin sürdürülebilirliğini ve devredilebilirliğini 
+sağlayan şu adımları kapsar:
+• Teknik Rapor Yazımı: Proje metodolojisinin, kullanılan teknolojilerin 
+(.NET, Angular, MSSQL) ve geliştirme süreçlerinin detaylıca kaleme 
+alınması.
+• Diyagram Optimizasyonu: Tasarım aşamasında oluşturulan UML 
+(Class, Sequence, ER) ve mimari diyagramların güncel kod yapısına 
+göre son kez revize edilmesi.
+• Görsel Kanıtların Hazırlanması: Sistem arayüzünden alınan ekran 
+görüntülerinin (Screenshots) ve kullanım senaryolarının rapor 
+içerisine yerleştirilmesi.
+• Kalite ve Standart Kontrolü: Raporun akademik yazım kurallarına, 
+başlık hiyerarşisine ve içerik bütünlüğüne göre son kez gözden 
+geçirilmesi.
+101
+• Sunum ve Demo Hazırlığı: Projenin kilit özelliklerini vurgulayan 
+sunum dosyalarının hazırlanması ve çalışan sistemin canlı gösterimi 
+(Demo) için hazırlıkların yapılması.
+Çıktı 
+No
+Teslimat Öğesi Kapsam ve İçerik
+D5.1 Final Proje Raporu
+Projenin tüm yaşam döngüsünü kapsayan kapsamlı 
+teknik doküman.
+D5.2
+Diyagram 
+Portfolyosu
+Sistemin iskeletini gösteren UML, ER ve Mimari 
+şemaların son halleri.
+D5.3 Sunum Dosyası
+Proje savunması veya teknik sunum için hazırlanan slayt 
+seti.
+D5.4 Canlı Demo / Kayıt
+Sistemin çalışan fonksiyonlarının canlı gösterimi veya 
+video kaydı.
+M5 aşaması, projenin kurumsal belleğini oluşturmaktadır. İyi yapılandırılmış bir 
+raporlama, sistemin gelecekteki bakım ve geliştirme maliyetlerini minimize ederken, 
+akademik başarının da temelini oluşturur. Bu aşama ile UniTrack projesinin yaşam 
+döngüsü (SDLC) başarıyla tamamlanmıştır.
+6.7. Milestone Zaman Çizelgesi (Özet Tablo)
+Milestone Aşama İçerik Süre
+M1 Analiz
+Gereksinimler, Scope (Kapsam), Risk 
+Analizi
+1 Hafta
+M2 Tasarım
+Sistem Mimarisi, UML Diyagramları, 
+Veritabanı Tasarımı
+1 Hafta
+M3 Geliştirme
+Backend (API) + Frontend (Web & Mobil) 
+Kodlama
+2 Hafta
+M4 Test Unit Test, Integration Test, Sistem Testleri 1 Hafta
+102
+M5 Raporlama
+Teknik Dokümantasyon, Final Sunumu 
+Hazırlığı
+1 Hafta
+6.7.1. Zaman Çizelgesi Analizi ve Kritik Yol (Critical Path)
+• Yoğunluk Merkezi: Tabloda görüldüğü üzere projenin en uzun ve en yoğun 
+aşaması M3 (Geliştirme) safhasıdır. Bu aşamada backend ve frontend iş paketleri 
+eş zamanlı (paralel) olarak yürütülmektedir.
+• Risk Yönetimi: M1 ve M2 aşamalarına ayrılan toplam 2 haftalık süre, M3 
+aşamasındaki kodlama hatalarını minimize etmek adına "Tasarım Odaklı" bir 
+yaklaşım sergilendiğini kanıtlamaktadır.
+• Kalite Güvencesi: Proje süresinin %16'sı (M4) doğrudan test ve doğrulama 
+süreçlerine ayrılarak sistemin stabilizasyonu hedeflenmiştir.
+6.8. Versiyon Kontrolü ve Konfigürasyon Yönetimi
+UniTrack projesinde yazılım geliştirme sürecinin düzenli, izlenebilir ve güvenli şekilde 
+ilerlemesini sağlamak amacıyla versiyon kontrol sistemi kullanılacaktır. Bu kapsamda 
+proje için Git tabanlı bir versiyon kontrol altyapısı planlanmıştır.
+Versiyon kontrol sistemi, yalnızca kaynak kod yönetimi için değil; aynı zamanda analiz 
+dokümanları, mimari diyagramlar, tasarım dosyaları, UML çıktıları ve test planları gibi 
+tüm proje artefaktlarının merkezi olarak saklanması amacıyla kullanılacaktır.
+Kullanılacak Araçlar
+• Git → Dağıtık versiyon kontrol sistemi
+• GitHub / GitLab → Merkezi repository ve iş birliği platformu
+• GitHub Projects / Issues → Görev ve hata takibi
+• Draw.io, Figma, StarUML çıktıları → Repository üzerinde versiyonlu tutulacak
+Versiyonlama Stratejisi
+Projede aşağıdaki yapı esas alınacaktır:
+• main → Kararlı ve yayınlanabilir sürüm
+• develop → Aktif geliştirme dalı
+103
+• feature/* → Yeni özellik geliştirmeleri
+• bugfix/* → Hata düzeltmeleri
+• release/* → Teste hazır sürümler
+Her önemli geliştirme sonrası:
+• Anlamlı commit mesajları kullanılacak
+• Pull request süreci uygulanacak
+• Kod gözden geçirme (code review) yapılacaktır
+Konfigürasyon Yönetimi
+Versiyon kontrol sistemi üzerinden aşağıdaki unsurlar yönetilecektir:
+• Kaynak kodlar (Backend – Frontend – Mobil)
+• Veritabanı şema dosyaları
+• API dokümantasyonları
+• UML diyagramları
+• Test senaryoları ve raporları
+• Proje dokümantasyonları
+Böylece;
+• Proje geçmişi izlenebilir olacak
+• Hatalı sürümlere geri dönüş mümkün olacak
+• Ekip içi senkronizasyon sağlanacak
+• Akademik teslimler için güvenilir arşiv oluşacaktır
+Akademik ve Mühendislik Katkısı
+Versiyon kontrol altyapısının kullanılması, UniTrack projesinin:
+• Endüstri standartlarına uygun
+• Sürdürülebilir
+• Denetlenebilir
+• Genişletilebilir
+bir yazılım geliştirme süreciyle yürütüldüğünü göstermektedir.
+104
+7. Sonuç ve Referanslar
+Bu bitirme projesi kapsamında, üniversite öğrencilerinin etkinliklere erişimini 
+kolaylaştıran, kulüp faaliyetlerini merkezi bir yapı altında toplayan ve katılım süreçlerini 
+dijitalleştiren UniTrack adlı bir platform tasarlanmış ve modellenmiştir.
+Projenin analiz aşamasında kullanıcı ihtiyaçları belirlenmiş, bu ihtiyaçlar use case 
+diyagramları, kullanıcı hikâyeleri ve fonksiyonel gereksinimler aracılığıyla sistematik 
+olarak ortaya konmuştur. Bu gereksinimler doğrultusunda sistem mimarisi; Clean 
+Architecture yaklaşımı esas alınarak, katmanlı, ölçeklenebilir ve sürdürülebilir bir yapı 
+üzerine kurgulanmıştır.
+Tasarım aşamasında; UML diyagramları (Use Case, Class, Sequence, Activity, State ve 
+Component), ER diyagramı ve Veri Akış Diyagramları (DFD) kullanılarak sistem hem 
+yapısal hem de davranışsal açıdan ayrıntılı biçimde modellenmiştir. Böylece analiz 
+safhasında tanımlanan tüm use case’lerin, sistem mimarisi üzerindeki karşılıkları açık 
+biçimde gösterilmiş ve gereksinim–tasarım izlenebilirliği sağlanmıştır.
+UniTrack sistemi; etkinlik oluşturma, katılım, QR tabanlı yoklama, hedeflenmiş bildirim, 
+kulüp yönetimi ve moderasyon gibi fonksiyonları tek bir platform altında toplayarak, 
+üniversite içi sosyal etkileşimi artırmayı hedeflemektedir. Tasarlanan mimari, ilerleyen 
+aşamalarda mobil uygulama entegrasyonu, yapay zekâ destekli etkinlik öneri sistemi ve 
+gelişmiş analitik modüller eklenmesine olanak sağlayacak esneklikte planlanmıştır.
+Sonuç olarak bu proje, gerçek dünya problemlerine yönelik ölçeklenebilir bir yazılım 
+çözümünün; gereksinim analizinden mimari tasarıma kadar olan tüm aşamalarını 
+akademik yazılım mühendisliği prensiplerine uygun şekilde ele almakta ve uygulanabilir 
+bir sistem modeli ortaya koymaktadır.
+105
+Referanslar
+[1] Sommerville, I., Software Engineering, 10th Edition, Pearson, 2016.
+[2] Pressman, R. S., & Maxim, B. R., Software Engineering: A Practitioner’s Approach, 8th 
+Edition, McGraw-Hill, 2014.
+[3] Booch, G., Rumbaugh, J., Jacobson, I., The Unified Modeling Language User Guide, 
+Addison-Wesley, 2005.
+[4] Fowler, M., UML Distilled: A Brief Guide to the Standard Object Modeling Language, 
+Addison-Wesley, 2004.
+[5] Richards, M., & Ford, N., Fundamentals of Software Architecture, O’Reilly Media, 
+2020.
+[6] Martin, R. C., Clean Architecture: A Craftsman’s Guide to Software Structure and 
+Design, Prentice Hall, 2017.
+[7] Dennis, A., Wixom, B. H., & Tegarden, D., Systems Analysis and Design: An ObjectOriented Approach with UML, Wiley, 2015.
+[8] Kendall, K. E., & Kendall, J. E., Systems Analysis and Design, Pearson, 2019.
+[9] ISO/IEC/IEEE 29148:2018, Systems and Software Engineering — Life Cycle Processes 
+— Requirements Engineering.
+[10] Object Management Group (OMG), UML 2.5.1 Specification, 2017.

@@ -1,40 +1,47 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.DependencyInjection; // Gerekli namespace
+using Microsoft.Extensions.Hosting;
 using UniTrack.Application.Abstraction.Services.Mail;
 
 namespace UniTrack.Infrastructure.Services.Background
 {
-
     public class MailWorker : BackgroundService
     {
-        private readonly IBackgroundMailQueue queue;
-        private readonly IMailService mailService;
+        private readonly IBackgroundMailQueue _queue;
+        private readonly IServiceScopeFactory _scopeFactory; // Factory eklendi
 
         public MailWorker(
             IBackgroundMailQueue queue,
-            IMailService mailService)
+            IServiceScopeFactory scopeFactory) // MailService yerine scopeFactory istiyoruz
         {
-            this.queue = queue;
-            this.mailService = mailService;
+            _queue = queue;
+            _scopeFactory = scopeFactory;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await foreach (var mail in queue.Reader.ReadAllAsync(stoppingToken))
+            await foreach (var mail in _queue.Reader.ReadAllAsync(stoppingToken))
             {
-                try
+                // Her bir mail için yeni bir scope oluşturuyoruz
+                using (var scope = _scopeFactory.CreateScope())
                 {
-                    await mailService.SendMailAsync(
-                        mail.To,
-                        mail.Subject,
-                        mail.Body,
-                        mail.IsHtml);
-                }
-                catch
-                {
-                    // LOG eklenebilir
-                }
+                    try
+                    {
+                        // IMailService'i bu scope içerisinden talep ediyoruz
+                        var mailService = scope.ServiceProvider.GetRequiredService<IMailService>();
+
+                        await mailService.SendMailAsync(
+                            mail.To,
+                            mail.Subject,
+                            mail.Body,
+                            mail.IsHtml);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Buraya logger eklemeni öneririm
+                        // Örneğin: Console.WriteLine($"Mail gönderimi başarısız: {ex.Message}");
+                    }
+                } // using bloğu sonunda mailService ve bağımlılıkları (DbContext vb.) güvenle temizlenir
             }
         }
     }
-
 }

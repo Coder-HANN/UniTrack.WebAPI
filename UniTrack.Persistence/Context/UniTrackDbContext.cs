@@ -38,10 +38,24 @@ namespace UniTrack.Persistence.Context
         public DbSet<Report> Reports { get; set; }
         public DbSet<EventImage> EventImages { get; set; }
         public DbSet<AdminNotification> AdminNotifications { get; set; }
+        public DbSet<NotificationChannelType> NotificationChannels { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<NotificationChannelType>(builder =>
+            {
+                builder.HasKey(nc => new { nc.NotificationId, nc.Channel });
+
+                builder.HasOne(nc => nc.Notification)
+                      .WithMany(n => n.Channels)
+                      .HasForeignKey(nc => nc.NotificationId);
+
+                builder.Property(nc => nc.Channel)
+                      .HasConversion<int>();
+            });
+ 
 
             modelBuilder.Entity<EventImage>(builder =>
             {

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using UniTrack.Application.Common;
 using UniTrack.Application.DTOs.Profile;
+using UniTrack.Application.Feature.ActiveDetail.Query;
 using UniTrack.Application.Feature.Profile.Command;
 
 namespace UniTrack.WebAPI.Controllers.Public
@@ -22,6 +23,12 @@ namespace UniTrack.WebAPI.Controllers.Public
         public async Task<ServiceResponse<UserProfileUpdateResponseDTO>> UserProfileUpdate([FromBody] UserProfileUpdateCommand command) 
         {
             return await mediator.Send(command);
+        }
+
+        [HttpGet("total-user-count")]
+        public async Task<long> TotalUserCount([FromQuery] GetUserCountQuery query)
+        {
+            return await mediator.Send(query);
         }
 
 

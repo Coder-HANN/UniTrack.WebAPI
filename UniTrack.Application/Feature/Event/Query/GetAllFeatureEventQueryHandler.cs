@@ -5,10 +5,7 @@ using UniTrack.Application.Abstraction.Services.CurrentUserServices;
 using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
 using UniTrack.Application.Common.Constants;
-using UniTrack.Application.DTOs.Comment;
 using UniTrack.Application.DTOs.Event;
-using UniTrack.Domain.Entities;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace UniTrack.Application.Feature.Event.Query
 {

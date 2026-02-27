@@ -42,7 +42,7 @@ public class ClubRegisterCommandHandlerTests
         {
             ClubName = "Test Club",
             PresidentEmail = "president@test.com",
-            ContectEmail = "contact@test.com",
+            ContactEmail = "contact@test.com",
             Password = "123456",
             PresidentName = "John Doe",
             UniversityId = Guid.NewGuid(),

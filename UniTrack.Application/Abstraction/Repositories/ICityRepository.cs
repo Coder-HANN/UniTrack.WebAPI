@@ -4,5 +4,6 @@ namespace UniTrack.Application.Abstraction.Repositories
 {
     public interface ICityRepository : IBaseEntityRepository<City>
     {
+      
     }
 }

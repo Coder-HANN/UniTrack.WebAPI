@@ -8,6 +8,7 @@ namespace UniTrack.Persistence.Repositories
     {
         public CityRepository(UniTrackDbContext context) : base(context)
         {
+
         }
     }
 }

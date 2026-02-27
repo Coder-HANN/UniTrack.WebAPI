@@ -9,7 +9,7 @@ namespace UniTrack.Application.Feature.Auth.Command
     {
         public string ClubName { get; set; }
         public string PresidentEmail { get; set; }
-        public string ContectEmail { get; set; }
+        public string ContactEmail { get; set; }
         public string Password { get; set; }
         public string PresidentName { get; set; }
         public Guid UniversityId { get; set; }

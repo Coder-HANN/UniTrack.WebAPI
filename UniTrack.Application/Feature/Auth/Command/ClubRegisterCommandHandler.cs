@@ -55,7 +55,7 @@ namespace UniTrack.Application.Feature.Auth.Command
                 {
                     Name = request.ClubName,
                     PresidentMail = request.PresidentEmail,
-                    ContectEmail = request.ContectEmail,
+                    ContectEmail = request.ContactEmail,
                     President = request.PresidentName,
                     UniversityId = request.UniversityId,
                     CityId = request.CityId,

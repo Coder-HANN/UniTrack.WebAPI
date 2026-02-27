@@ -34,7 +34,13 @@ var configuration = builder.Configuration;
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+    options.AddPolicy("DevCors", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200") // Angular portu
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials(); // SignalR ve Cookie işlemleri için şart
+    });
 });
 
 builder.Services.AddInfrastructureServices(configuration);
@@ -124,6 +130,8 @@ builder.Services.AddScoped<ICacheManager, MemoryCacheManager>();
 
 builder.Services.AddSingleton<LoggerServiceBase, MsSqlLogger>();
 
+builder.Services.AddScoped<IUniversityRepository, UniversityRepository>();
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDocumentation();
@@ -177,6 +185,7 @@ app.UseRequestLocalization(localizationOptions);
 // 🔥 ROUTING MUTLAKA BURADA OLMALI
 app.UseRouting();
 
+app.UseCors("DevCors");
 // 🔐 AUTH
 app.UseAuthentication();
 app.UseAuthorization();
