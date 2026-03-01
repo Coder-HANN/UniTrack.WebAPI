@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UniTrack.Persistence.Context;
 
@@ -11,9 +12,11 @@ using UniTrack.Persistence.Context;
 namespace UniTrack.Persistence.Migrations
 {
     [DbContext(typeof(UniTrackDbContext))]
-    partial class UniTrackDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260301104242_NewMigration")]
+    partial class NewMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1028,6 +1031,7 @@ namespace UniTrack.Persistence.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Language")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -1056,7 +1060,8 @@ namespace UniTrack.Persistence.Migrations
 
                     b.HasIndex("CityId");
 
-                    b.HasIndex("DepartmentId");
+                    b.HasIndex("DepartmentId")
+                        .IsUnique();
 
                     b.HasIndex("UniverstiyId");
 
@@ -1468,8 +1473,8 @@ namespace UniTrack.Persistence.Migrations
                         .IsRequired();
 
                     b.HasOne("UniTrack.Domain.Entities.Department", "Department")
-                        .WithMany("UserDetails")
-                        .HasForeignKey("DepartmentId")
+                        .WithOne("UserDetail")
+                        .HasForeignKey("UniTrack.Domain.Entities.UserDetail", "DepartmentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -1557,7 +1562,8 @@ namespace UniTrack.Persistence.Migrations
                 {
                     b.Navigation("Departments");
 
-                    b.Navigation("UserDetails");
+                    b.Navigation("UserDetail")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("UniTrack.Domain.Entities.Event", b =>

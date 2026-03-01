@@ -104,7 +104,6 @@ namespace UniTrack.Application.Feature.Event.Command
                         Surname = userDetail.Surname,
                         UniversityName = userDetail.University?.Name,
                         DepartmentName = userDetail.Department?.Name,
-                        PhoneNumber = userDetail.PhoneNumber,
                         Graduaiton_Date = userDetail.Graduaiton_Date,
                         JoinDate = DateTimeOffset.UtcNow
                     };

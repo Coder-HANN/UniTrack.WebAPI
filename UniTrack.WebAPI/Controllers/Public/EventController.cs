@@ -76,5 +76,10 @@ namespace UniTrack.WebAPI.Controllers.Public
         {
             return await mediator.Send(command);
         }
+        [HttpGet("GetJoinEventCountQuery")]
+        public async Task<ServiceResponse<int>> GetJoinEventCountQuery([FromQuery] GetJoinEventCountQuery query)
+        {
+            return await mediator.Send(query);
+        }
     }
 }

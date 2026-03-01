@@ -81,7 +81,9 @@ namespace UniTrack.Persistence.Repositories
 
         public Task<User> GetByIdAsync(Guid Id)
         {
-            return dbSet.FirstOrDefaultAsync(u => u.Id == Id);
+            return dbSet
+                .Include(u => u.UserDetail)
+                .FirstOrDefaultAsync(u => u.Id == Id);
         }
 
         public Task<long> GetUserCountAsync()

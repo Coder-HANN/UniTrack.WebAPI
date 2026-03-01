@@ -3,8 +3,7 @@ using UniTrack.Application.Common;
 
 namespace UniTrack.Application.Feature.VerificationCode.Command
 {
-    public class ForgotPasswordCommand : IRequest<ServiceResponse<string>>
+    public class ResendVerificationCommand : IRequest<ServiceResponse<string>>
     {
-        public string Email { get; set; }
     }
 }

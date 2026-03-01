@@ -174,5 +174,13 @@
 
         public static string MarkedAsReviewed = "MarkedAsReviewed";
         public static string ImageNotFound = "ImageNotFound";
+
+        public static string ClubAlreadyVerified = "ClubAlreadyVerified";
+
+        public static string VerificationCodeResentSuccess = "VerificationCodeResentSuccess";
+        public static string CurrentPasswordIncorrect = "CurrentPasswordIncorrect";
+        public static string NewPasswordCannotBeSameAsOld = "NewPasswordCannotBeSameAsOld";
+        public static string NewPasswordRequired = "NewPasswordRequired";
+        public static string CurrentPasswordRequired = "CurrentPasswordRequired";
     }
 }

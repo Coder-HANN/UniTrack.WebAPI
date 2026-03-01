@@ -352,7 +352,6 @@ namespace UniTrack.Persistence.Context
                 builder.Property(ud => ud.Graduaiton_Date).IsRequired();
                 builder.Property(ud => ud.IsNotified).IsRequired();
                 builder.Property(ud => ud.Language);
-                builder.Property(ud => ud.PhoneNumber).IsRequired();
 
                 builder.HasOne(ud => ud.City)
                        .WithMany(c => c.UserDetails)
@@ -370,8 +369,8 @@ namespace UniTrack.Persistence.Context
                        .OnDelete(DeleteBehavior.Cascade);
 
                 builder.HasOne(ud => ud.Department)
-                          .WithOne(d => d.UserDetail)
-                          .HasForeignKey<UserDetail>(ud => ud.DepartmentId)
+                          .WithMany(d => d.UserDetails)
+                          .HasForeignKey(ud => ud.DepartmentId)
                           .OnDelete(DeleteBehavior.Cascade);
 
             });

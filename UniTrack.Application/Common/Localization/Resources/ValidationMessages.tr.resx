@@ -141,6 +141,9 @@
   <data name="CheckInSuccess" xml:space="preserve">
     <value>Etkinliğe başarılı bir şekilde giriş yapıldı.</value>
   </data>
+  <data name="ClubAlreadyVerified" xml:space="preserve">
+    <value>Kulüp zaten doğrulandı.</value>
+  </data>
   <data name="ClubCreatedSuccess" xml:space="preserve">
     <value>Kulüp başarıyla oluşturuldu.</value>
   </data>
@@ -191,6 +194,12 @@
   </data>
   <data name="CreatedNewEvent" xml:space="preserve">
     <value>Yeni etkinlik oluşturuldu.</value>
+  </data>
+  <data name="CurrentPasswordIncorrect" xml:space="preserve">
+    <value>Mevcut şifreniz hatalı.</value>
+  </data>
+  <data name="CurrentPasswordRequired" xml:space="preserve">
+    <value>Şifre değişikliği için mevcut şifrenizi girmeniz gerekmektedir.</value>
   </data>
   <data name="DepartmentAlreadyExists" xml:space="preserve">
     <value>Bu isimde bir bölüm zaten mevcut.</value>
@@ -345,6 +354,12 @@
   <data name="MinLength2" xml:space="preserve">
     <value>En az 2 karakter olmalıdır.</value>
   </data>
+  <data name="NewPasswordCannotBeSameAsOld" xml:space="preserve">
+    <value>Yeni şifre, mevcut şifre ile aynı olamaz.</value>
+  </data>
+  <data name="NewPasswordRequired" xml:space="preserve">
+    <value>Lütfen yeni bir şifre giriniz.</value>
+  </data>
   <data name="NoComplaintsAtTheMoment" xml:space="preserve">
     <value>Henüz şikayet yok.</value>
   </data>
@@ -461,6 +476,9 @@
   </data>
   <data name="VerificationCodeInvalidOrExpired" xml:space="preserve">
     <value>Kod hatalı veya süresi dolmuş.</value>
+  </data>
+  <data name="VerificationCodeResentSuccess" xml:space="preserve">
+    <value>Doğrulama kodu yeniden gönderildi.</value>
   </data>
   <data name="VerificationCodeSent" xml:space="preserve">
     <value>Doğrulama kodu e-posta adresinize gönderildi</value>

@@ -23,23 +23,39 @@ namespace UniTrack.Infrastructure.Localization
 
         public async Task<string> GetCultureAsync()
         {
-            var userId = currentUserServices.CurrentUser();
-            if (userId != null)
+            try
             {
-                var user = await userRepository.GetByIdAsync(userId.Value);
-                if (!string.IsNullOrWhiteSpace(user?.UserDetail.Language))
-                    return user.UserDetail.Language;
+                var userId = currentUserServices.CurrentUser();
+                if (userId != null)
+                {
+                    // DİKKAT: GetByIdAsync içinde UserDetail mutlaka Include edilmiş olmalı!
+                    var user = await userRepository.GetByIdAsync(userId.Value);
+
+                    // UserDetail veya Language null ise hata vermemesi için ?. ekledik
+                    if (!string.IsNullOrWhiteSpace(user?.UserDetail?.Language))
+                        return user.UserDetail.Language;
+                }
+
+                // HttpContext kontrolü
+                var context = httpContextAccessor.HttpContext;
+                if (context == null) return "tr-TR";
+
+                var headerLang = context.Request.Headers["Accept-Language"].ToString();
+
+                if (!string.IsNullOrEmpty(headerLang))
+                {
+                    return headerLang
+                        .Split(',')
+                        .First()
+                        .Split(';')
+                        .First();
+                }
             }
-
-            var headerLang = httpContextAccessor.HttpContext?
-                .Request.Headers["Accept-Language"].ToString();
-
-            if (!string.IsNullOrEmpty(headerLang))
-                return headerLang
-                    .Split(',')
-                    .First()
-                    .Split(';')
-                    .First();
+            catch
+            {
+                // Herhangi bir beklenmedik durumda sistemin çökmemesi için varsayılan dil
+                return "tr-TR";
+            }
 
             return "tr-TR";
         }

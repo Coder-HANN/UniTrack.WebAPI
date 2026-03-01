@@ -34,6 +34,15 @@ namespace UniTrack.Persistence.Repositories
             return await dbSet.FirstOrDefaultAsync(eu => eu.IsCheckedIn == true && eu.UserId == userId && eu.Event.CheckInToken == eventCheckInId);
         }
 
+        public async Task<int> GetJoinEventCountAsync(Guid? userId)
+        {
+            return await dbSet
+                .Where(eu => eu.UserId == userId && eu.IsJoined == true)
+                .Select(eu => eu.Event)
+                .Distinct()
+                .CountAsync();
+        }
+
         public Task<int> GetTotalJoinerCountByClubIdAsync(Guid clubId)
         {
             return dbSet

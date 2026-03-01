@@ -16,40 +16,58 @@ namespace UniTrack.Infrastructure.Services
         }
 
         public async Task SendMailAsync(
-          string to,
-          string subject,
-          string body,
-          bool isBodyHtml = true,
-          List<(Stream Stream, string FileName)> attachments = null)
+            string to,
+            string subject,
+            string body,
+            bool isBodyHtml = true,
+            List<(Stream Stream, string FileName)> attachments = null)
         {
-            var mail = new MailMessage()
+            var fromEmail = configuration["MailSettings:Username"];
+            var password = configuration["MailSettings:Password"];
+            var host = configuration["MailSettings:SmtpHost"];
+
+            if (!int.TryParse(configuration["MailSettings:SmtpPort"], out var port))
+                throw new InvalidOperationException("MailSettings:SmtpPort invalid");
+
+            if (string.IsNullOrWhiteSpace(fromEmail) ||
+                string.IsNullOrWhiteSpace(password) ||
+                string.IsNullOrWhiteSpace(host))
+                throw new InvalidOperationException("MailSettings missing");
+
+            using var mail = new MailMessage
             {
-                From = new MailAddress(configuration["MailSettings:Username"], "UniTrack", Encoding.UTF8),
+                From = new MailAddress(fromEmail, "Öğrencity", Encoding.UTF8),
                 Subject = subject,
                 Body = body,
                 IsBodyHtml = isBodyHtml
             };
+
             mail.To.Add(to);
 
-            // Dosya ekleme işlemi
             if (attachments != null)
             {
                 foreach (var (stream, fileName) in attachments)
                 {
-                    // stream -> dosya içeriği, fileName -> kullanıcıya görünen isim
                     mail.Attachments.Add(new Attachment(stream, fileName));
                 }
             }
 
-            using var smtp = new SmtpClient(configuration["MailSettings:SmtpHost"],
-            int.Parse(configuration["MailSettings:SmtpPort"]))
+            using var smtp = new SmtpClient(host, port)
             {
-                Credentials = new NetworkCredential(configuration["MailSettings:Username"], configuration["MailSettings:Password"]),
+                Credentials = new NetworkCredential(fromEmail, password),
                 EnableSsl = true,
-                Timeout = 10000 // 10 sn
+                Timeout = 10000
             };
-            await smtp.SendMailAsync(mail);
-        }
 
+            try
+            {
+                await smtp.SendMailAsync(mail);
+            }
+            catch (SmtpException ex)
+            {
+                // burada log atılmalı
+                throw new InvalidOperationException("Mail sending failed", ex);
+            }
+        }
     }
 }

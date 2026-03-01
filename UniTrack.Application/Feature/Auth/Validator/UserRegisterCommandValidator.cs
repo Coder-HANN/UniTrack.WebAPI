@@ -49,9 +49,6 @@ namespace UniTrack.Application.Feature.Auth.Validation
                 .IsInEnum()
                 .WithMessage(ValidationKeys.FieldRequired);
 
-            RuleFor(x => x.PhoneNumber)
-                .NotEmpty()
-                .WithMessage(ValidationKeys.FieldRequired);
         }
     }
 }

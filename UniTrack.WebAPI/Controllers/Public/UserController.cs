@@ -4,6 +4,7 @@ using UniTrack.Application.Common;
 using UniTrack.Application.DTOs.Profile;
 using UniTrack.Application.Feature.ActiveDetail.Query;
 using UniTrack.Application.Feature.Profile.Command;
+using UniTrack.Application.Feature.Profile.Query;
 
 namespace UniTrack.WebAPI.Controllers.Public
 {
@@ -20,7 +21,7 @@ namespace UniTrack.WebAPI.Controllers.Public
 
         [HttpPut("UserProfileUpdate")]
 
-        public async Task<ServiceResponse<UserProfileUpdateResponseDTO>> UserProfileUpdate([FromBody] UserProfileUpdateCommand command) 
+        public async Task<ServiceResponse<UserProfileUpdateResponseDTO>> UserProfileUpdate([FromBody] UserProfileUpdateCommand command)
         {
             return await mediator.Send(command);
         }
@@ -31,6 +32,11 @@ namespace UniTrack.WebAPI.Controllers.Public
             return await mediator.Send(query);
         }
 
+        [HttpGet("GetUserProfileQuery")]
+        public async Task<ServiceResponse<UserProfileUpdateResponseDTO>> GetUserProfile([FromQuery] GetUserProfileQuery query)
+        {
+            return await mediator.Send(query);
 
+        }
     }
 }

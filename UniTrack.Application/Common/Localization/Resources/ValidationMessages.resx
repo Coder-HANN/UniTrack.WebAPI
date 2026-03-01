@@ -141,6 +141,9 @@
   <data name="CheckInSuccess" xml:space="preserve">
     <value>Successfully checked in to the event.</value>
   </data>
+  <data name="ClubAlreadyVerified" xml:space="preserve">
+    <value>Club already verified</value>
+  </data>
   <data name="ClubCreatedSuccess" xml:space="preserve">
     <value>Club is created successes.</value>
   </data>
@@ -191,6 +194,12 @@
   </data>
   <data name="CreatedNewEvent" xml:space="preserve">
     <value>Created new event.</value>
+  </data>
+  <data name="CurrentPasswordIncorrect" xml:space="preserve">
+    <value>The current password you entered is incorrect.</value>
+  </data>
+  <data name="CurrentPasswordRequired" xml:space="preserve">
+    <value>You must enter your current password to change it.</value>
   </data>
   <data name="DepartmentAlreadyExists" xml:space="preserve">
     <value>A department with this name already exists.</value>
@@ -345,6 +354,12 @@
   <data name="MinLength2" xml:space="preserve">
     <value>Must be at least 2 characters.</value>
   </data>
+  <data name="NewPasswordCannotBeSameAsOld" xml:space="preserve">
+    <value>The new password cannot be the same as the current password.</value>
+  </data>
+  <data name="NewPasswordRequired" xml:space="preserve">
+    <value>Please enter a new password.</value>
+  </data>
   <data name="NoComplaintsAtTheMoment" xml:space="preserve">
     <value>There are no complaints yet.</value>
   </data>
@@ -461,6 +476,9 @@
   </data>
   <data name="VerificationCodeInvalidOrExpired" xml:space="preserve">
     <value>The code is invalid or has expired.</value>
+  </data>
+  <data name="VerificationCodeResentSuccess" xml:space="preserve">
+    <value>Verification code resent success</value>
   </data>
   <data name="VerificationCodeSent" xml:space="preserve">
     <value>Verification code has been sent to your email</value>

@@ -16,7 +16,6 @@ namespace UniTrack.Application.Feature.Auth.Command
         public int CityId { get; set; }
         public Gender Gender { get; set; }
         public DateOnly BirthDate { get; set; }
-        public long PhoneNumber { get; set; }
         public DateTime Graduaiton_Date { get; set; }
 
     }

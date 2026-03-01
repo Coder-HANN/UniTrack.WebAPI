@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
+using UniTrack.Application.Abstraction.Services.Mail;
 using UniTrack.Application.Abstraction.Services.VerificationCode;
 using UniTrack.Domain.Enums;
 
@@ -7,10 +8,12 @@ namespace UniTrack.Infrastructure.Services // Sizin namespace'iniz farklı olabi
     public class VerificationCodeService : IVerificationCodeService
     {
         private readonly IMemoryCache cache;
+        private readonly IMailService emailService;
 
         public VerificationCodeService(IMemoryCache cache)
         {
             this.cache = cache;
+            this.emailService = emailService;
         }
 
         public async Task GenerateAndSendCodeAsync(string email, VerificationType type)
@@ -24,9 +27,8 @@ namespace UniTrack.Infrastructure.Services // Sizin namespace'iniz farklı olabi
             // 3. Cache'e kaydet (3 dakika ömürlü)
             cache.Set(key, code, TimeSpan.FromMinutes(3));
 
-            // 4. Mail Gönder (Simülasyon)
-            Console.WriteLine($"Mail gönderildi: {email} - Kod: {code} - Tip: {type}");
-             // await emailService.SendEmailAsync(email, "Doğrulama Kodu", code);
+           
+            await emailService.SendMailAsync(email, "Doğrulama Kodu", code);
         }
 
         public bool ValidateCode(string email, string code, VerificationType type)

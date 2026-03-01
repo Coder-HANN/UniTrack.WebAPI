@@ -51,7 +51,6 @@ public class UserRegisterCommandHandlerTests
             CityId = 34,
             Gender = Gender.Male,
             BirthDate = new DateOnly(2002, 5, 10),
-            PhoneNumber = 5554443322,
             Graduaiton_Date = DateTime.UtcNow.AddYears(2)
         };
     }
@@ -131,7 +130,6 @@ public class UserRegisterCommandHandlerTests
             d.CityId == command.CityId &&
             d.Gender == command.Gender &&
             d.BirthDate == command.BirthDate &&
-            d.PhoneNumber == command.PhoneNumber &&
             d.Graduaiton_Date == command.Graduaiton_Date
         )), Times.Once);
 

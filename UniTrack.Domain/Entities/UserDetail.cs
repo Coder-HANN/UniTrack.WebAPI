@@ -13,7 +13,6 @@ namespace UniTrack.Domain.Entities
         public Gender Gender { get; set; }
         public DateOnly BirthDate { get; set; }
         public string? ProfileImageUrl { get; set; }
-        public long PhoneNumber { get; set; } 
         public DateTime Graduaiton_Date { get; set; }  
         public Guid UserId { get; set; }
         public int CityId { get; set; }
@@ -22,6 +21,7 @@ namespace UniTrack.Domain.Entities
         public City City { get; set; }
         public ClubTeam ClubTeam { get; set; }
         public bool IsNotified { get; set; } = true;
-        public string Language { get; set; }
+        public string? Language { get; set; }
     }
 }
+            

@@ -18,8 +18,19 @@ namespace UniTrack.WebAPI.Controllers.Public
         }
 
         [HttpPost("WriteCode")]
-
         public async Task<ServiceResponse<string>> WriteCode([FromBody] VerificationCommand command)
+        {
+            return await mediator.Send(command);
+        }
+
+        [HttpPost("ResendCode")]
+        public async Task<ServiceResponse<string>> ResendCode([FromBody] ResendVerificationCommand command)
+        {
+            return await mediator.Send(command);
+        }
+
+        [HttpPost("ForgotPassword")]
+        public async Task<ServiceResponse<string>> ForgotPassword([FromBody] ForgotPasswordCommand command)
         {
             return await mediator.Send(command);
         }

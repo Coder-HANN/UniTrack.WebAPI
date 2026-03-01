@@ -1,4 +1,5 @@
-﻿using UniTrack.Domain.Entities;
+﻿using System.Linq.Expressions;
+using UniTrack.Domain.Entities;
 
 namespace UniTrack.Application.Abstraction.Repositories
 {

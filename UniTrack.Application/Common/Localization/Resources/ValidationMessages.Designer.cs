@@ -133,6 +133,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Club already verified.
+        /// </summary>
+        internal static string ClubAlreadyVerified {
+            get {
+                return ResourceManager.GetString("ClubAlreadyVerified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Club is created successes..
         /// </summary>
         internal static string ClubCreatedSuccess {
@@ -282,6 +291,24 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string CreatedNewEvent {
             get {
                 return ResourceManager.GetString("CreatedNewEvent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The current password you entered is incorrect..
+        /// </summary>
+        internal static string CurrentPasswordIncorrect {
+            get {
+                return ResourceManager.GetString("CurrentPasswordIncorrect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must enter your current password to change it..
+        /// </summary>
+        internal static string CurrentPasswordRequired {
+            get {
+                return ResourceManager.GetString("CurrentPasswordRequired", resourceCulture);
             }
         }
         
@@ -745,6 +772,24 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The new password cannot be the same as the current password..
+        /// </summary>
+        internal static string NewPasswordCannotBeSameAsOld {
+            get {
+                return ResourceManager.GetString("NewPasswordCannotBeSameAsOld", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a new password..
+        /// </summary>
+        internal static string NewPasswordRequired {
+            get {
+                return ResourceManager.GetString("NewPasswordRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There are no complaints yet..
         /// </summary>
         internal static string NoComplaintsAtTheMoment {
@@ -1092,6 +1137,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string VerificationCodeInvalidOrExpired {
             get {
                 return ResourceManager.GetString("VerificationCodeInvalidOrExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Verification code resent success.
+        /// </summary>
+        internal static string VerificationCodeResentSuccess {
+            get {
+                return ResourceManager.GetString("VerificationCodeResentSuccess", resourceCulture);
             }
         }
         

@@ -138,7 +138,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ServiceResponse
             issuer: jwtSettings["Issuer"],
             audience: jwtSettings["Audience"],
             claims: claims,
-            expires:null,
+            expires: DateTime.UtcNow.AddHours(5),
             signingCredentials: creds
         );
 

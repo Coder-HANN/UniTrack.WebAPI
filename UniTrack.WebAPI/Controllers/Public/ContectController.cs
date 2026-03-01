@@ -16,7 +16,7 @@ namespace UniTrack.WebAPI.Controllers.Public
             this.mediator = mediator;
         }
 
-        [HttpGet("ContectWithAdmin")]
+        [HttpPost("ContectWithAdmin")]
         public async Task<ServiceResponse<string>> ContectWithAdmin([FromBody] SendContactMessageCommand command)
         {
             return await mediator.Send(command);

@@ -1,10 +1,12 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Identity;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
 using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
 using UniTrack.Application.Common.Constants;
 using UniTrack.Application.DTOs.Profile;
+using UniTrack.Domain.Entities;
 using UniTrack.Domain.Enums;
 
 namespace UniTrack.Application.Feature.Profile.Command
@@ -15,17 +17,20 @@ namespace UniTrack.Application.Feature.Profile.Command
         private readonly IUserDetailRepository _userDetailRepository;
         private readonly IUserRepository _userRepository;
         private readonly ILocalizationService _localizationService;
+        private readonly IPasswordHasher<User> passwordHash;
 
         public UserProfileUpdateCommandHandler(
             ICurrentUserServices currentUserServices,
             IUserDetailRepository userDetailRepository,
             IUserRepository userRepository,
-            ILocalizationService localizationService)
+            ILocalizationService localizationService,
+            IPasswordHasher<User> passwordHasher)
         {
             _currentUserServices = currentUserServices;
             _userDetailRepository = userDetailRepository;
             _userRepository = userRepository;
             _localizationService = localizationService;
+            passwordHash = passwordHasher;
         }
 
         public async Task<ServiceResponse<UserProfileUpdateResponseDTO>> Handle(UserProfileUpdateCommand request, CancellationToken cancellationToken)
@@ -84,11 +89,6 @@ namespace UniTrack.Application.Feature.Profile.Command
                 userDetail.Graduaiton_Date = request.Graduaiton_Date.Value;
                 isUpdated = true;
             }
-            if (request.PhoneNumber.HasValue && userDetail.PhoneNumber != request.PhoneNumber.Value)
-            {
-                userDetail.PhoneNumber = request.PhoneNumber.Value;
-                isUpdated = true;
-            }
 
             // Email kontrolü
             if (!string.IsNullOrWhiteSpace(request.Email) && user.Email != request.Email)
@@ -102,9 +102,47 @@ namespace UniTrack.Application.Feature.Profile.Command
             }
 
             // Password
-            if (!string.IsNullOrWhiteSpace(request.Password) && user.Password != request.Password)
+            // 1. Kullanıcı mevcut şifresini (NowPassword) girmiş mi?
+            // Password update flow (strict validation)
+            var hasNowPassword = !string.IsNullOrWhiteSpace(request.NowPassword);
+            var hasNewPassword = !string.IsNullOrWhiteSpace(request.Password);
+
+            // New password sent without current password -> reject
+            if (!hasNowPassword && hasNewPassword)
             {
-                user.Password = request.Password;
+                return ServiceResponse<UserProfileUpdateResponseDTO>.Fail(
+                    await _localizationService.Get(ValidationKeys.CurrentPasswordRequired));
+            }
+
+            // Current password sent without new password -> reject
+            if (hasNowPassword && !hasNewPassword)
+            {
+                return ServiceResponse<UserProfileUpdateResponseDTO>.Fail(
+                    await _localizationService.Get(ValidationKeys.NewPasswordRequired));
+            }
+
+            // Both provided -> verify and update
+            if (hasNowPassword && hasNewPassword)
+            {
+                var currentPasswordVerification =
+                    passwordHash.VerifyHashedPassword(user, user.Password, request.NowPassword!);
+
+                if (currentPasswordVerification == PasswordVerificationResult.Failed)
+                {
+                    return ServiceResponse<UserProfileUpdateResponseDTO>.Fail(
+                        await _localizationService.Get(ValidationKeys.CurrentPasswordIncorrect));
+                }
+
+                var isSameAsOld =
+                    passwordHash.VerifyHashedPassword(user, user.Password, request.Password!);
+
+                if (isSameAsOld == PasswordVerificationResult.Success)
+                {
+                    return ServiceResponse<UserProfileUpdateResponseDTO>.Fail(
+                        await _localizationService.Get(ValidationKeys.NewPasswordCannotBeSameAsOld));
+                }
+
+                user.Password = passwordHash.HashPassword(user, request.Password!);
                 isUpdated = true;
             }
 
@@ -135,12 +173,13 @@ namespace UniTrack.Application.Feature.Profile.Command
                         BirthDate = userDetail.BirthDate,
                         Gender = userDetail.Gender,
                         ProfileImageUrl = userDetail.ProfileImageUrl,
-                        IsNotified = userDetail.IsNotified
+                        IsNotified = userDetail.IsNotified,
+                        
                     }
                     
                 );
             }
-
+            userDetail.UpdatedDate = DateTime.UtcNow;
             await _userDetailRepository.UpdateAsync(userDetail);
             await _userRepository.UpdateAsync(user);
 
@@ -155,6 +194,7 @@ namespace UniTrack.Application.Feature.Profile.Command
                     UniverstiyId = userDetail.UniverstiyId,
                     Email = user.Email,
                     BirthDate = userDetail.BirthDate,
+                    Graduaiton_Date = userDetail.Graduaiton_Date,
                     Gender = userDetail.Gender,
                     ProfileImageUrl = userDetail.ProfileImageUrl,
                     IsNotified = userDetail.IsNotified

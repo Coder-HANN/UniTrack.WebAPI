@@ -4,6 +4,7 @@ using UniTrack.Application.Abstraction.Services.CurrentUserServices;
 using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
 using UniTrack.Application.Common.Constants;
+using UniTrack.Domain.Entities;
 using UniTrack.Domain.Enums;
 
 namespace UniTrack.Application.Feature.Department.Command
@@ -59,7 +60,7 @@ namespace UniTrack.Application.Feature.Department.Command
 
             var department = new Domain.Entities.Department
             {
-                Name = request.Name
+                Name = request.Name,
             };
 
             await departmentRepository.AddAsync(department);
