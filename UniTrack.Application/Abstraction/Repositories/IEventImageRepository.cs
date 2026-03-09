@@ -13,6 +13,7 @@ namespace UniTrack.Application.Abstraction.Repositories
 
         Task<EventImage?> GetCoverImageAsync(Guid eventId);
         Task SetCoverImageAsync(Guid eventId, Guid imageId);
+        Task<List<EventImage>> GetByEventIdsAsync(List<Guid> eventIds);
 
     }
 }

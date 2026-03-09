@@ -38,7 +38,7 @@ namespace UniTrack.Application.Feature.Club.Query
                 return ServiceResponse<IPagingExecutionResult<GetAllClubQueryResponseDTO>>.Fail(await localizationService.Get(ValidationKeys.NotAuthorized));
             }
 
-            var clubs = await clubRepository.GetAllAsync();
+            var clubs = await clubRepository.GetAllClubListAsync();
             if (clubs == null || clubs.Count == 0)
             {
                 return new ServiceResponse<IPagingExecutionResult<GetAllClubQueryResponseDTO>>{
@@ -61,7 +61,10 @@ namespace UniTrack.Application.Feature.Club.Query
                 ContactMail = c.ContectEmail,
                 Followers = c.Follower,
                 President = c.President,
-                Tag = c.Tag
+                Tag = c.Tag,
+                UniversityName = c.University.Name,
+                City = c.City.Name,
+                IsFollowed = c.UserClubs != null && c.UserClubs.Any(uc => uc.UserId == userId && uc.IsFollowing)
             });
 
             var result = await baseEntityRepository.GetPagedResult(

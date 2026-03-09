@@ -8,12 +8,12 @@ namespace UniTrack.Infrastructure.Services // Sizin namespace'iniz farklı olabi
     public class VerificationCodeService : IVerificationCodeService
     {
         private readonly IMemoryCache cache;
-        private readonly IMailService emailService;
+        private readonly IMailService mailService;
 
-        public VerificationCodeService(IMemoryCache cache)
+        public VerificationCodeService(IMemoryCache cache, IMailService mailService)
         {
             this.cache = cache;
-            this.emailService = emailService;
+            this.mailService = mailService;
         }
 
         public async Task GenerateAndSendCodeAsync(string email, VerificationType type)
@@ -28,7 +28,7 @@ namespace UniTrack.Infrastructure.Services // Sizin namespace'iniz farklı olabi
             cache.Set(key, code, TimeSpan.FromMinutes(3));
 
            
-            await emailService.SendMailAsync(email, "Doğrulama Kodu", code);
+            await mailService.SendMailAsync(email, "Doğrulama Kodu", code);
         }
 
         public bool ValidateCode(string email, string code, VerificationType type)

@@ -17,5 +17,6 @@ namespace UniTrack.Domain.Entities
         public ICollection<Like> Likes { get; set; }
         public ICollection<UserNotification> UserNotifications { get; set; }
         public ICollection<Report> Reports { get; set; }
+        public ICollection<EventQuestion> EventQuestions { get; set; }
     }
 }

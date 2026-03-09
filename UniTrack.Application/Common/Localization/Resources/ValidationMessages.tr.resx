@@ -237,6 +237,9 @@
   <data name="EventCreatedSuccess" xml:space="preserve">
     <value>Etkinlik başarıyla oluşturuldu.</value>
   </data>
+  <data name="EventCreationFailed" xml:space="preserve">
+    <value>Etkinlik oluşturulurken bir hata oluştu.</value>
+  </data>
   <data name="EventDeletedNotification" xml:space="preserve">
     <value>'{0}' etkinliği başarıyla silindi.</value>
   </data>
@@ -294,6 +297,9 @@
   <data name="EventTagInvalid" xml:space="preserve">
     <value>En az bir geçerli etkinlik etiketi (tag) zorunludur.</value>
   </data>
+  <data name="EventTimeInvalied" xml:space="preserve">
+    <value>Etkinlik zamanı geçersiz.</value>
+  </data>
   <data name="EventTitleRequired" xml:space="preserve">
     <value>Etkinlik başlığı zorunludur.</value>
   </data>
@@ -317,6 +323,9 @@
   </data>
   <data name="GetEventSuccesses" xml:space="preserve">
     <value>Etkinlikler başarıyla getirildi.</value>
+  </data>
+  <data name="GoogleSheetCreationFailed" xml:space="preserve">
+    <value>E tablo oluşturulurken bir hata oluştu</value>
   </data>
   <data name="GoogleSheetsTableNotFound" xml:space="preserve">
     <value>Bu etkinlik için Google Sheets e-tablo ID'si bulunamadı.</value>

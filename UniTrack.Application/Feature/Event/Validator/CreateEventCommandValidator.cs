@@ -31,9 +31,13 @@ namespace UniTrack.Application.Feature.Event.Command
                 .Must(c => c != default)
                 .WithMessage(ValidationKeys.EventClockRequired);
 
-            RuleFor(x => x.Tag)
+            RuleFor(x => x.EventTag)
                 .IsInEnum()
                 .WithMessage(ValidationKeys.EventTagInvalid);
+
+            RuleFor(x => x.Time)
+                .IsInEnum()
+                .WithMessage(ValidationKeys.EventTimeInvalied);
 
             RuleFor(x => x.Quota)
                 .GreaterThan(0)

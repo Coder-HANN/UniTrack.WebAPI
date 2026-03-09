@@ -39,6 +39,8 @@ namespace UniTrack.Persistence.Context
         public DbSet<EventImage> EventImages { get; set; }
         public DbSet<AdminNotification> AdminNotifications { get; set; }
         public DbSet<NotificationChannelType> NotificationChannels { get; set; }
+        public DbSet<EventQuestion> EventQuestions { get; set; }
+        public DbSet<EventQuestionAnswer> EventQuestionAnswers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -490,6 +492,39 @@ namespace UniTrack.Persistence.Context
                 builder.HasKey(d => d.Id);
                 builder.Property(d => d.Name).IsRequired().HasMaxLength(100);
 
+            });
+            modelBuilder.Entity<EventQuestion>(builder =>
+            {
+                builder.HasKey(q => q.Id);
+                builder.Property(q => q.QuestionText).IsRequired().HasMaxLength(500);
+                builder.Property(q => q.CreatedAt).IsRequired();
+
+                builder.HasOne(q => q.Event)
+                    .WithMany(e => e.Questions)
+                    .HasForeignKey(q => q.EventId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                builder.HasOne(q => q.User)
+                    .WithMany(u => u.EventQuestions)
+                    .HasForeignKey(q => q.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                builder.HasOne(q => q.Answer)
+                    .WithOne(a => a.Question)
+                    .HasForeignKey<EventQuestionAnswer>(a => a.QuestionId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<EventQuestionAnswer>(builder =>
+            {
+                builder.HasKey(a => a.Id);
+                builder.Property(a => a.AnswerText).IsRequired().HasMaxLength(1000);
+                builder.Property(a => a.AnsweredAt).IsRequired();
+
+                builder.HasOne(a => a.Club)
+                    .WithMany(c => c.EventQuestionAnswers)
+                    .HasForeignKey(a => a.ClubId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
 

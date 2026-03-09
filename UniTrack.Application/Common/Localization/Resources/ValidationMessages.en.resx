@@ -237,6 +237,9 @@
   <data name="EventCreatedSuccess" xml:space="preserve">
     <value>Event created successfully.</value>
   </data>
+  <data name="EventCreationFailed" xml:space="preserve">
+    <value>Event Creation Failed.</value>
+  </data>
   <data name="EventDeletedNotification" xml:space="preserve">
     <value>'{0}' event has been deleted.</value>
   </data>
@@ -294,6 +297,9 @@
   <data name="EventTagInvalid" xml:space="preserve">
     <value>At least one valid event tag is required.</value>
   </data>
+  <data name="EventTimeInvalied" xml:space="preserve">
+    <value>Event time invalied</value>
+  </data>
   <data name="EventTitleRequired" xml:space="preserve">
     <value>Event title is required.</value>
   </data>
@@ -317,6 +323,9 @@
   </data>
   <data name="GetEventSuccesses" xml:space="preserve">
     <value>Event loaded successfully.</value>
+  </data>
+  <data name="GoogleSheetCreationFailed" xml:space="preserve">
+    <value>Google Sheet Creation Failed.</value>
   </data>
   <data name="GoogleSheetsTableNotFound" xml:space="preserve">
     <value>This event’s Google Sheets spreadsheet ID could not be found.</value>

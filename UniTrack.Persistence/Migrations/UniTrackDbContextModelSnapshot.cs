@@ -562,6 +562,65 @@ namespace UniTrack.Persistence.Migrations
                     b.ToTable("EventImages");
                 });
 
+            modelBuilder.Entity("UniTrack.Domain.Entities.EventQuestion", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("EventId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("QuestionText")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("EventQuestions");
+                });
+
+            modelBuilder.Entity("UniTrack.Domain.Entities.EventQuestionAnswer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AnswerText")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("AnsweredAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ClubId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClubId");
+
+                    b.HasIndex("QuestionId")
+                        .IsUnique();
+
+                    b.ToTable("EventQuestionAnswers");
+                });
+
             modelBuilder.Entity("UniTrack.Domain.Entities.EventUser", b =>
                 {
                     b.Property<Guid>("EventId")
@@ -1262,6 +1321,44 @@ namespace UniTrack.Persistence.Migrations
                     b.Navigation("Event");
                 });
 
+            modelBuilder.Entity("UniTrack.Domain.Entities.EventQuestion", b =>
+                {
+                    b.HasOne("UniTrack.Domain.Entities.Event", "Event")
+                        .WithMany("Questions")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("UniTrack.Domain.Entities.User", "User")
+                        .WithMany("EventQuestions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("UniTrack.Domain.Entities.EventQuestionAnswer", b =>
+                {
+                    b.HasOne("UniTrack.Domain.Entities.Club", "Club")
+                        .WithMany("EventQuestionAnswers")
+                        .HasForeignKey("ClubId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("UniTrack.Domain.Entities.EventQuestion", "Question")
+                        .WithOne("Answer")
+                        .HasForeignKey("UniTrack.Domain.Entities.EventQuestionAnswer", "QuestionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Club");
+
+                    b.Navigation("Question");
+                });
+
             modelBuilder.Entity("UniTrack.Domain.Entities.EventUser", b =>
                 {
                     b.HasOne("UniTrack.Domain.Entities.Event", "Event")
@@ -1537,6 +1634,8 @@ namespace UniTrack.Persistence.Migrations
 
                     b.Navigation("Comments");
 
+                    b.Navigation("EventQuestionAnswers");
+
                     b.Navigation("Events");
 
                     b.Navigation("Likes");
@@ -1571,7 +1670,14 @@ namespace UniTrack.Persistence.Migrations
 
                     b.Navigation("Images");
 
+                    b.Navigation("Questions");
+
                     b.Navigation("Reports");
+                });
+
+            modelBuilder.Entity("UniTrack.Domain.Entities.EventQuestion", b =>
+                {
+                    b.Navigation("Answer");
                 });
 
             modelBuilder.Entity("UniTrack.Domain.Entities.Notification", b =>
@@ -1615,6 +1721,8 @@ namespace UniTrack.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Comments");
+
+                    b.Navigation("EventQuestions");
 
                     b.Navigation("EventUsers");
 

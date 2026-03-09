@@ -36,10 +36,13 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("DevCors", policy =>
     {
-        policy.WithOrigins("http://localhost:4200") // Angular portu
+        policy.WithOrigins(
+                "https://localhost:4200",
+                "http://localhost:4200"
+              )
               .AllowAnyHeader()
               .AllowAnyMethod()
-              .AllowCredentials(); // SignalR ve Cookie işlemleri için şart
+              .AllowCredentials();
     });
 });
 
@@ -65,7 +68,7 @@ builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<DbContext>(provider => provider.GetRequiredService<UniTrackDbContext>());
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserServices, CurrentUserServices>();
-// Redis 
+builder.Services.AddScoped<IEventQuestionRepository, EventQuestionEntityRepository>();
 
 // Redis Bağlantısı (Singleton olması performans için iyidir)
 builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>

@@ -24,7 +24,7 @@ namespace UniTrack.WebAPI.Controllers.Public
         }
 
         [HttpPost("CreateEventReport")]
-        public async Task<ServiceResponse<string>> GetEventReport([FromBody] CreateClubReportCommand command)
+        public async Task<ServiceResponse<string>> GetEventReport([FromBody] CreateEventReportCommand command)
         {
             return await mediator.Send(command);
         }

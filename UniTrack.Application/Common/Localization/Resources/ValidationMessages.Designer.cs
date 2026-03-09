@@ -421,6 +421,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Event Creation Failed..
+        /// </summary>
+        internal static string EventCreationFailed {
+            get {
+                return ResourceManager.GetString("EventCreationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; event has been deleted..
         /// </summary>
         internal static string EventDeletedNotification {
@@ -592,6 +601,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Event time invalied.
+        /// </summary>
+        internal static string EventTimeInvalied {
+            get {
+                return ResourceManager.GetString("EventTimeInvalied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Event title is required..
         /// </summary>
         internal static string EventTitleRequired {
@@ -660,6 +678,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string GetEventSuccesses {
             get {
                 return ResourceManager.GetString("GetEventSuccesses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Sheet Creation Failed..
+        /// </summary>
+        internal static string GoogleSheetCreationFailed {
+            get {
+                return ResourceManager.GetString("GoogleSheetCreationFailed", resourceCulture);
             }
         }
         

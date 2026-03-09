@@ -15,7 +15,7 @@ public class GoogleSheetCreationService : IGoogleSheetCreationService
     private readonly IList<object> _headerRow = new List<object>
     {
         "Katılım Tarihi", "Adı", "Soyadı", "Üniversite", "Bölüm",
-        "Kaçıncı Sınıf", "Email", "Telefon No", "Sponsor Katılımı"
+        "Kaçıncı Sınıf", "Email", "Sponsor Katılımı"
     };
 
     // Constructor güncellendi: DriveService ve IConfiguration alıyor

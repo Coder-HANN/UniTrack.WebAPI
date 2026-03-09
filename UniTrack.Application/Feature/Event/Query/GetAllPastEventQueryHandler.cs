@@ -59,9 +59,11 @@ namespace UniTrack.Application.Feature.Event.Query
                 Location = e.Location,
                 Quota = e.Quota,
                 ClubId = e.ClubId,
+                ClubName = e.Club.Name,
                 EventTag = e.EventTag,
                 Time = e.Time,
                 Status = e.Status,
+                Rate = e.EventUsers.Count > 0 ? ((float)e.EventUsers.Count(eu => eu.IsJoined) / e.Quota) * 100 : 0
             }).ToList();
 
             if (userId != null)

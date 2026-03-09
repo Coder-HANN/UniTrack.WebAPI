@@ -45,6 +45,24 @@ namespace UniTrack.WebAPI.Controllers.Public
         {
             return await mediator.Send(query);
         }
+
+        [HttpGet("EventTags")]
+        public async Task<ServiceResponse<IEnumerable<LookupServiceResponseDTO>>> EventTags([FromQuery] GetEventTagQuery query)
+        {
+            return await mediator.Send(query);
+        }
+
+        [HttpGet("Time")]
+        public async Task<ServiceResponse<IEnumerable<LookupServiceResponseDTO>>> Time([FromQuery] GetTimeQuery query)
+        {
+            return await mediator.Send(query);
+        }
+
+        [HttpGet("Status")]
+        public async Task<ServiceResponse<IEnumerable<LookupServiceResponseDTO>>> Status([FromQuery] GetStatusQuery query)
+        {
+            return await mediator.Send(query);
+        }
     }
 }
 

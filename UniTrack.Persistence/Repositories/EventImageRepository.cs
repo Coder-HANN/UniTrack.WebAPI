@@ -73,5 +73,13 @@ namespace UniTrack.Persistence.Repositories
         {
             return await context.EventImages.FirstOrDefaultAsync(x => x.Id == imageId);
         }
+
+        public async Task<List<EventImage>> GetByEventIdsAsync(List<Guid> eventIds)
+        {
+            return await context.EventImages
+               .Where(x => eventIds.Contains(x.EventId))
+               .OrderBy(x => x.Order)
+               .ToListAsync();
+        }
     }
 }

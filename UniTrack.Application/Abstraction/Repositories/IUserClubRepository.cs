@@ -7,6 +7,7 @@ namespace UniTrack.Application.Abstraction.Repositories
         Task<List<UserClub>> GetClubFollowersAsync(Guid clubId);
 		Task<UserClub> GetClubFollowersByUserIdAsync(Guid value, Guid userDetailId);
         Task<int> GetFollowedClubCountAsync(Guid? userId);
+        Task<List<UserClub>> GetFollowedClubsByUserIdAsync(Guid value);
         Task<UserClub> GetUserIdInClubAsync(Guid clubId, Guid userId);
 
         // Kulübü takip eden ve bildirimi açık olan kullanıcıları çeker

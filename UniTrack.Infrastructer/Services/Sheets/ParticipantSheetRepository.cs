@@ -36,7 +36,6 @@ public class ParticipantSheetRepository : IParticipantSheetRepository
             participantData.UniversityName,
             participantData.DepartmentName,
             participantData.Email,
-            participantData.PhoneNumber,
             participantData.IsJoinedForSponsor ? "Evet" : "Hayır"
         };
 

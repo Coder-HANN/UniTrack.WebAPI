@@ -30,6 +30,14 @@ namespace UniTrack.Persistence.Repositories
                 .CountAsync();
         }
 
+        public async Task<List<UserClub>> GetFollowedClubsByUserIdAsync(Guid value)
+        {
+            return await dbSet
+                .Where(c => c.UserId == value && c.IsFollowing == true)
+                .Include(c => c.Club) // Kulüp bilgilerini de dahil et
+                .ToListAsync();
+        }
+
         public Task<UserClub> GetUserIdInClubAsync(Guid clubId, Guid userId)
         {
             return dbSet.FirstOrDefaultAsync(c => c.ClubId == clubId && c.UserId == userId);

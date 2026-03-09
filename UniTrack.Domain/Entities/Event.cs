@@ -32,6 +32,6 @@ namespace UniTrack.Domain.Entities
         public ICollection<Report> Reports { get; set; }
         public bool IsDoping { get; set; } = false;
         public ICollection<EventImage> Images { get; set; }
-
+        public ICollection<EventQuestion> Questions { get; set; }
     }
 }

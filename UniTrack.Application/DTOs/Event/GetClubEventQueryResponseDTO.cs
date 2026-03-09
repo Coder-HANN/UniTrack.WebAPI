@@ -16,5 +16,6 @@ namespace UniTrack.Application.DTOs.Event
         public Time Time { get; set; }
         public Status Status { get; set; }
         public long Quota { get; set; }
+        public float Rate { get; set; }
     }
 }

@@ -43,7 +43,7 @@ namespace UniTrack.Application.Feature.Event.Command
                 return ServiceResponse<UserJoinToEventResponseDTO>.Fail(await localizationService.Get(ValidationKeys.NotAuthorized));
             }
 
-            var eventEntity = await eventRepository.GetAsync(e => e.Id == request.EventId);
+            var eventEntity = await eventRepository.GetEventIdAsync(request.EventId);
 
             if (eventEntity == null)
             {

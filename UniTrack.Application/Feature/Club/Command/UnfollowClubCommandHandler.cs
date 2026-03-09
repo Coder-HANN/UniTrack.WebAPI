@@ -8,14 +8,14 @@ using UniTrack.Domain.Enums;
 
 namespace UniTrack.Application.Feature.Club.Command
 {
-    public class UnfollowCommandHandler: IRequestHandler<UnfollowClubCommand, ServiceResponse<string>>
+    public class UnfollowClubCommandHandler: IRequestHandler<UnfollowClubCommand, ServiceResponse<string>>
     {
         private readonly ICurrentUserServices currentUserServices;
         private readonly IUserClubRepository userClubRepository;
         private readonly IClubRepository clubRepository;
         private readonly ILocalizationService localizationService;
 
-        public UnfollowCommandHandler(
+        public UnfollowClubCommandHandler(
             ICurrentUserServices currentUserServices,
             IUserClubRepository userClubRepository,
             IClubRepository clubRepository,

@@ -20,7 +20,7 @@ public class UnfollowClubCommandHandlerTests
     private readonly Mock<IClubRepository> _clubRepository;
     private readonly Mock<ILocalizationService> _localizationService;
 
-    private readonly UnfollowCommandHandler _handler;
+    private readonly UnfollowClubCommandHandler _handler;
 
     public UnfollowClubCommandHandlerTests()
     {
@@ -29,7 +29,7 @@ public class UnfollowClubCommandHandlerTests
         _clubRepository = new Mock<IClubRepository>();
         _localizationService = new Mock<ILocalizationService>();
 
-        _handler = new UnfollowCommandHandler(
+        _handler = new UnfollowClubCommandHandler(
             _currentUserServices.Object,
             _userClubRepository.Object,
             _clubRepository.Object,

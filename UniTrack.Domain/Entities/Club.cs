@@ -36,6 +36,7 @@ namespace UniTrack.Domain.Entities
         public ICollection<TargetNotificationClub> TargetNotificationClubs { get; set; }
         public ICollection<ClubNotification> ClubNotifications { get; set; }
         public ICollection<Report> Reports { get; set; }
+        public ICollection<EventQuestionAnswer> EventQuestionAnswers { get; set; }
         public bool IsDoping { get; set; } = false;
     }
 }

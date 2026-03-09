@@ -50,6 +50,15 @@ namespace UniTrack.Persistence.Repositories
                 .ToListAsync();
         }
 
+        public async Task<List<Club>> GetAllClubListAsync()
+        {
+            return await context.Clubs
+                .Where(c => !c.IsDeleted && c.IsVerified)
+                .Include(c => c.City)
+                .Include(c => c.UserClubs)
+                .Include(c => c.University)
+                .ToListAsync();
+        }
 
         public Task<Club> GetByEmailAndVerifyAsync(string presidentEmail)
         {
@@ -68,7 +77,9 @@ namespace UniTrack.Persistence.Repositories
 
         public async Task<long> GetClubCountAsync()
         {
-            return await context.Set<Club>().LongCountAsync();
+            return await context.Set<Club>()
+                .Where(Club => !Club.IsDeleted && Club.IsVerified)
+                .LongCountAsync();
         }
 
         public Task<long> GetClubFollowerCountAsync(Guid value)

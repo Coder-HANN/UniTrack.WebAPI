@@ -182,5 +182,8 @@
         public static string NewPasswordCannotBeSameAsOld = "NewPasswordCannotBeSameAsOld";
         public static string NewPasswordRequired = "NewPasswordRequired";
         public static string CurrentPasswordRequired = "CurrentPasswordRequired";
+        internal static string GoogleSheetCreationFailed = "GoogleSheetCreationFailed";
+        internal static string EventCreationFailed = "EventCreationFailed";
+        internal static string EventTimeInvalied = "EventTimeInvalied";
     }
 }

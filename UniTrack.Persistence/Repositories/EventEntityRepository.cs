@@ -65,6 +65,14 @@ namespace UniTrack.Persistence.Repositories
                 .CountAsync();
         }
 
+        public Task<Club> GetClubNameByIdAsync(Guid clubId)
+        {
+            return context.Set<Club>()
+                .Where(c => c.Id == clubId)
+                .Select(c => new Club { Id = c.Id, Name = c.Name }) // Sadece Id ve Name alanlarını seç
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<long> GetCountAsync()
         {
             return await context.Set<Event>().LongCountAsync();
@@ -76,9 +84,25 @@ namespace UniTrack.Persistence.Repositories
                 .FirstOrDefaultAsync(e => e.Id == eventId && e.ClubId == clubId);
         }
 
+        public Task<Event> GetEventDetailByIdAsync(Guid eventId)
+        {
+            return context.Set<Event>()
+                .Include(e => e.EventUsers)
+                .Include(e => e.Club)
+                .FirstOrDefaultAsync(e => e.Id == eventId);
+        }
+
+        public async Task<Event> GetEventIdAsync(Guid eventId)
+        {
+            return await context.Set<Event>()
+                .Include(e => e.Club)
+                .FirstOrDefaultAsync(e => e.Id == eventId);
+        }
+
         public async Task<List<Event>> GetFeatureEventsAsync()
         {
             return await context.Set<Event>()
+                .Include(e => e.EventUsers)
                 .Where(e => e.EndDate >= DateTime.Today && e.IsDeleted == false)
                 .ToListAsync();
         }
@@ -86,6 +110,7 @@ namespace UniTrack.Persistence.Repositories
         public async Task<List<Event>> GetPastEventsAsync()
         {
             return await context.Set<Event>()
+                .Include(e=> e.EventUsers)
                 .Where(e => e.EndDate < DateTime.Today && e.IsDeleted == false)
                 .ToListAsync();
         }

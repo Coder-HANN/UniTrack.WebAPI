@@ -1,4 +1,5 @@
-﻿using UniTrack.Domain.Enums;
+﻿using UniTrack.Application.Feature.Notification.Command;
+using UniTrack.Domain.Enums;
 
 namespace UniTrack.Application.DTOs.Club
 {
@@ -10,6 +11,9 @@ namespace UniTrack.Application.DTOs.Club
         public string Name { get; set; }
         public string Description { get; set; }
         public string President { get; set; }
+        public string UniversityName { get; set; }
+        public string City { get; set; }
+        public bool IsFollowed { get; set; }
         public string ContactMail { get; set; }
         public long Followers { get; set; }
         public Tag Tag { get; set; }

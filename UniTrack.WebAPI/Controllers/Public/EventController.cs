@@ -81,5 +81,11 @@ namespace UniTrack.WebAPI.Controllers.Public
         {
             return await mediator.Send(query);
         }
+
+        [HttpGet("GetEventDetail")]
+        public async Task<ServiceResponse<GetEventDetailResponseDTO>> GetEventDetail([FromQuery] GetEventDetailCommand command)
+        {
+            return await mediator.Send(command);
+        }
     }
 }
