@@ -29,5 +29,12 @@ namespace UniTrack.Persistence.Repositories
             return await context.Set<EventQuestion>()
                 .AnyAsync(q => q.EventId == eventId && q.UserId == userId);
         }
+        public async Task<EventQuestion?> GetByIdWithAnswerAsync(Guid questionId)
+        {
+            return await context.Set<EventQuestion>()
+                .Include(q => q.Answer)
+                .Include(q => q.Event)
+                .FirstOrDefaultAsync(q => q.Id == questionId);
+        }
     }
 }

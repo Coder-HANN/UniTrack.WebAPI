@@ -111,7 +111,7 @@ builder.Services.AddScoped<IMailNotificationService, MailNotificationService>();
 
 builder.Services.AddHostedService<MailWorker>();
 
-
+builder.Services.AddScoped<IEventQuestionAnswerRepository, EventQuestionAnswerEntityRepository>();
 
 
 builder.Services.AddSignalR();

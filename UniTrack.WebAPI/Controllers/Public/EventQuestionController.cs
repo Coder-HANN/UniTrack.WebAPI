@@ -31,5 +31,11 @@ namespace UniTrack.WebAPI.Controllers.Public
         {
             return await mediator.Send(query);
         }
+
+        [HttpPost("AnswerQuestion")]
+        public async Task<ServiceResponse<string>> AnswerQuestion([FromBody] AnswerEventQuestionCommand command)
+        {
+            return await mediator.Send(command);
+        }
     }
 }
