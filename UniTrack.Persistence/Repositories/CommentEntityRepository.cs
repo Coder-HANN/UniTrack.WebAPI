@@ -102,5 +102,10 @@ namespace UniTrack.Persistence.Repositories
 
             return affected > 0;
         }
+
+        public async Task<int> CountAsync(Guid eventId)
+        {
+            return await context.Set<Comment>().CountAsync(c => c.EventId == eventId);
+        }
     }
 }

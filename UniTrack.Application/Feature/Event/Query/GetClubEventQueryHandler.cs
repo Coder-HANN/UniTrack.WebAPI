@@ -46,6 +46,7 @@ namespace UniTrack.Application.Feature.Event.Query
                     Message = await localizationService.Get(ValidationKeys.EventNotFound)
                 };
             }
+
             var response = events.Select(e => new GetClubEventQueryResponseDTO
             {
                     CoverImageUrl = e.Images?
@@ -64,6 +65,8 @@ namespace UniTrack.Application.Feature.Event.Query
                     Status = e.Status,
                     EventTag = e.EventTag,
                     Rate = e.EventUsers.Count > 0 ? ((float)e.EventUsers.Count(eu => eu.IsJoined) / e.Quota) * 100 : 0
+                    EventId = e.Id,
+                    JoinedCount = e.EventUsers?.Count(eu => eu.IsJoined) ?? 0,
 
             }).ToList();
 

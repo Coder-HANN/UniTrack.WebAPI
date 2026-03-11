@@ -24,6 +24,7 @@ namespace UniTrack.Application.Feature.Club.Query
         public async Task<ServiceResponse<long>> Handle(GetClubFollowerCountQuery request, CancellationToken cancellationToken)
         {
             var clubId = currentUserServices.CurrentClub();
+
             if (clubId == null)
             {
                 return new ServiceResponse<long>

@@ -36,8 +36,8 @@ namespace UniTrack.Application.Feature.Event.Command
             {
                 return ServiceResponse<GetEventDetailResponseDTO>.Fail(ValidationKeys.EventNotFound);
             }
-            var rate = eventDetails.EventUsers.Count > 0 ? eventDetails.EventUsers.Average(eu => eu.Event.Quota) : 0;
-
+            var joinedCount = eventDetails.EventUsers.Count(eu => eu.IsJoined);
+            var rate = eventDetails.Quota > 0? Math.Round((double)joinedCount / eventDetails.Quota * 100, 1): 0;
             var response = new GetEventDetailResponseDTO
             {
                 Id = eventDetails.Id,
@@ -57,7 +57,7 @@ namespace UniTrack.Application.Feature.Event.Command
                 Status = eventDetails.Status,
                 ContectMail = eventDetails.Club.ContectEmail,
                 Quota = eventDetails.Quota,
-                JoinedCount = eventDetails.EventUsers.Count,
+                JoinedCount = joinedCount,
                 Rate = rate
             };
 

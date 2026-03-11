@@ -4,6 +4,7 @@ namespace UniTrack.Application.DTOs.Comment
 {
     public class GetAllJoinedEventForUserQueryResponseDTO
     {
+        public Guid EventId { get; set; }
         public string? CoverImageUrl { get; set; }
         public string EventName { get; set; } 
         public string ShortDescription { get; set; }
@@ -14,7 +15,9 @@ namespace UniTrack.Application.DTOs.Comment
         public DateTimeOffset JoinDate { get; set; }
         public EventTag EventTag { get; set; }
         public Time Time { get; set; }
-        public bool? IsCheckIn { get; set; } 
+        public bool? IsCheckIn { get; set; }
+        public long Quota { get; set; }
+        public int JoinedCount { get; set; }
 
     }
 }

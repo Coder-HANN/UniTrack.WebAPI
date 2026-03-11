@@ -54,7 +54,6 @@ namespace UniTrack.Application.Feature.Club.Query
                 };
             }
 
-
             var followClub = await UserClubRepository.GetClubFollowersAsync(request.ClubId);
 
             if (followClub == null || followClub.Count == 0)

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using UniTrack.Application.Abstraction.Repositories.Pagenation;
 using UniTrack.Application.Common;
+using UniTrack.Application.DTOs.Comment;
 using UniTrack.Application.DTOs.Event;
 using UniTrack.Application.Feature.Event.Command;
 using UniTrack.Application.Feature.Event.Query;
@@ -87,5 +88,12 @@ namespace UniTrack.WebAPI.Controllers.Public
         {
             return await mediator.Send(command);
         }
+
+        [HttpGet("GetAllJoinedEventForUser")]
+        public async Task<ServiceResponse<IPagingExecutionResult<GetAllJoinedEventForUserQueryResponseDTO>>> GetAllJoinedEventForUser([FromQuery] GetAllJoinedEventForUserQuery query)
+        {
+            return await mediator.Send(query);
+        }
     }
+
 }

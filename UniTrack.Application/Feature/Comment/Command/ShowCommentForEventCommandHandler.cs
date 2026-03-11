@@ -17,6 +17,7 @@ namespace UniTrack.Application.Feature.Comment.Command
         public async Task<ServiceResponse<ShowCommentForEventResponseDTO>> Handle(ShowCommentForEventCommand request, CancellationToken cancellationToken)
         {
             var calculatedAverage = await commentRepository.GetEventAverageRatingAsync(request.EventId);
+            var reviewCount = await commentRepository.CountAsync(request.EventId);
 
             if (calculatedAverage == null)
             {
@@ -27,6 +28,7 @@ namespace UniTrack.Application.Feature.Comment.Command
             {
 
                 Point = calculatedAverage,
+                ReviewCount = reviewCount
             };
 
             return new ServiceResponse<ShowCommentForEventResponseDTO>

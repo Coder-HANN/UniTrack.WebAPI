@@ -14,5 +14,6 @@ namespace UniTrack.Application.Abstraction.Repositories
         public Task<double> GetEventAverageRatingAsync(Guid eventId);
         Task<Dictionary<Guid, (float AverageRating, int Count)>> GetEventsRatingsSummaryAsync(List<Guid> eventIds);
         public Task<bool> IncrementLikeCountAsync(Guid commentId);
+        public Task<int> CountAsync(Guid eventId);
     }
 }

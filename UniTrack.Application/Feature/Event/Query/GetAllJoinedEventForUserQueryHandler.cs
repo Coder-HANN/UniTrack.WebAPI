@@ -69,10 +69,10 @@ namespace UniTrack.Application.Feature.Event.Query
 
                 return new GetAllJoinedEventForUserQueryResponseDTO
                 {
+                    EventId = e.Event.Id,
                     CoverImageUrl = e.Event.Images?
                         .OrderBy(i => i.Order)
                         .FirstOrDefault(i => i.IsCover)?.ImageUrl,
-
                     EventName = e.Event.Title,
                     ShortDescription = e.Event.Description,
                     EventDate = e.Event.StartDate,
@@ -82,7 +82,9 @@ namespace UniTrack.Application.Feature.Event.Query
                     EventTag = e.Event.EventTag,
                     Time = eventTime,
                     IsCheckIn = hasAttended,
-                    JoinDate = e.CreatedDate
+                    JoinDate = e.CreatedDate,
+                    Quota = e.Event.Quota,
+                    JoinedCount = e.Event.EventUsers?.Count(eu => eu.IsJoined) ?? 0,
                 };
             });
 

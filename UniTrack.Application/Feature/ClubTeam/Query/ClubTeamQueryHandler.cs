@@ -35,7 +35,8 @@ namespace UniTrack.Application.Feature.ClubTeam.Query
             {
                 PersonName = ct.UserDetail.Name,
                 PersonSurname = ct.UserDetail.Surname,
-                Title = ct.Title
+                Title = ct.Title,
+                ProfileImageUrl = ct.UserDetail.ProfileImageUrl
 
             }).ToList();
 

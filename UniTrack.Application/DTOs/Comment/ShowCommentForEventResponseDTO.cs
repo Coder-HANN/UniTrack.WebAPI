@@ -3,5 +3,6 @@
     public class ShowCommentForEventResponseDTO
     {
         public double Point { get; set; }
+        public int ReviewCount { get; set; }
     }
 }
