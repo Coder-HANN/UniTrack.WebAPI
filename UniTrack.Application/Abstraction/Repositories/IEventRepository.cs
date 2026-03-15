@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using UniTrack.Application.DTOs.Event;
 using UniTrack.Domain.Entities;
 
 namespace UniTrack.Application.Abstraction.Repositories
@@ -21,5 +22,11 @@ namespace UniTrack.Application.Abstraction.Repositories
         public Task<Club>GetClubNameByIdAsync(Guid clubId);
         public Task<Event> GetEventDetailByIdAsync(Guid eventId);
         Task<Event> GetEventIdAsync(Guid eventId);
+        Task<List<Event>> GetUpcomingDopingEventsAsync(DateTimeOffset now, int take);
+
+        Task<List<Event>> GetUpcomingJoinedEventsAsync(Guid userId, DateTimeOffset now, int take, HashSet<Guid> excludeIds);
+
+        Task<List<Event>> GetUpcomingGeneralEventsAsync(DateTimeOffset now, int take, HashSet<Guid> excludeIds);
+        Task<List<MonthlyParticipationResponseDTO>> GetMonthlyParticipationAsync(Guid userId, DateTime startDate);
     }
 }

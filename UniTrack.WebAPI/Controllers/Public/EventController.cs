@@ -94,6 +94,17 @@ namespace UniTrack.WebAPI.Controllers.Public
         {
             return await mediator.Send(query);
         }
-    }
 
+        [HttpGet("GetUpcomingEvents")]
+        public async Task<ServiceResponse<List<UpcomingEventResponseDTO>>> GetUpcomingEvents([FromQuery] GetUpcomingEventsQuery query)
+        {
+            return await mediator.Send(query);
+        }
+
+        [HttpGet("GetMonthlyParticipation")]
+        public async Task<ServiceResponse<List<MonthlyParticipationResponseDTO>>> GetMonthlyParticipation([FromQuery] GetMonthlyParticipationQuery query)
+        {
+            return await mediator.Send(query);
+        }
+    }
 }

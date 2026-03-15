@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using UniTrack.Application.Abstraction.Repositories;
+using UniTrack.Application.DTOs.Event;
 using UniTrack.Domain.Entities;
 using UniTrack.Persistence.Context;
 
@@ -125,6 +126,65 @@ namespace UniTrack.Persistence.Repositories
                 .Take(3)
                 .ToListAsync();
         }
+        // Repository Implementasyonu
+        public async Task<List<Event>> GetUpcomingDopingEventsAsync(DateTimeOffset now, int take)
+        {
+            return await context.Events
+                .Include(e => e.Club)
+                .Where(e =>
+                    e.IsActived &&
+                    e.IsDoping &&
+                    e.StartDate > now)
+                .OrderBy(e => e.StartDate)
+                .Take(take)
+                .ToListAsync();
+        }
+
+        public async Task<List<Event>> GetUpcomingJoinedEventsAsync(Guid userId, DateTimeOffset now, int take, HashSet<Guid> excludeIds)
+        {
+            return await context.Events
+                .Include(e => e.Club)
+                .Where(e =>
+                    e.IsActived &&
+                    e.StartDate > now &&
+                    !excludeIds.Contains(e.Id) &&
+                    e.EventUsers.Any(eu => eu.UserId == userId))
+                .OrderBy(e => e.StartDate)
+                .Take(take)
+                .ToListAsync();
+        }
+
+        public async Task<List<Event>> GetUpcomingGeneralEventsAsync(DateTimeOffset now, int take, HashSet<Guid> excludeIds)
+        {
+            return await context.Events
+                .Include(e => e.Club)
+                .Where(e =>
+                    e.IsActived &&
+                    e.StartDate > now &&
+                    !excludeIds.Contains(e.Id))
+                .OrderBy(e => e.StartDate)
+                .Take(take)
+                .ToListAsync();
+        }
+        // Repository implementasyonu
+        public async Task<List<MonthlyParticipationResponseDTO>> GetMonthlyParticipationAsync(Guid userId, DateTime startDate)
+        {
+            return await context.EventUsers
+                .Include(eu => eu.Event)
+                .Where(eu =>
+                    eu.UserId == userId &&
+                    eu.Event.IsActived &&
+                    eu.Event.StartDate >= startDate)
+                .GroupBy(eu => new { eu.Event.StartDate.Month, eu.Event.StartDate.Year })
+                .Select(g => new MonthlyParticipationResponseDTO
+                {
+                    Month = g.Key.Month,
+                    Year = g.Key.Year,
+                    Count = g.Count()
+                })
+                .ToListAsync();
+        }
+
 
     }
 }
