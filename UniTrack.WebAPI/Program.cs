@@ -108,6 +108,7 @@ builder.Services.AddScoped<IEventImageRepository, EventImageRepository>();
 builder.Services.AddScoped<INotificationDispatcher, NotificationDispatcher>();
 builder.Services.AddSingleton<IBackgroundMailQueue, BackgroundMailQueue>();
 builder.Services.AddScoped<IMailNotificationService, MailNotificationService>();
+builder.Services.AddHostedService<EventTimeUpdateBackgroundService>();
 
 builder.Services.AddHostedService<MailWorker>();
 

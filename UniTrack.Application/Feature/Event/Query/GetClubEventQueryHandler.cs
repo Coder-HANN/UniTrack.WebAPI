@@ -64,7 +64,7 @@ namespace UniTrack.Application.Feature.Event.Query
                     ClubId = e.ClubId,
                     Status = e.Status,
                     EventTag = e.EventTag,
-                    Rate = e.EventUsers.Count > 0 ? ((float)e.EventUsers.Count(eu => eu.IsJoined) / e.Quota) * 100 : 0
+                    Rate = e.EventUsers.Count > 0 ? ((float)e.EventUsers.Count(eu => eu.IsJoined) / e.Quota) * 100 : 0,
                     EventId = e.Id,
                     JoinedCount = e.EventUsers?.Count(eu => eu.IsJoined) ?? 0,
 

@@ -20,6 +20,7 @@ namespace UniTrack.Application.Feature.Comment.Query
         {
             this.currentUserServices = currentUserServices;
             this.commentRepository = commentRepository;
+            this.localizationService = localizationService;
         }
         public async Task<ServiceResponse<List<GetAllCommentForEventQueryResponseDTO>>> Handle(GetAllCommentForEventQuery request, CancellationToken cancellationToken)
         {
@@ -39,7 +40,7 @@ namespace UniTrack.Application.Feature.Comment.Query
             {
                 return new ServiceResponse<List<GetAllCommentForEventQueryResponseDTO>> {
                     
-                        IsSuccess = false,
+                        IsSuccess = true,
                         Data = null,
                         Message = await localizationService.Get(ValidationKeys.CommentNotFound)
 

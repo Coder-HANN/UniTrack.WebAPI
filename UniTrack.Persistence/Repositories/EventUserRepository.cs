@@ -18,6 +18,7 @@ namespace UniTrack.Persistence.Repositories
                 .Include(eu => eu.Event)
                 .Include(eu => eu.Event.Club)
                 .Include(eu => eu.Event.Club.University)
+                .Include(eu => eu.User.Comments)
                 .ToListAsync();
         }
 

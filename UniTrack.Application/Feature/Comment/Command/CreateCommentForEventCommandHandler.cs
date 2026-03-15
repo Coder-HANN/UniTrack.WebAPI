@@ -61,7 +61,8 @@ namespace UniTrack.Application.Feature.Comment.Command
             var eventUser = await eventUserRepository.GetAsync(
                 eu => eu.EventId == request.EventId
                    && eu.UserId == userId.Value
-                   && eu.IsJoined);
+                   && eu.IsJoined == true
+                   && eu.IsCheckedIn == true);
 
             if (eventUser == null)
                 return ServiceResponse<string>.Fail(await localizationService.Get(ValidationKeys.UserNotJoinedEvent));

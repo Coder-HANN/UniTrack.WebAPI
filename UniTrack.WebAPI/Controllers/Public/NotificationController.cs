@@ -15,23 +15,29 @@ namespace UniTrack.WebAPI.Controllers.Public
     {
         private readonly IMediator mediator;
 
-        public NotificationController(IMailService mailService)
+        public NotificationController(IMediator mediator)
         {
-            mediator = mediator;
+            this.mediator = mediator;
         }
 
 
         [HttpPost("UserNotificationRead")]
-        public Task<ServiceResponse<string>> UserNotificationRead([FromBody] MarkNotificationAsReadCommand command)
+        public async Task<ServiceResponse<string>> UserNotificationRead([FromBody] MarkNotificationAsReadCommand command)
         {
-            return mediator.Send(command);
+            return await mediator.Send(command);
         }
 
         [HttpPost("UserReadAllNotification")]
-        public Task<ServiceResponse<string>> UserReadAllNotification([FromBody] MarkAllNotificationsAsReadCommand command)
-        { 
-            return mediator.Send(command); 
+        public async Task<ServiceResponse<string>> UserReadAllNotification([FromBody] MarkAllNotificationsAsReadCommand command)
+        {
+            return await mediator.Send(command);
         }
 
-    } 
+        [HttpGet("GetUserNotifications")]
+        public async Task<ServiceResponse<List<NotificationListResponse>>> GetUserNotifications([FromQuery] GetUserNotificationsQuery query)
+        {
+            return await mediator.Send(query);
+
+        }
+    }
 }

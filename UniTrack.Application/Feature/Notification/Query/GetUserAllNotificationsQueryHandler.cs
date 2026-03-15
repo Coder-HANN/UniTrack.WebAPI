@@ -52,15 +52,18 @@ namespace UniTrack.Application.Feature.Notification.Query
             // 4️⃣ Mapping
             var result = new List<NotificationListResponse>();
 
-            result.AddRange(userNotifications.Select(n => new NotificationListResponse
+            result.AddRange(userNotifications
+                .Where(n => n.Notification != null)
+                .Select(n => new NotificationListResponse
             {
                 Title = n.Notification.Title ?? n.Notification.Type.ToString(),
                 Message = n.Notification.Message,
                 LogoUrl = n.Notification.LogoUrl,
                 IsRead = n.IsRead,
                 CreatedAt = n.Notification.CreatedAt,
-                RelatedEntityId = n.Notification.RelatedEntityId
-            }));
+                RelatedEntityId = n.Notification.RelatedEntityId,
+                NotificationType = n.Notification.Type
+                }));
 
             result.AddRange(targetNotifications.Select(n => new NotificationListResponse
             {
@@ -69,7 +72,8 @@ namespace UniTrack.Application.Feature.Notification.Query
                 LogoUrl = n.Notification.LogoUrl,
                 IsRead = false, // şimdilik
                 CreatedAt = n.Notification.CreatedAt,
-                RelatedEntityId = n.Notification.RelatedEntityId
+                RelatedEntityId = n.Notification.RelatedEntityId,
+                NotificationType = n.Notification.Type
             }));
 
             return ServiceResponse<List<NotificationListResponse>>.Success(null,result.OrderByDescending(x => x.CreatedAt).ToList());

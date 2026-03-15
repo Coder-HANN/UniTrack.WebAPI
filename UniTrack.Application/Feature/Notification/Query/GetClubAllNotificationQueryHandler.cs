@@ -50,7 +50,8 @@ namespace UniTrack.Application.Feature.Notification.Query
                 LogoUrl = n.Notification.LogoUrl,
                 IsRead = n.IsRead,
                 CreatedAt = n.Notification.CreatedAt,
-                RelatedEntityId = n.Notification.RelatedEntityId
+                RelatedEntityId = n.Notification.RelatedEntityId,
+                NotificationType = n.Notification.Type
             }));
 
             result.AddRange(targetNotification.Select(n => new NotificationListResponse
@@ -60,7 +61,8 @@ namespace UniTrack.Application.Feature.Notification.Query
                 LogoUrl = n.Notification.LogoUrl,
                 IsRead = false, // şimdilik
                 CreatedAt = n.Notification.CreatedAt,
-                RelatedEntityId = n.Notification.RelatedEntityId
+                RelatedEntityId = n.Notification.RelatedEntityId,
+                NotificationType = n.Notification.Type
             }));
 
             return ServiceResponse<List<NotificationListResponse>>.Success(null, result.OrderByDescending(x => x.CreatedAt).ToList());

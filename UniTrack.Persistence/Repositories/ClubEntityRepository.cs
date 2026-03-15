@@ -123,5 +123,15 @@ namespace UniTrack.Persistence.Repositories
                 .Distinct()
                 .ToListAsync();
         }
+
+        public async Task<Club?> GetClubDetailByIdAsync(Guid clubId, Guid? userId)
+        {
+            return await dbSet
+                .Include(c => c.University)
+                .Include(c => c.City)
+                .Include(c => c.Events)
+                .Include(c => c.UserClubs)
+                .FirstOrDefaultAsync(c => c.Id == clubId);
+        }
     }
 }

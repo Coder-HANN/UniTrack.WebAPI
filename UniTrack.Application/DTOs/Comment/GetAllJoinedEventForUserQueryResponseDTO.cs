@@ -18,6 +18,7 @@ namespace UniTrack.Application.DTOs.Comment
         public bool? IsCheckIn { get; set; }
         public long Quota { get; set; }
         public int JoinedCount { get; set; }
+        public bool HasCommented { get; set; }
 
     }
 }

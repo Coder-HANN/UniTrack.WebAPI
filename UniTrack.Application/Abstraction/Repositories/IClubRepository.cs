@@ -19,5 +19,6 @@ namespace UniTrack.Application.Abstraction.Repositories
         Task<List<Guid>> GetUserClubIdsAsync(Guid userId);
         Task<List<Guid>> GetAllClubIdsAsync();
         Task<List<Club>> GetAllClubListAsync();
+        Task<Club?> GetClubDetailByIdAsync(Guid clubId, Guid? userId);
     }
 }

@@ -50,13 +50,13 @@ namespace UniTrack.Persistence.Repositories
 
         public Task<IPagingExecutionResult<T>> GetPagedResult<T>(
             IEnumerable<T> query,
-            int? pageSize = 18,
+            int? pageSize = 50,
             int? pageIndex = 1,
             Func<IQueryable<T>, IOrderedQueryable<T>> ordering = null,
             CancellationToken cancellationToken = default)
         {
             pageIndex ??= 1;
-            pageSize ??= 18;
+            pageSize ??= 50;
 
             if (pageIndex < 1) pageIndex = 1;
             if (pageSize < 1) pageSize = 1;

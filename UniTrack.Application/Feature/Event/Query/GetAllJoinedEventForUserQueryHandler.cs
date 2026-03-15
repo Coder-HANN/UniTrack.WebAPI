@@ -85,6 +85,7 @@ namespace UniTrack.Application.Feature.Event.Query
                     JoinDate = e.CreatedDate,
                     Quota = e.Event.Quota,
                     JoinedCount = e.Event.EventUsers?.Count(eu => eu.IsJoined) ?? 0,
+                    HasCommented = e.Event.Comments?.Any(c => c.UserId == userId.Value) ?? false
                 };
             });
 

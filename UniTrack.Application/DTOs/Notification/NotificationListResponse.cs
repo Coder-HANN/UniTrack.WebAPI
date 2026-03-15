@@ -1,4 +1,6 @@
-﻿namespace UniTrack.Application.DTOs.Notification
+﻿using UniTrack.Domain.Enums;
+
+namespace UniTrack.Application.DTOs.Notification
 {
     public class NotificationListResponse
     {
@@ -8,5 +10,6 @@
         public bool IsRead { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public Guid? RelatedEntityId { get; set; }
+        public NotificationType NotificationType { get; set; }
     }
 }

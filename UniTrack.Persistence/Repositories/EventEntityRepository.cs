@@ -25,7 +25,9 @@ namespace UniTrack.Persistence.Repositories
 
         public Task<List<Event>> GetAllClubEventAsync(Expression<Func<Event, bool>> expression)
         {
-            return dbSet.ToListAsync();
+            return dbSet
+                .Include(e=> e.EventUsers)
+                .ToListAsync();
         }
 
         public async Task<long> GetAllClubEventJoinerCountAsync(Guid? clubId)
