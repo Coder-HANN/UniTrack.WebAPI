@@ -15,8 +15,9 @@ namespace UniTrack.Persistence.Repositories
         {
             return await context.Comments
                           .Where(c => c.EventId == eventId)
-                          .Include(c => c.User) // Comment'in User'ını yükle
-                              .ThenInclude(u => u.UserDetail) // User'ın UserDetail'ını yükle
+                          .Include(c => c.User)
+                              .ThenInclude(u => u.UserDetail)
+                           .Include(c => c.Likes)
                           .ToListAsync();
         }
 

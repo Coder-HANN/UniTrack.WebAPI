@@ -66,7 +66,7 @@ namespace UniTrack.Application.Feature.Event.Query
                 Rate = e.EventUsers.Count > 0 ? ((float)e.EventUsers.Count(eu => eu.IsJoined) / e.Quota) * 100 : 0,
                 CityId = e.CityId,
                 UniversityId = e.UniversityId,
-                EventId = e.IdClient 
+                EventId = e.Id
             }).ToList();
 
             if (userId != null)
