@@ -107,5 +107,16 @@ namespace UniTrack.Persistence.Repositories
         {
             return await context.Set<Comment>().CountAsync(c => c.EventId == eventId);
         }
+
+        public async Task<bool> DecrementLikeCountAsync(Guid commentId)
+        {
+            var affected = await context.Comments
+                .Where(c => c.Id == commentId)
+                .ExecuteUpdateAsync(s =>
+                    s.SetProperty(c => c.LikeCount, c => c.LikeCount - 1)
+                );
+
+            return affected > 0;
+        }
     }
 }

@@ -17,5 +17,8 @@ namespace UniTrack.Application.DTOs.Event
         public Status Status { get; set; }
         public long Quota { get; set; }
         public float Rate { get; set; }
+        public int CityId { get; set; }
+        public Guid UniversityId { get; set; }
+        public Guid EventId { get; set; }
     }
 }

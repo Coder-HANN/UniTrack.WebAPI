@@ -8,6 +8,7 @@ using UniTrack.Application.DTOs.Event;
 
 namespace UniTrack.Application.Feature.Event.Query
 {
+    
     public class GetMonthlyParticipationQueryHandler : IRequestHandler<GetMonthlyParticipationQuery, ServiceResponse<List<MonthlyParticipationResponseDTO>>>
     {
         private readonly IEventRepository eventRepository;
@@ -24,14 +25,11 @@ namespace UniTrack.Application.Feature.Event.Query
             this.localizationService = localizationService;
         }
 
-        public async Task<ServiceResponse<List<MonthlyParticipationResponseDTO>>> Handle(
-            GetMonthlyParticipationQuery request,
-            CancellationToken cancellationToken)
+        public async Task<ServiceResponse<List<MonthlyParticipationResponseDTO>>> Handle(GetMonthlyParticipationQuery request,CancellationToken cancellationToken)
         {
             var userId = currentUserServices.CurrentUser();
             if (userId == null)
-                return ServiceResponse<List<MonthlyParticipationResponseDTO>>.Fail(
-                    await localizationService.Get(ValidationKeys.NotAuthorized));
+                return ServiceResponse<List<MonthlyParticipationResponseDTO>>.Fail(await localizationService.Get(ValidationKeys.NotAuthorized));
 
             // Son 12 ay
             var now = DateTimeOffset.UtcNow;

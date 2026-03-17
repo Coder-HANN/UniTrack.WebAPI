@@ -114,6 +114,8 @@ namespace UniTrack.Persistence.Repositories
         {
             return await context.Set<Event>()
                 .Include(e=> e.EventUsers)
+                .Include(e => e.Club)
+                    .ThenInclude(e => e.UserClubs)
                 .Where(e => e.EndDate < DateTime.Today && e.IsDeleted == false)
                 .ToListAsync();
         }

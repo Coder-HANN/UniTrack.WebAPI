@@ -53,7 +53,10 @@ namespace UniTrack.Application.Feature.Comment.Query
                     Surname = c.User.UserDetail.Surname,
                     CreatedDate = c.CreatedDate,
                     Point = c.Point,
-                    Description = c.Description
+                    Description = c.Description,
+                    CommentId = c.Id,
+                    HelpfulCount = c.LikeCount ?? 0,  
+                    IsLiked = c.Likes != null && c.Likes.Any(l => l.UserId == userId) 
 
             }).ToList();
             return new ServiceResponse<List<GetAllCommentForEventQueryResponseDTO>> {

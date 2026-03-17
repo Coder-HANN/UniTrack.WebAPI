@@ -6,7 +6,7 @@ using UniTrack.Application.Feature.Report.Command;
 namespace UniTrack.WebAPI.Controllers.Public
 {
     [ApiController]
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiExplorerSettings(GroupName = "Public")]
     public class ReportController : Controller
     {

@@ -7,5 +7,8 @@
         public DateTimeOffset CreatedDate { get; set; }
         public int Point { get; set; }
         public string Description { get; set; }
+        public Guid CommentId { get; set; }
+        public int HelpfulCount { get; set; }  // ✅ ekle
+        public bool IsLiked { get; set; }
     }
 }

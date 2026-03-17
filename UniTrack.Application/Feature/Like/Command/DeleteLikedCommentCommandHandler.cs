@@ -34,14 +34,16 @@ namespace UniTrack.Application.Feature.Like.Command
                 return await localizationService.Get(ValidationKeys.NotAuthorized);
             }
 
-            var commentLike = await likeRepository.GetAsync(c => c.Id == request.CommentId && c.UserId == userId);
-
+            var commentLike = await likeRepository.GetAsync(c =>
+                c.CommentId == request.CommentId && // ✅ düzeltildi
+                ((userId != null && c.UserId == userId) ||
+                 (clubId != null && c.ClubId == clubId)));
             if (commentLike == null)
             {
                 return await localizationService.Get(ValidationKeys.CommentNotFound);
             }
             await likeRepository.DeleteAsync(commentLike);
-
+            await commentRepository.DecrementLikeCountAsync(request.CommentId);
             return await localizationService.Get("Beğeni silindi.");
 
         }

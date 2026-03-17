@@ -4,6 +4,8 @@ using UniTrack.Application.Feature.Like.Command;
 
 namespace UniTrack.WebAPI.Controllers.Public
 {
+    [ApiController]
+    [Route("api/public/Like")]
     public class LikeController : Controller
     {
         private readonly IMediator mediator;
