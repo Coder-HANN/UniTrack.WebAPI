@@ -2,11 +2,12 @@
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
 using UniTrack.Application.Abstraction.Services.Localization;
+using UniTrack.Application.Common;
 using UniTrack.Application.Common.Constants;
 
 namespace UniTrack.Application.Feature.Like.Command
 {
-    public class CreateLikedCommentCommandHandler : IRequestHandler<CreateLikedCommentCommand, string>
+    public class CreateLikedCommentCommandHandler : IRequestHandler<CreateLikedCommentCommand, ServiceResponse<string>>
     {
         private readonly ICurrentUserServices currentUserServices;
         private readonly ILocalizationService localizationService;
@@ -24,21 +25,31 @@ namespace UniTrack.Application.Feature.Like.Command
             this.likeRepository = likeRepository;
         }
 
-        public async Task<string> Handle(CreateLikedCommentCommand request, CancellationToken cancellationToken)
+        public async Task<ServiceResponse<string>> Handle(CreateLikedCommentCommand request, CancellationToken cancellationToken)
         {
             var userId = currentUserServices.CurrentUser();
             var clubId = currentUserServices.CurrentClub();
 
             if (userId == null && clubId == null)
             {
-                return await localizationService.Get(ValidationKeys.NotAuthorized);
+                return new ServiceResponse<string>
+                {
+                    IsSuccess = false,
+                    Data = null,
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
+                };
             }
 
             var comment = await commentRepository.GetAsync(c => c.Id == request.CommentId);
 
             if (comment == null)
             {
-                return await localizationService.Get(ValidationKeys.CommentNotFound);
+                return new ServiceResponse<string>
+                {
+                    IsSuccess = false,
+                    Data = null,
+                    Message = await localizationService.Get(ValidationKeys.CommentNotFound)
+                };
             }
 
             var isAgain = await likeRepository.GetAsync(l =>
@@ -51,7 +62,13 @@ namespace UniTrack.Application.Feature.Like.Command
 
             if (isAgain != null)
             {
-                return await localizationService.Get(ValidationKeys.AlreadyLiked);
+
+                return new ServiceResponse<string>
+                {
+                    IsSuccess = false,
+                    Data = null,
+                    Message = await localizationService.Get(ValidationKeys.AlreadyLiked)
+                };
             }
 
             await likeRepository.AddAsync(new Domain.Entities.Like
@@ -63,7 +80,12 @@ namespace UniTrack.Application.Feature.Like.Command
 
             await commentRepository.IncrementLikeCountAsync(request.CommentId);
 
-            return await localizationService.Get("İşlem başarılı") ;
+            return new ServiceResponse<string>
+            {
+                IsSuccess = true,
+                Data = null,
+                Message = await localizationService.Get(ValidationKeys.OperationSuccessful)
+            };
         }
     }
 }

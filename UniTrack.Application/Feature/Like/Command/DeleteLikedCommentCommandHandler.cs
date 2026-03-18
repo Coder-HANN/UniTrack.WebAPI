@@ -2,11 +2,12 @@
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
 using UniTrack.Application.Abstraction.Services.Localization;
+using UniTrack.Application.Common;
 using UniTrack.Application.Common.Constants;
 
 namespace UniTrack.Application.Feature.Like.Command
 {
-    public class DeleteLikedCommentCommandHandler : IRequestHandler<DeleteLikedCommentCommand, string>
+    public class DeleteLikedCommentCommandHandler : IRequestHandler<DeleteLikedCommentCommand, ServiceResponse<string>>
     {
         private readonly ICurrentUserServices currentUserServices;
         private readonly ILikeRepository likeRepository;
@@ -24,14 +25,19 @@ namespace UniTrack.Application.Feature.Like.Command
             this.localizationService = localizationService;
         }
 
-        public async Task<string> Handle(DeleteLikedCommentCommand request, CancellationToken cancellationToken)
+        public async Task<ServiceResponse<string>> Handle(DeleteLikedCommentCommand request, CancellationToken cancellationToken)
         {
             var userId = currentUserServices.CurrentUser();
             var clubId = currentUserServices.CurrentClub();
 
             if (userId == null && clubId == null)
             {
-                return await localizationService.Get(ValidationKeys.NotAuthorized);
+                return new ServiceResponse<string>
+                {
+                    IsSuccess = false,
+                    Data = null,
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
+                };
             }
 
             var commentLike = await likeRepository.GetAsync(c =>
@@ -40,11 +46,22 @@ namespace UniTrack.Application.Feature.Like.Command
                  (clubId != null && c.ClubId == clubId)));
             if (commentLike == null)
             {
-                return await localizationService.Get(ValidationKeys.CommentNotFound);
+                return new ServiceResponse<string>
+                {
+                    IsSuccess = false,
+                    Data = null,
+                    Message = await localizationService.Get(ValidationKeys.CommentNotFound)
+                };
             }
             await likeRepository.DeleteAsync(commentLike);
             await commentRepository.DecrementLikeCountAsync(request.CommentId);
-            return await localizationService.Get("Beğeni silindi.");
+
+            return new ServiceResponse<string>
+            {
+                IsSuccess = true,
+                Data = null,
+                Message = await localizationService.Get("Beğeni silindi")
+            };
 
         }
     }

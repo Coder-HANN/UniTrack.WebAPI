@@ -38,5 +38,17 @@ namespace UniTrack.WebAPI.Controllers.Public
             return await mediator.Send(query);
 
         }
+
+        [HttpPost("Upload")]
+        public async Task<ServiceResponse<UploadProfileImageResponseDTO>> Upload([FromBody] UploadProfileImageCommand command)
+        {
+            return await mediator.Send(command);
+        }
+
+        [HttpDelete("Delete")]
+        public async Task<ServiceResponse<string>> Delete([FromBody] DeleteProfileImageCommand command)
+        {
+            return await mediator.Send(command);
+        }
     }
 }

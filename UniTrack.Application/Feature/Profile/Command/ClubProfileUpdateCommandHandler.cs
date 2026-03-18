@@ -89,8 +89,7 @@ namespace UniTrack.Application.Feature.Profile.Command
 
                 if (mailExists)
                 {
-                    return ServiceResponse<ClubProfileUpdateResponseDTO>.Fail(
-                        await _localizationService.Get(ValidationKeys.EmailAlreadyUsed)
+                    return ServiceResponse<ClubProfileUpdateResponseDTO>.Fail(await _localizationService.Get(ValidationKeys.EmailAlreadyUsed)
                     );
                 }
 

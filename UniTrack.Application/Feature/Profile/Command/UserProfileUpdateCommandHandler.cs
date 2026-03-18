@@ -147,9 +147,20 @@ namespace UniTrack.Application.Feature.Profile.Command
             }
 
             // Fotoğraf alanları: güncelleme veya silme
+            // Yeni — sadece geçerli URL veya null kabul ediyor
             if (request.ProfileImageUrl != null)
             {
-                userDetail.ProfileImageUrl = string.IsNullOrWhiteSpace(request.ProfileImageUrl) ? null : request.ProfileImageUrl;
+                if (string.IsNullOrWhiteSpace(request.ProfileImageUrl))
+                {
+                    userDetail.ProfileImageUrl = null;
+                }
+                else if (request.ProfileImageUrl.StartsWith("http://") ||
+                         request.ProfileImageUrl.StartsWith("https://") ||
+                         request.ProfileImageUrl.StartsWith("/"))
+                {
+                    userDetail.ProfileImageUrl = request.ProfileImageUrl;
+                }
+                // base64 veya blob: gelirse sessizce ignore et
                 isUpdated = true;
             }
 
