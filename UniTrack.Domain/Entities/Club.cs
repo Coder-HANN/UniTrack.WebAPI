@@ -18,7 +18,7 @@ namespace UniTrack.Domain.Entities
         public string? TwitterLink { get; set; }
         public string? WebsiteLink { get; set; }
         public string? LinkedlnLink { get; set; }
-        public long Follower { get; set; }
+        public int Follower { get; set; }
         public DateTimeOffset LastLoginDate { get; set; }
         public string? LogoUrl { get; set; }
         public string? CoverImageUrl { get; set; }

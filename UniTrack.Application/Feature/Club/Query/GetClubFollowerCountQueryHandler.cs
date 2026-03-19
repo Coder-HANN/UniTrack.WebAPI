@@ -7,7 +7,7 @@ using UniTrack.Application.Common.Constants;
 
 namespace UniTrack.Application.Feature.Club.Query
 {
-    public class GetClubFollowerCountQueryHandler : IRequestHandler<GetClubFollowerCountQuery, ServiceResponse<long>>
+    public class GetClubFollowerCountQueryHandler : IRequestHandler<GetClubFollowerCountQuery, ServiceResponse<int>>
     {
         private readonly ICurrentUserServices currentUserServices;
         private readonly IClubRepository clubRepository;
@@ -21,13 +21,13 @@ namespace UniTrack.Application.Feature.Club.Query
             this.clubRepository = clubRepository;
             this.localizationService = localizationService;
         }
-        public async Task<ServiceResponse<long>> Handle(GetClubFollowerCountQuery request, CancellationToken cancellationToken)
+        public async Task<ServiceResponse<int>> Handle(GetClubFollowerCountQuery request, CancellationToken cancellationToken)
         {
             var clubId = currentUserServices.CurrentClub();
 
             if (clubId == null)
             {
-                return new ServiceResponse<long>
+                return new ServiceResponse<int>
                 {
                     IsSuccess = false,
                     Data = 0,
@@ -38,7 +38,7 @@ namespace UniTrack.Application.Feature.Club.Query
             var followerCount = await clubRepository.GetClubFollowerCountAsync(clubId.Value);
             if (followerCount == 0 || followerCount == null)
             {
-                return new ServiceResponse<long>
+                return new ServiceResponse<int>
                 {
                     IsSuccess = false,
                     Data = 0,
@@ -46,7 +46,7 @@ namespace UniTrack.Application.Feature.Club.Query
                 };
             }
 
-            return new ServiceResponse<long>
+            return new ServiceResponse<int>
             {
                 IsSuccess = true,
                 Data = followerCount,

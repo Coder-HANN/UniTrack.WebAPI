@@ -186,7 +186,14 @@ namespace UniTrack.Persistence.Repositories
                 })
                 .ToListAsync();
         }
-
-
+        public async Task<List<Event>> GetUpcomingEventsByClubIdAsync(Guid clubId, DateTimeOffset now, int maxCount)
+        {
+            return await context.Events
+                .Include(e => e.Club)
+                .Where(e => e.ClubId == clubId && e.StartDate > now)
+                .OrderBy(e => e.StartDate)
+                .Take(maxCount)
+                .ToListAsync();
+        }
     }
 }

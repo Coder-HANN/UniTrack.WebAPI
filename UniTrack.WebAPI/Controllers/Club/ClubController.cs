@@ -2,11 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using UniTrack.Application.Common;
 using UniTrack.Application.DTOs.Club;
+using UniTrack.Application.DTOs.Event;
 using UniTrack.Application.DTOs.Profile;
 using UniTrack.Application.Feature.Club.Command;
 using UniTrack.Application.Feature.Club.Query;
 using UniTrack.Application.Feature.ClubTeam.Command;
+using UniTrack.Application.Feature.Event.Query;
 using UniTrack.Application.Feature.Profile.Command;
+using UniTrack.Application.Feature.Profile.Query;
 
 namespace UniTrack.WebAPI.Controllers.Club
 {
@@ -52,10 +55,21 @@ namespace UniTrack.WebAPI.Controllers.Club
         }
 
         [HttpGet("GetClubFollowCount")]
-        public async Task<ServiceResponse<long>> GetClubFollowCount([FromQuery] GetClubFollowerCountQuery query)
+        public async Task<ServiceResponse<int>> GetClubFollowCount([FromQuery] GetClubFollowerCountQuery query)
         {
             return await mediator.Send(query);
         }
 
+        [HttpGet("GetClubProfile")]
+        public async Task<ServiceResponse<GetClubProfileResponseDTO>> GetClubProfile([FromQuery] GetClubProfileQuery query )
+        {
+            return await mediator.Send(query);
+        }
+
+        [HttpGet("GetClubUpcomingEvents")]
+        public async Task<ServiceResponse<List<UpcomingEventResponseDTO>>> GetClubUpcomingEvents([FromQuery] GetClubUpcomingEventsQuery query)
+        {
+            return await mediator.Send(query);
+        }
     }
 }

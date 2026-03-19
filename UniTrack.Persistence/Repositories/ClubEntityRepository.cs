@@ -82,11 +82,11 @@ namespace UniTrack.Persistence.Repositories
                 .LongCountAsync();
         }
 
-        public Task<long> GetClubFollowerCountAsync(Guid value)
+        public Task<int> GetClubFollowerCountAsync(Guid value)
         {
             return context.Set<UserClub>()
                 .Where(cf => cf.ClubId == value)
-                .LongCountAsync();
+                .CountAsync();
         }
 
         public async Task<List<Guid>> GetFilteredClubIdsAsync(List<int>? cityIds,List<Guid>? universityIds,List<Guid>? clubIds)

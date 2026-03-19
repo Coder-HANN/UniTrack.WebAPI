@@ -13,7 +13,7 @@ namespace UniTrack.Application.Abstraction.Repositories
         Task<long> Get90DaysActiveClubsCountAsync();
         Task<long> Get180DaysActiveClubsCountAsync();
         Task<long> Get360DaysActiveClubsCountAsync();
-        Task<long> GetClubFollowerCountAsync(Guid value);
+        Task<int> GetClubFollowerCountAsync(Guid value);
         Task <Club>GetByEmailAndVerifyAsync(string presidentEmail);
         Task<List<Guid>> GetFilteredClubIdsAsync(List<int>? cityIds, List<Guid>? universityIds, List<Guid>? clubIds);
         Task<List<Guid>> GetUserClubIdsAsync(Guid userId);

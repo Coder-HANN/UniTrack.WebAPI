@@ -18,11 +18,11 @@ namespace UniTrack.Application.Feature.Club.Query
             this.currentUserService = currentUserService;
             this.localizationService = localizationService;
         }
-        public async Task<ServiceResponse<int>> Handle(GetClubAllEventJoinerCountQuery request, CancellationToken cancellationToken)
+        public async Task<ServiceResponse<int>> Handle(GetClubAllEventJoinerCountQuery query, CancellationToken cancellationToken)
         {
             var clubId = currentUserService.CurrentClub();
 
-            if(clubId == null || clubId != request.ClubId)
+            if(clubId == null)
             {
                 return new ServiceResponse<int>
                 {
@@ -32,7 +32,7 @@ namespace UniTrack.Application.Feature.Club.Query
                 };
             }
 
-            var joinerCount = await eventUserRepository.GetTotalJoinerCountByClubIdAsync(request.ClubId);
+            var joinerCount = await eventUserRepository.GetTotalJoinerCountByClubIdAsync(clubId.Value);
 
             if (joinerCount == 0 || joinerCount == null)
             { 
