@@ -29,5 +29,6 @@ namespace UniTrack.Application.Abstraction.Repositories
         Task<List<Event>> GetUpcomingGeneralEventsAsync(DateTimeOffset now, int take, HashSet<Guid> excludeIds);
         Task<List<MonthlyParticipationResponseDTO>> GetMonthlyParticipationAsync(Guid userId, DateTime startDate);
         Task<List<Event>> GetUpcomingEventsByClubIdAsync(Guid clubId, DateTimeOffset now, int maxCount);
+        Task<int> GetCompletedEventCountByClubIdAsync(Guid clubId, DateTimeOffset now);
     }
 }

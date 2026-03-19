@@ -71,5 +71,11 @@ namespace UniTrack.WebAPI.Controllers.Club
         {
             return await mediator.Send(query);
         }
+
+        [HttpGet("GetClubEventCount")]
+        public async Task<ServiceResponse<int>> GetClubEventCount([FromQuery] GetClubEventCountQuery query)
+        {
+            return await mediator.Send(query);
+        }
     }
 }

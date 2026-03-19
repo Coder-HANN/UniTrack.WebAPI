@@ -4,17 +4,16 @@ using UniTrack.Application.Abstraction.Services.CurrentUserServices;
 using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
 using UniTrack.Application.Common.Constants;
-using UniTrack.Application.DTOs.Event;
 
 namespace UniTrack.Application.Feature.Event.Query
 {
-    public class GetClubUpcomingEventsQueryHandler : IRequestHandler<GetClubUpcomingEventsQuery, ServiceResponse<List<UpcomingEventResponseDTO>>>
+    public class GetClubEventCountQueryHandler : IRequestHandler<GetClubEventCountQuery, ServiceResponse<int>>
     {
         private readonly IEventRepository eventRepository;
         private readonly ICurrentUserServices currentUserServices;
         private readonly ILocalizationService localizationService;
 
-        public GetClubUpcomingEventsQueryHandler(
+        public GetClubEventCountQueryHandler(
             IEventRepository eventRepository,
             ICurrentUserServices currentUserServices,
             ILocalizationService localizationService)
@@ -24,34 +23,19 @@ namespace UniTrack.Application.Feature.Event.Query
             this.localizationService = localizationService;
         }
 
-        public async Task<ServiceResponse<List<UpcomingEventResponseDTO>>> Handle(
-            GetClubUpcomingEventsQuery request,
+        public async Task<ServiceResponse<int>> Handle(
+            GetClubEventCountQuery request,
             CancellationToken cancellationToken)
         {
             var clubId = currentUserServices.CurrentClub();
             if (clubId == null)
-                return ServiceResponse<List<UpcomingEventResponseDTO>>.Fail(
+                return ServiceResponse<int>.Fail(
                     await localizationService.Get(ValidationKeys.NotAuthorized));
 
             var now = DateTimeOffset.UtcNow;
-            const int maxCount = 5;
+            var count = await eventRepository.GetCompletedEventCountByClubIdAsync(clubId.Value, now);
 
-            var events = await eventRepository.GetUpcomingEventsByClubIdAsync(
-                clubId.Value, now, maxCount);
-
-            var result = events.Select(Map).ToList();
-
-            return ServiceResponse<List<UpcomingEventResponseDTO>>.Success(null, result);
+            return ServiceResponse<int>.Success(null, count);
         }
-
-        private static UpcomingEventResponseDTO Map(Domain.Entities.Event e) =>
-            new()
-            {
-                EventId = e.Id,
-                Title = e.Title,
-                StartDate = e.StartDate,
-                ClubName = e.Club?.Name ?? "-",
-                IsDoping = e.IsDoping
-            };
     }
 }

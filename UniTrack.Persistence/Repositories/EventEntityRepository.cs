@@ -195,5 +195,11 @@ namespace UniTrack.Persistence.Repositories
                 .Take(maxCount)
                 .ToListAsync();
         }
+        public async Task<int> GetCompletedEventCountByClubIdAsync(Guid clubId, DateTimeOffset now)
+        {
+            return await context.Events
+                .Where(e => e.ClubId == clubId && e.EndDate < now)
+                .CountAsync();
+        }
     }
 }
