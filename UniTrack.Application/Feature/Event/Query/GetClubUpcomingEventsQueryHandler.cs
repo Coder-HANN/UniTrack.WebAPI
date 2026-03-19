@@ -24,20 +24,16 @@ namespace UniTrack.Application.Feature.Event.Query
             this.localizationService = localizationService;
         }
 
-        public async Task<ServiceResponse<List<UpcomingEventResponseDTO>>> Handle(
-            GetClubUpcomingEventsQuery request,
-            CancellationToken cancellationToken)
+        public async Task<ServiceResponse<List<UpcomingEventResponseDTO>>> Handle(GetClubUpcomingEventsQuery request,CancellationToken cancellationToken)
         {
             var clubId = currentUserServices.CurrentClub();
             if (clubId == null)
-                return ServiceResponse<List<UpcomingEventResponseDTO>>.Fail(
-                    await localizationService.Get(ValidationKeys.NotAuthorized));
+                return ServiceResponse<List<UpcomingEventResponseDTO>>.Fail(await localizationService.Get(ValidationKeys.NotAuthorized));
 
             var now = DateTimeOffset.UtcNow;
             const int maxCount = 5;
 
-            var events = await eventRepository.GetUpcomingEventsByClubIdAsync(
-                clubId.Value, now, maxCount);
+            var events = await eventRepository.GetUpcomingEventsByClubIdAsync(clubId.Value, now, maxCount);
 
             var result = events.Select(Map).ToList();
 

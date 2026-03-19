@@ -9,8 +9,8 @@ namespace UniTrack.Domain.Entities
         public string? Description { get; set; }
         public DateTimeOffset StartDate { get; set; }  
         public DateTimeOffset EndDate { get; set; }
-        public long Quota { get; set; }
-        public long Joiner { get; set; }
+        public int Quota { get; set; }
+        public int Joiner { get; set; }
         public EventTag EventTag { get; set; }
         public string Location { get; set; }
         public TimeOnly Clock { get; set; }  
