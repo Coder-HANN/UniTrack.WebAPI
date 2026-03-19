@@ -201,5 +201,13 @@ namespace UniTrack.Persistence.Repositories
                 .Where(e => e.ClubId == clubId && e.EndDate < now)
                 .CountAsync();
         }
+        public async Task<List<Event>> GetCompletedEventsByClubIdAndDateRangeAsync(Guid clubId, DateTimeOffset startDate, DateTimeOffset endDate)
+        {
+            return await context.Events
+                .Where(e => e.ClubId == clubId
+                         && e.EndDate >= startDate
+                         && e.EndDate <= endDate)
+                .ToListAsync();
+        }
     }
 }

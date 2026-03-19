@@ -25,9 +25,7 @@ namespace UniTrack.Application.Feature.Event.Query
             this.localizationService = localizationService;
         }
 
-        public async Task<ServiceResponse<List<UpcomingEventResponseDTO>>> Handle(
-            GetUpcomingEventsQuery request,
-            CancellationToken cancellationToken)
+        public async Task<ServiceResponse<List<UpcomingEventResponseDTO>>> Handle(GetUpcomingEventsQuery request,CancellationToken cancellationToken)
         {
             var userId = currentUserServices.CurrentUser();
             if (userId == null)

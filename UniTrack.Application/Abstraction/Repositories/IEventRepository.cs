@@ -30,5 +30,7 @@ namespace UniTrack.Application.Abstraction.Repositories
         Task<List<MonthlyParticipationResponseDTO>> GetMonthlyParticipationAsync(Guid userId, DateTime startDate);
         Task<List<Event>> GetUpcomingEventsByClubIdAsync(Guid clubId, DateTimeOffset now, int maxCount);
         Task<int> GetCompletedEventCountByClubIdAsync(Guid clubId, DateTimeOffset now);
+        Task<List<Event>> GetCompletedEventsByClubIdAndDateRangeAsync(
+    Guid clubId, DateTimeOffset startDate, DateTimeOffset endDate);
     }
 }
