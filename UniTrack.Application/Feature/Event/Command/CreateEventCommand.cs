@@ -12,15 +12,15 @@ namespace UniTrack.Application.Feature.Event.Command
         public string Description { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public TimeOnly Clock { get; set; }
+        public TimeOnly StartTime { get; set; } 
+        public TimeOnly EndTime { get; set; }
         public EventTag EventTag { get; set; }
         public Time Time {  get; set; }
-        public long Quota { get; set; }
+        public int Quota { get; set; }
         public string Location { get; set; }
         public Status Status { get; set; }
         public Guid ClubId { get; set; }
         public int CityId { get; set; }
         public Guid UniversityId { get; set; }
-
     }
 }

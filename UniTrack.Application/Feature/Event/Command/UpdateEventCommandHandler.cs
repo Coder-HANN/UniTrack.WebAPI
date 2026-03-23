@@ -111,9 +111,15 @@ namespace UniTrack.Application.Feature.Event.Command
                 isUpdated = true;
             }
 
-            if (request.Clock != default && existingEvent.Clock != request.Clock)
+            if (request.StartTime != default && existingEvent.StartTime != request.StartTime)
             {
-                existingEvent.Clock = request.Clock;
+                existingEvent.StartTime = request.StartTime;
+                isUpdated = true;
+            }
+
+            if (request.EndTime != default && existingEvent.EndTime != request.EndTime)
+            {
+                existingEvent.EndTime = request.EndTime;
                 isUpdated = true;
             }
 

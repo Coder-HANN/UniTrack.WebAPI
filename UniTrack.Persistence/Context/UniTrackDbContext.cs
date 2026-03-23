@@ -380,7 +380,7 @@ namespace UniTrack.Persistence.Context
             modelBuilder.Entity<Club>(builder => 
             { 
                 builder.HasKey(c => c.Id);
-                builder.Property(c => c.Description).HasMaxLength(50);
+                builder.Property(c => c.Description).HasMaxLength(200);
                 builder.Property(c => c.LongDescription).HasMaxLength(750);
                 builder.Property(c => c.InstagramLink);
                 builder.Property(c => c.TwitterLink);
@@ -422,7 +422,8 @@ namespace UniTrack.Persistence.Context
                 builder.Property(e => e.StartDate);
                 builder.Property(e => e.Quota); 
                 builder.Property(e => e.Joiner);
-                builder.Property(e => e.Clock);
+                builder.Property(e => e.StartTime);
+                builder.Property(e => e.EndTime);
                 builder.Property(e => e.EventTag);
                 builder.Property(e => e.Description);
                 builder.Property(e => e.Title);

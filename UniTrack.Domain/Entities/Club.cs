@@ -24,7 +24,7 @@ namespace UniTrack.Domain.Entities
         public string? CoverImageUrl { get; set; }
         public  Tag Tag { get; set; }
         public int CityId { get; set; }
-        public DateOnly ClubCreatedDate { get; set; }
+        public DateOnly? ClubCreatedDate { get; set; }
         public ICollection<Event> Events { get; set; }
         public ICollection<UserClub> UserClubs { get; set; } 
         public ICollection<Comment> Comments { get; set; }

@@ -59,7 +59,7 @@ namespace UniTrack.Application.Feature.Club.Query
                 EventCount = club.Events.Count,
                 UniversityName = club.University?.Name,
                 CityName = club.City?.Name,
-                ClubCreatedDate = club.ClubCreatedDate,
+                ClubCreatedDate = club.ClubCreatedDate ?? default(DateOnly),
                 IsFollowed = userClub?.IsFollowing ?? false,
                 IsNotificationOn = userClub?.IsNotification ?? false
             };

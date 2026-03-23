@@ -13,7 +13,8 @@ namespace UniTrack.Application.Feature.Event.Command
         public string Description { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public TimeOnly Clock { get; set; }
+        public TimeOnly StartTime { get; set; }
+        public TimeOnly EndTime { get; set; }
         public EventTag EventTag { get; set; }
         public int Quota { get; set; }
         public string Location { get; set; }

@@ -41,9 +41,14 @@ namespace UniTrack.Application.Feature.Event.Command
                 .When(x => !string.IsNullOrWhiteSpace(x.Location))
                 .WithMessage(localization.Get(ValidationKeys.UpdateLocationInvalid).Result);
 
-            RuleFor(x => x.Clock)
+            RuleFor(x => x.StartTime)
                 .Must(c => c != default)
-                .When(x => x.Clock != default)
+                .When(x => x.StartTime != default)
+                .WithMessage(localization.Get(ValidationKeys.UpdateClockInvalid).Result);
+
+            RuleFor(x => x.EndTime)
+                .Must(c => c != default)
+                .When(x => x.EndTime != default)
                 .WithMessage(localization.Get(ValidationKeys.UpdateClockInvalid).Result);
 
             RuleFor(x => x.Status)

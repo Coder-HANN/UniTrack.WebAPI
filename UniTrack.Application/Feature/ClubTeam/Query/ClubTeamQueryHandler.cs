@@ -33,6 +33,7 @@ namespace UniTrack.Application.Feature.ClubTeam.Query
 
             var clubTeamDTOs = clubTemas.Select(ct => new ClubTeamResponseDTO
             {
+                ClubTeamId = ct.Id,
                 PersonName = ct.UserDetail.Name,
                 PersonSurname = ct.UserDetail.Surname,
                 Title = ct.Title,

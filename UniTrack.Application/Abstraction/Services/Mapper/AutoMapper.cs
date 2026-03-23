@@ -12,8 +12,9 @@ namespace UniTrack.Application.Abstraction.Services.Mapper
             // CreateMap<Source, Destination>();
             // 1.nin aynısını 2.ye mapler
             CreateMap<CreateEventCommand, Event>()
+                .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.StartTime))
+                .ForMember(dest => dest.EndTime, opt => opt.MapFrom(src => src.EndTime))
                 .ForMember(dest => dest.Images, opt => opt.Ignore());
-
             CreateMap<UserJoinToEventCommand, EventUser>().ReverseMap();
             CreateMap<CreateClubCommand, Club>().ReverseMap();
 

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UniTrack.Persistence.Context;
 
@@ -11,9 +12,11 @@ using UniTrack.Persistence.Context;
 namespace UniTrack.Persistence.Migrations
 {
     [DbContext(typeof(UniTrackDbContext))]
-    partial class UniTrackDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260320223427_nullcheck")]
+    partial class nullcheck
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -174,8 +177,8 @@ namespace UniTrack.Persistence.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("Follower")
                         .HasColumnType("int");
@@ -437,6 +440,9 @@ namespace UniTrack.Persistence.Migrations
                     b.Property<int>("CityId")
                         .HasColumnType("int");
 
+                    b.Property<TimeOnly>("Clock")
+                        .HasColumnType("time");
+
                     b.Property<Guid>("ClubId")
                         .HasColumnType("uniqueidentifier");
 
@@ -451,9 +457,6 @@ namespace UniTrack.Persistence.Migrations
 
                     b.Property<DateTimeOffset>("EndDate")
                         .HasColumnType("datetimeoffset");
-
-                    b.Property<TimeOnly>("EndTime")
-                        .HasColumnType("time");
 
                     b.Property<int>("EventTag")
                         .HasColumnType("int");
@@ -488,9 +491,6 @@ namespace UniTrack.Persistence.Migrations
 
                     b.Property<DateTimeOffset>("StartDate")
                         .HasColumnType("datetimeoffset");
-
-                    b.Property<TimeOnly>("StartTime")
-                        .HasColumnType("time");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");

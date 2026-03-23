@@ -143,13 +143,13 @@ namespace UniTrack.Application.Feature.Profile.Command
                 isUpdated = true;
             }
 
-           // Logo ve kapak: güncelleme veya silme
-            if (request.LogoUrl != null)
+            // Logo ve kapak: güncelleme veya silme
+            if (!string.IsNullOrWhiteSpace(request.LogoUrl))
             {
                 existingClub.LogoUrl = string.IsNullOrWhiteSpace(request.LogoUrl) ? null : request.LogoUrl;
                 isUpdated = true;
             }
-            if (request.CoverImageUrl != null)
+            if (!string.IsNullOrWhiteSpace(request.CoverImageUrl))
             {
                 existingClub.CoverImageUrl = string.IsNullOrWhiteSpace(request.CoverImageUrl) ? null : request.CoverImageUrl;
                 isUpdated = true;

@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.Identity.Client;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Repositories.Pagenation;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
@@ -19,6 +18,7 @@ namespace UniTrack.Application.Feature.Event.Query
         private readonly IEventImageRepository eventImageRepository;
         private readonly IUserClubRepository userClubRepository;
         private readonly IEventUserRepository eventUserRepository;
+
         public GetAllFeatureEventQueryHandler(
             ICurrentUserServices currentUserServices,
             IBaseEntityRepository<Domain.Entities.Event> baseEntityRepository,
@@ -36,7 +36,9 @@ namespace UniTrack.Application.Feature.Event.Query
             this.userClubRepository = userClubRepository;
             this.eventUserRepository = eventUserRepository;
         }
-        public async Task<ServiceResponse<IPagingExecutionResult<GetAllFeatureEventQueryResponseDTO>>> Handle(GetAllFeatureEventQuery request, CancellationToken cancellationToken)
+
+        public async Task<ServiceResponse<IPagingExecutionResult<GetAllFeatureEventQueryResponseDTO>>> Handle(
+            GetAllFeatureEventQuery request, CancellationToken cancellationToken)
         {
             var userId = currentUserServices.CurrentUser();
 
@@ -47,20 +49,28 @@ namespace UniTrack.Application.Feature.Event.Query
                 {
                     IsSuccess = true,
                     Data = await baseEntityRepository.GetPagedResult(
-                    Enumerable.Empty<GetAllFeatureEventQueryResponseDTO>(),
-                    pageSize: request.PageSize,
-                    pageIndex: request.Page,
-                    ordering: null,
-                    cancellationToken: cancellationToken),
+                        Enumerable.Empty<GetAllFeatureEventQueryResponseDTO>(),
+                        pageSize: request.PageSize,
+                        pageIndex: request.Page,
+                        ordering: null,
+                        cancellationToken: cancellationToken),
                     Message = await localizationService.Get(ValidationKeys.EventNotFound)
                 };
             }
-            var followClubs = await userClubRepository.GetFollowedClubsByUserIdAsync(userId.Value);
+
+            // FIX 1: userId null ise boş liste kullan, .Value çağrısından kaçın
+            var followClubs = userId.HasValue
+                ? await userClubRepository.GetFollowedClubsByUserIdAsync(userId.Value)
+                : new List<UniTrack.Domain.Entities.UserClub>();
+
+            var followedClubIds = followClubs
+                .Select(uc => uc.ClubId)
+                .ToHashSet();
+
             var eventIds = events.Select(e => e.Id).ToList();
 
             var images = await eventImageRepository.GetByEventIdsAsync(eventIds);
 
-            // EventId → ImageUrls map
             var imageLookup = images
                 .Where(i => i.IsCover)
                 .GroupBy(i => i.EventId)
@@ -70,7 +80,7 @@ namespace UniTrack.Application.Feature.Event.Query
                           .Select(i => i.ImageUrl)
                           .ToArray()
                 );
-            
+
             var responses = events.Select(e => new GetAllFeatureEventQueryResponseDTO
             {
                 EventId = e.Id,
@@ -82,49 +92,51 @@ namespace UniTrack.Application.Feature.Event.Query
                 Location = e.Location,
                 Quota = e.Quota,
                 ClubId = e.ClubId,
-                ClubName = followClubs.FirstOrDefault(fc => fc.ClubId == e.ClubId)?.Club?.Name?? (e.Club != null ? e.Club.Name : "Bilinmeyen Kulüp"),
+
+                // FIX 2: ClubName'i takip listesinden değil, doğrudan Club navigation property'den al
+                // GetFeatureEventsAsync() içinde .Include(e => e.Club) olmalı
+                ClubName = e.Club?.Name ?? "Bilinmeyen Kulüp",
+
                 EventTag = e.EventTag,
                 Time = e.Time,
                 Status = e.Status,
-                CoverImageUrls = imageLookup.TryGetValue(e.Id, out var urls)? urls: Array.Empty<string>(),
-                IsJoin = e.EventUsers.Any() && userId != null ? e.EventUsers.Any(eu => eu.UserId == userId.Value && eu.IsJoined) : false,
-                Rate = e.EventUsers.Count > 0? ((float)e.EventUsers.Count(eu => eu.IsJoined) / e.Quota) * 100: 0
+                CoverImageUrls = imageLookup.TryGetValue(e.Id, out var urls)
+                    ? urls
+                    : Array.Empty<string>(),
+                IsJoin = userId.HasValue && e.EventUsers.Any()
+                    ? e.EventUsers.Any(eu => eu.UserId == userId.Value && eu.IsJoined)
+                    : false,
+                Rate = e.EventUsers.Count > 0
+                    ? ((float)e.EventUsers.Count(eu => eu.IsJoined) / e.Quota) * 100
+                    : 0
             }).ToList();
 
-            
-            if (userId != null)
+            // FIX 3: Sıralama tek yerde yapılıyor, GetPagedResult'a ordering verilmiyor
+            // Böylece takip edilen kulüp önceliklendirmesi ezilmiyor
+            if (userId.HasValue)
             {
-                // Kullanıcının takip ettiği kulüp Id'lerini al
-
-                var followedClubIds = followClubs
-                    .Select(uc => uc.ClubId)
-                    .ToHashSet();
-
-
-                // Sıralama
                 responses = responses
-                    .OrderByDescending(e => followedClubIds.Contains(e.ClubId)) // Artık Guid == Guid oldu
+                    .OrderByDescending(e => followedClubIds.Contains(e.ClubId))
                     .ThenByDescending(e => e.StartDate)
                     .ToList();
             }
             else
             {
-                // Misafir kullanıcılar sadece tarih sırasına göre
                 responses = responses
                     .OrderByDescending(e => e.StartDate)
                     .ToList();
             }
 
             var result = await baseEntityRepository.GetPagedResult(
-              responses,
-              pageSize: request.PageSize,
-              pageIndex: request.Page,
-              ordering: q => q.OrderByDescending(x => x.StartDate),
-              cancellationToken: cancellationToken
+                responses,
+                pageSize: request.PageSize,
+                pageIndex: request.Page,
+                ordering: null, // FIX 3: null — sıralama zaten yukarıda yapıldı
+                cancellationToken: cancellationToken
             );
 
             return new ServiceResponse<IPagingExecutionResult<GetAllFeatureEventQueryResponseDTO>>
-            { 
+            {
                 IsSuccess = true,
                 Data = result,
                 Message = await localizationService.Get(ValidationKeys.GetEventSuccesses)

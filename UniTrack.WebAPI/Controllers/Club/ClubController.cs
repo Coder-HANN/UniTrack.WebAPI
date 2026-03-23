@@ -82,5 +82,16 @@ namespace UniTrack.WebAPI.Controllers.Club
         {
             return await mediator.Send(query);
         }
+        [HttpGet("GetClubSettings")]
+        public async Task<ServiceResponse<ClubSettingsResponseDTO>> GetClubSettings([FromQuery] GetClubSettingsQuery query)
+        {
+            return await mediator.Send(query);
+        }
+
+        [HttpGet("SearchClubFollower")]
+        public async Task<ServiceResponse<List<ClubFollowerSearchResponseDTO>>> SearchClubFollower([FromQuery] SearchClubFollowerQuery query)
+        {
+            return await mediator.Send(query);
+        }
     }
 }

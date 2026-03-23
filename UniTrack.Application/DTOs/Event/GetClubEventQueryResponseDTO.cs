@@ -9,7 +9,8 @@ namespace UniTrack.Application.DTOs.Event
         public string Description { get; set; }
         public DateTimeOffset StartDate { get; set; }
         public DateTimeOffset EndDate { get; set; }
-        public TimeOnly Clock {  get; set; }
+        public TimeOnly StartTime {  get; set; }
+        public TimeOnly EndTime { get; set; }
         public string Location { get; set; }
         public Guid ClubId { get; set; }
         public EventTag EventTag { get; set; }

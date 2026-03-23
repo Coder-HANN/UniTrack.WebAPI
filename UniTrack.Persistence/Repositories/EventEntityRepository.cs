@@ -106,6 +106,7 @@ namespace UniTrack.Persistence.Repositories
         {
             return await context.Set<Event>()
                 .Include(e => e.EventUsers)
+                .Include(e => e.Club)
                 .Where(e => e.EndDate >= DateTime.Today && e.IsDeleted == false)
                 .ToListAsync();
         }
@@ -207,6 +208,14 @@ namespace UniTrack.Persistence.Repositories
                 .Where(e => e.ClubId == clubId
                          && e.EndDate >= startDate
                          && e.EndDate <= endDate)
+                .ToListAsync();
+        }
+
+        public async Task<List<Event>> GetAllByClubIdAsync(Guid clubId)
+        {
+            return await context.Events
+                .Where(e => e.ClubId == clubId && e.IsActived)
+                .OrderByDescending(e => e.StartDate)
                 .ToListAsync();
         }
     }

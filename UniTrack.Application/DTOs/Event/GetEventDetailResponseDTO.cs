@@ -11,6 +11,8 @@ namespace UniTrack.Application.DTOs.Event
         public string Description { get; set; }
         public DateTimeOffset StartDate { get; set; }
         public DateTimeOffset EndDate { get; set; }
+        public TimeOnly StartTime { get; set; }   // ← eklendi
+        public TimeOnly EndTime { get; set; }
         public string Location { get; set; }
         public Guid ClubId { get; set; }
         public string ClubName { get; set; }
@@ -20,6 +22,7 @@ namespace UniTrack.Application.DTOs.Event
         public double Rate { get; set; }
         public string[]? ImageUrls { get; set; }
         public bool IsJoined { get; set; }
-
+        public int CityId { get; set; }
+        public Guid UniversityId { get; set; }
     }
 }

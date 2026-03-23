@@ -50,5 +50,17 @@ namespace UniTrack.Persistence.Repositories
               .Select(uc => uc.UserId)
               .ToListAsync();
         }
+
+        public async Task<List<UserClub>> SearchFollowersByNameAsync(Guid clubId, string name)
+        {
+            var lowerName = name.ToLower();
+            return await context.UserClubs
+                .Include(uc => uc.User.UserDetail)
+                .Where(uc => uc.ClubId == clubId &&
+                             (uc.User.UserDetail.Name.ToLower().Contains(lowerName) ||
+                              uc.User.UserDetail.Surname.ToLower().Contains(lowerName)))
+                .Take(10)
+                .ToListAsync();
+        }
     }
 }

@@ -45,6 +45,8 @@ namespace UniTrack.Application.Feature.Event.Command
                 Description = eventDetails.Description,
                 StartDate = eventDetails.StartDate,
                 EndDate = eventDetails.EndDate,
+                StartTime = eventDetails.StartTime,
+                EndTime = eventDetails.EndTime,
                 Location = eventDetails.Location,
                 ClubId = eventDetails.ClubId,
                 ClubName = eventDetails.Club.Name,
@@ -58,7 +60,9 @@ namespace UniTrack.Application.Feature.Event.Command
                 ContectMail = eventDetails.Club.ContectEmail,
                 Quota = eventDetails.Quota,
                 JoinedCount = joinedCount,
-                Rate = rate
+                Rate = rate,
+                CityId = eventDetails.CityId,
+                UniversityId = eventDetails.UniversityId
             };
 
             return ServiceResponse<GetEventDetailResponseDTO>.Success(null,response);

@@ -4,8 +4,7 @@ using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common.Constants;
 using UniTrack.Application.Feature.Profile.Command;
 
-public class ClubProfileUpdateCommandValidator
-    : AbstractValidator<ClubProfileUpdateCommand>
+public class ClubProfileUpdateCommandValidator: AbstractValidator<ClubProfileUpdateCommand>
 {
     public ClubProfileUpdateCommandValidator(
         IClubRepository clubRepository,

@@ -13,7 +13,8 @@ namespace UniTrack.Domain.Entities
         public int Joiner { get; set; }
         public EventTag EventTag { get; set; }
         public string Location { get; set; }
-        public TimeOnly Clock { get; set; }  
+        public TimeOnly StartTime { get; set; }
+        public TimeOnly EndTime { get; set; }
         public Status Status { get; set; }  
         public Guid ClubId { get; set; }
         public Time Time { get; set; }

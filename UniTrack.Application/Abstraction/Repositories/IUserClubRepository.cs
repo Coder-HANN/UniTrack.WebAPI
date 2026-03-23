@@ -12,5 +12,6 @@ namespace UniTrack.Application.Abstraction.Repositories
 
         // Kulübü takip eden ve bildirimi açık olan kullanıcıları çeker
         Task<List<Guid>> GetUsersWithNotificationOpenForClubAsync(Guid clubId);
+        Task<List<UserClub>> SearchFollowersByNameAsync(Guid clubId, string name);
     }
 }

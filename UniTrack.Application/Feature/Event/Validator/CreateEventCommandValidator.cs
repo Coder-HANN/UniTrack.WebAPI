@@ -27,9 +27,14 @@ namespace UniTrack.Application.Feature.Event.Command
                 .GreaterThan(x => x.StartDate)
                 .WithMessage(ValidationKeys.EventEndDateInvalid);
 
-            RuleFor(x => x.Clock)
-                .Must(c => c != default)
+            // Clock kuralını kaldır, bunları ekle:
+            RuleFor(x => x.StartTime)
+                .Must(t => t != default)
                 .WithMessage(ValidationKeys.EventClockRequired);
+
+            RuleFor(x => x.EndTime)
+                .Must((cmd, endTime) => endTime > cmd.StartTime)
+                .WithMessage("Bitiş saati başlangıç saatinden sonra olmalıdır.");
 
             RuleFor(x => x.EventTag)
                 .IsInEnum()

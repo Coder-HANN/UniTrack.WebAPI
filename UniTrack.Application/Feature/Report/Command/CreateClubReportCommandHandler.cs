@@ -29,6 +29,7 @@ public class CreateClubReportCommandHandler : IRequestHandler<CreateClubReportCo
     public async Task<ServiceResponse<string>> Handle(CreateClubReportCommand request, CancellationToken cancellationToken)
     {
         var userId = currentUser.CurrentUser();
+
         if (userId == null)
         {
             return ServiceResponse<string>.Fail(await localizationService.Get(ValidationKeys.NotAuthorized));

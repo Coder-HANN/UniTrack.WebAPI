@@ -13,5 +13,6 @@ namespace UniTrack.Application.Abstraction.Repositories
         Task <long>Get360DaysActiveUsersCountAsync();
         Task<long> GetUserCountAsync();
         public Task<int> CountUsersByClubIdsAsync(List<Guid> clubIds, List<int>? departmentIds);
+
     }
 }
