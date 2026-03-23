@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 using UniTrack.Application.Abstraction.Repositories;
+using UniTrack.Application.DTOs.Club;
 using UniTrack.Domain.Entities;
 using UniTrack.Persistence.Context;
 
@@ -132,6 +133,27 @@ namespace UniTrack.Persistence.Repositories
                 .Include(c => c.Events)
                 .Include(c => c.UserClubs)
                 .FirstOrDefaultAsync(c => c.Id == clubId);
+        }
+
+        public async Task<List<MonthlyFollowerResponseDTO>> GetMonthlyFollowerCountAsync(Guid clubId)
+        {
+            var twelveMonthsAgo = DateTime.UtcNow.AddMonths(-11);
+            var startDate = new DateTime(twelveMonthsAgo.Year, twelveMonthsAgo.Month, 1);
+
+            var result = await context.UserClubs
+                .Where(f => f.ClubId == clubId && f.CreatedDate >= startDate)
+                .GroupBy(f => new { f.CreatedDate.Year, f.CreatedDate.Month })
+                .Select(g => new MonthlyFollowerResponseDTO
+                {
+                    Year = g.Key.Year,
+                    Month = g.Key.Month.ToString(),
+                    Count = g.Count()
+                })
+                .OrderBy(x => x.Year)
+                .ThenBy(x => x.Month)
+                .ToListAsync();
+
+            return result;
         }
     }
 }

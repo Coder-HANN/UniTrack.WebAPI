@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using UniTrack.Application.DTOs.Club;
 using UniTrack.Domain.Entities;
 
 namespace UniTrack.Application.Abstraction.Repositories
@@ -20,5 +21,6 @@ namespace UniTrack.Application.Abstraction.Repositories
         Task<List<Guid>> GetAllClubIdsAsync();
         Task<List<Club>> GetAllClubListAsync();
         Task<Club?> GetClubDetailByIdAsync(Guid clubId, Guid? userId);
+        Task<List<MonthlyFollowerResponseDTO>> GetMonthlyFollowerCountAsync(Guid value);
     }
 }

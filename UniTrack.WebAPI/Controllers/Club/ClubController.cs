@@ -93,5 +93,11 @@ namespace UniTrack.WebAPI.Controllers.Club
         {
             return await mediator.Send(query);
         }
+
+        [HttpGet("GetMonthlyFollowerCount")]
+        public async Task<ServiceResponse<List<MonthlyFollowerResponseDTO>>> GetMonthlyFollowerCount([FromQuery] GetMonthlyFollowerCountQuery query)
+        {
+            return await mediator.Send(query);
+        }
     }
 }
