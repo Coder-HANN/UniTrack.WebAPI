@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.DTOs.Club;
 using UniTrack.Domain.Entities;
+using UniTrack.Domain.Enums;
 using UniTrack.Persistence.Context;
 
 namespace UniTrack.Persistence.Repositories
@@ -137,8 +138,12 @@ namespace UniTrack.Persistence.Repositories
 
         public async Task<List<MonthlyFollowerResponseDTO>> GetMonthlyFollowerCountAsync(Guid clubId)
         {
-            var twelveMonthsAgo = DateTime.UtcNow.AddMonths(-11);
-            var startDate = new DateTime(twelveMonthsAgo.Year, twelveMonthsAgo.Month, 1);
+            var startDate = new DateTimeOffset(
+                DateTimeOffset.UtcNow.AddMonths(-11).Year,
+                DateTimeOffset.UtcNow.AddMonths(-11).Month,
+                1, 0, 0, 0,
+                TimeSpan.Zero
+            );
 
             var result = await context.UserClubs
                 .Where(f => f.ClubId == clubId && f.CreatedDate >= startDate)
@@ -155,5 +160,31 @@ namespace UniTrack.Persistence.Repositories
 
             return result;
         }
+
+        public async Task<List<GenderDistributionDTO>> GetFollowerGenderDistributionAsync(Guid clubId)
+        {
+            var followers = await context.UserClubs
+                .Where(uc => uc.ClubId == clubId)
+                .Join(context.UserDetails,
+                    uc => uc.UserId,
+                    ud => ud.UserId,
+                    (uc, ud) => ud.Gender)
+                .ToListAsync();
+
+            var total = followers.Count;
+            if (total == 0) return new List<GenderDistributionDTO>();
+
+            return followers
+                .GroupBy(g => g)
+                .Select(g => new GenderDistributionDTO
+                {
+                    Label = g.Key.ToString(),
+                    Count = g.Count(),
+                    Percentage = Math.Round((double)g.Count() / total * 100, 1)
+                })
+                .OrderByDescending(x => x.Count)
+                .ToList();
+        }
     }
+
 }

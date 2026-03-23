@@ -99,5 +99,11 @@ namespace UniTrack.WebAPI.Controllers.Club
         {
             return await mediator.Send(query);
         }
+
+        [HttpGet("GetFollowerGenderDistribution")]
+        public async Task<ServiceResponse<List<GenderDistributionDTO>>> GetFollowerGenderDistribution([FromQuery] GetFollowerGenderDistributionQuery query)
+        {
+            return await mediator.Send(query);
+        }
     }
 }
