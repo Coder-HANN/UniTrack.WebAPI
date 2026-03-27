@@ -5,7 +5,8 @@
         public string Name { get; set; }
         public string Surname { get; set; }
         public string Department { get; set; }
-        public Guid UniversityId { get; set; }
+        public string UniversityName { get; set; }
+        public string Email { get; set; }
 
     }
 }

@@ -36,14 +36,17 @@ namespace UniTrack.Persistence.Repositories
                             .ToListAsync();
         }
 
-        public async Task<double> GetClubAverageRatingAsync(Guid clubId)
+        public async Task<(double Average, int Count)> GetClubAverageRatingAsync(Guid clubId)
         {
-            var eventAvarage= await context.Set<Event>()
+            var allPoints = await context.Set<Event>()
                 .Where(e => e.ClubId == clubId && e.Comments.Any())
-                .Select(e => e.Comments.Average(c => c.Point))
+                .SelectMany(e => e.Comments.Select(c => c.Point))
                 .ToListAsync();
 
-            return eventAvarage.Average();
+            if (!allPoints.Any())
+                return (0, 0);
+
+            return (allPoints.Average(), allPoints.Count);
         }
 
 

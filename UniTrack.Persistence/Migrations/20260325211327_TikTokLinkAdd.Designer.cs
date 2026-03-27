@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UniTrack.Persistence.Context;
 
@@ -11,9 +12,11 @@ using UniTrack.Persistence.Context;
 namespace UniTrack.Persistence.Migrations
 {
     [DbContext(typeof(UniTrackDbContext))]
-    partial class UniTrackDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260325211327_TikTokLinkAdd")]
+    partial class TikTokLinkAdd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -317,19 +320,21 @@ namespace UniTrack.Persistence.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTimeOffset>("UpdatedDate")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("UserDetailId")
+                        .HasMaxLength(50)
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ClubId");
 
-                    b.HasIndex("UserId")
+                    b.HasIndex("UserDetailId")
                         .IsUnique();
 
                     b.ToTable("ClubTeams");
@@ -1241,15 +1246,15 @@ namespace UniTrack.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("UniTrack.Domain.Entities.User", "User")
+                    b.HasOne("UniTrack.Domain.Entities.UserDetail", "UserDetail")
                         .WithOne("ClubTeam")
-                        .HasForeignKey("UniTrack.Domain.Entities.ClubTeam", "UserId")
+                        .HasForeignKey("UniTrack.Domain.Entities.ClubTeam", "UserDetailId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Club");
 
-                    b.Navigation("User");
+                    b.Navigation("UserDetail");
                 });
 
             modelBuilder.Entity("UniTrack.Domain.Entities.Comment", b =>
@@ -1724,9 +1729,6 @@ namespace UniTrack.Persistence.Migrations
                     b.Navigation("Ban")
                         .IsRequired();
 
-                    b.Navigation("ClubTeam")
-                        .IsRequired();
-
                     b.Navigation("Comments");
 
                     b.Navigation("EventQuestions");
@@ -1743,6 +1745,12 @@ namespace UniTrack.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("UserNotifications");
+                });
+
+            modelBuilder.Entity("UniTrack.Domain.Entities.UserDetail", b =>
+                {
+                    b.Navigation("ClubTeam")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

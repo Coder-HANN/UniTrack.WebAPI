@@ -34,10 +34,10 @@ namespace UniTrack.Application.Feature.ClubTeam.Query
             var clubTeamDTOs = clubTemas.Select(ct => new ClubTeamResponseDTO
             {
                 ClubTeamId = ct.Id,
-                PersonName = ct.UserDetail.Name,
-                PersonSurname = ct.UserDetail.Surname,
+                PersonName = ct.User.UserDetail.Name,
+                PersonSurname = ct.User.UserDetail.Surname,
                 Title = ct.Title,
-                ProfileImageUrl = ct.UserDetail.ProfileImageUrl
+                ProfileImageUrl = ct.User.UserDetail.ProfileImageUrl
 
             }).ToList();
 

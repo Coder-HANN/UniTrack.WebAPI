@@ -115,27 +115,32 @@ namespace UniTrack.Application.Feature.Profile.Command
             }
 
             // Sosyal ve web linkleri
-            if (!string.IsNullOrEmpty(request.LinkedlnLink) && existingClub.LinkedlnLink != request.LinkedlnLink)
+            // Sosyal ve web linkleri
+            if (request.LinkedlnLink != null && existingClub.LinkedlnLink != request.LinkedlnLink)
             {
-                existingClub.LinkedlnLink = request.LinkedlnLink;
+                existingClub.LinkedlnLink = string.IsNullOrEmpty(request.LinkedlnLink) ? null : request.LinkedlnLink;
                 isUpdated = true;
             }
-            if (!string.IsNullOrEmpty(request.InstagramLink) && existingClub.InstagramLink != request.InstagramLink)
+            if (request.InstagramLink != null && existingClub.InstagramLink != request.InstagramLink)
             {
-                existingClub.InstagramLink = request.InstagramLink;
+                existingClub.InstagramLink = string.IsNullOrEmpty(request.InstagramLink) ? null : request.InstagramLink;
                 isUpdated = true;
             }
-            if (!string.IsNullOrEmpty(request.TwitterLink) && existingClub.TwitterLink != request.TwitterLink)
+            if (request.TwitterLink != null && existingClub.TwitterLink != request.TwitterLink)
             {
-                existingClub.TwitterLink = request.TwitterLink;
+                existingClub.TwitterLink = string.IsNullOrEmpty(request.TwitterLink) ? null : request.TwitterLink;
                 isUpdated = true;
             }
-            if (!string.IsNullOrEmpty(request.WebsiteLink) && existingClub.WebsiteLink != request.WebsiteLink)
+            if (request.WebsiteLink != null && existingClub.WebsiteLink != request.WebsiteLink)
             {
-                existingClub.WebsiteLink = request.WebsiteLink;
+                existingClub.WebsiteLink = string.IsNullOrEmpty(request.WebsiteLink) ? null : request.WebsiteLink;
                 isUpdated = true;
             }
-
+            if (request.TikTokLink != null && existingClub.TikTokLink != request.TikTokLink)
+            {
+                existingClub.TikTokLink = string.IsNullOrEmpty(request.TikTokLink) ? null : request.TikTokLink;
+                isUpdated = true;
+            }
             // Tag
             if (request.Tag.HasValue && existingClub.Tag != request.Tag.Value)
             {
@@ -144,14 +149,14 @@ namespace UniTrack.Application.Feature.Profile.Command
             }
 
             // Logo ve kapak: güncelleme veya silme
-            if (!string.IsNullOrWhiteSpace(request.LogoUrl))
+            if (request.LogoUrl != null && existingClub.LogoUrl != request.LogoUrl)
             {
-                existingClub.LogoUrl = string.IsNullOrWhiteSpace(request.LogoUrl) ? null : request.LogoUrl;
+                existingClub.LogoUrl = string.IsNullOrEmpty(request.LogoUrl) ? null : request.LogoUrl;
                 isUpdated = true;
             }
-            if (!string.IsNullOrWhiteSpace(request.CoverImageUrl))
+            if (request.CoverImageUrl != null && existingClub.CoverImageUrl != request.CoverImageUrl)
             {
-                existingClub.CoverImageUrl = string.IsNullOrWhiteSpace(request.CoverImageUrl) ? null : request.CoverImageUrl;
+                existingClub.CoverImageUrl = string.IsNullOrEmpty(request.CoverImageUrl) ? null : request.CoverImageUrl;
                 isUpdated = true;
             }
             // University & ClubCreatedDate
@@ -184,6 +189,7 @@ namespace UniTrack.Application.Feature.Profile.Command
                 InstagramLink = existingClub.InstagramLink,
                 WebsiteLink = existingClub.WebsiteLink,
                 TwitterLink = existingClub.TwitterLink,
+                TikTokLink = existingClub.TikTokLink,
                 Tag = existingClub.Tag,
                 LogoUrl = existingClub.LogoUrl,
                 CoverImageUrl = existingClub.CoverImageUrl,

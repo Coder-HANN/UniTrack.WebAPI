@@ -18,7 +18,10 @@ namespace UniTrack.Persistence.Repositories
 
         public Task<List<ClubTeam>> GetClubTeamsByClubIdAsync(Guid clubId)
         {
-            return dbSet.Where(c => c.ClubId == clubId).ToListAsync();
+            return dbSet.Where(c => c.ClubId == clubId)
+                .Include(c => c.User)
+                    .ThenInclude(u => u.UserDetail)
+                .ToListAsync();
         }
     }
 }

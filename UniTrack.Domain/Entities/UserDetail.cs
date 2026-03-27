@@ -19,7 +19,6 @@ namespace UniTrack.Domain.Entities
         public User User { get; set; }
         public University University { get; set; }
         public City City { get; set; }
-        public ClubTeam ClubTeam { get; set; }
         public bool IsNotified { get; set; } = true;
         public string? Language { get; set; }
     }

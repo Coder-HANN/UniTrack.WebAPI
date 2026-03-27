@@ -24,7 +24,14 @@ namespace UniTrack.Persistence.Repositories
 
         public async Task<List<EventUser>> GetClubEventJoinsByClubIdAsync(Guid eventId)
         {
-            return await dbSet.Where(eu => eu.EventId == eventId && eu.IsJoined == true).ToListAsync();
+            return await dbSet.Where(eu => eu.EventId == eventId && eu.IsJoined == true)
+                .Include(eu => eu.User)
+                    .ThenInclude(u => u.UserDetail)
+                        .ThenInclude(ud => ud.Department)
+                .Include(eu => eu.User)
+                    .ThenInclude(u => u.UserDetail)
+                    .ThenInclude(ud => ud.University)
+                .ToListAsync();
         }
 
         public async Task<EventUser> GetEventoinUserIdAsync(Guid eventId)

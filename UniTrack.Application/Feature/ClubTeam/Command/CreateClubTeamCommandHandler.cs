@@ -37,7 +37,7 @@ namespace UniTrack.Application.Feature.ClubTeam.Command
                 return ServiceResponse<string>.Fail(await localizationService.Get(ValidationKeys.NotAuthorized));
             }
 
-            var isFollowing = await userClubRepository.GetClubFollowersByUserIdAsync(clubId.Value, request.UserDetailId);
+            var isFollowing = await userClubRepository.GetClubFollowersByUserIdAsync(clubId.Value, request.UserId);
 
             if (isFollowing == null)
             {
@@ -47,7 +47,7 @@ namespace UniTrack.Application.Feature.ClubTeam.Command
             var clubTeam = new Domain.Entities.ClubTeam
             {
                 ClubId = request.ClubId,
-                UserDetailId = request.UserDetailId,
+                UserId = request.UserId,
                 Title = request.Title
             };
 

@@ -32,8 +32,7 @@ namespace UniTrack.Application.Feature.Event.Query
                 return ServiceResponse<int>.Fail(
                     await localizationService.Get(ValidationKeys.NotAuthorized));
 
-            var now = DateTimeOffset.UtcNow;
-            var count = await eventRepository.GetCompletedEventCountByClubIdAsync(clubId.Value, now);
+            var count = await eventRepository.GetCompletedEventCountByClubIdAsync(clubId.Value);
 
             return ServiceResponse<int>.Success(null, count);
         }

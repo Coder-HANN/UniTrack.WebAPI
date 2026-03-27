@@ -17,6 +17,7 @@ namespace UniTrack.Domain.Entities
         public string? InstagramLink { get; set; }
         public string? TwitterLink { get; set; }
         public string? WebsiteLink { get; set; }
+        public string? TikTokLink { get; set; }
         public string? LinkedlnLink { get; set; }
         public int Follower { get; set; }
         public DateTimeOffset LastLoginDate { get; set; }

@@ -11,6 +11,7 @@
         public string? InstagramLink { get; set; }
         public string? TwitterLink { get; set; }
         public string? WebsiteLink { get; set; }
+        public string? TikTokLink { get; set; }
         public string? LinkedlnLink { get; set; }
         public string ContactEmail { get; set; }
         public string President { get; set; }

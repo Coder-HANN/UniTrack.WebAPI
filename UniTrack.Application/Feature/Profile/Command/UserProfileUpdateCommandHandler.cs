@@ -153,15 +153,15 @@ namespace UniTrack.Application.Feature.Profile.Command
                 if (string.IsNullOrWhiteSpace(request.ProfileImageUrl))
                 {
                     userDetail.ProfileImageUrl = null;
+                    isUpdated = true;
                 }
                 else if (request.ProfileImageUrl.StartsWith("http://") ||
                          request.ProfileImageUrl.StartsWith("https://") ||
                          request.ProfileImageUrl.StartsWith("/"))
                 {
                     userDetail.ProfileImageUrl = request.ProfileImageUrl;
+                    isUpdated = true;
                 }
-                // base64 veya blob: gelirse sessizce ignore et
-                isUpdated = true;
             }
 
             // Notification

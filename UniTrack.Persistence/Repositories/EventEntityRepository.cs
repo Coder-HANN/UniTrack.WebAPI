@@ -177,7 +177,9 @@ namespace UniTrack.Persistence.Repositories
                 .Where(eu =>
                     eu.UserId == userId &&
                     eu.Event.IsActived &&
-                    eu.Event.StartDate >= startDate)
+                    eu.Event.StartDate >= startDate && 
+                    eu.Event.IsDeleted == false &&
+                    eu.IsCheckedIn == true)
                 .GroupBy(eu => new { eu.Event.StartDate.Month, eu.Event.StartDate.Year })
                 .Select(g => new MonthlyParticipationResponseDTO
                 {
@@ -196,10 +198,10 @@ namespace UniTrack.Persistence.Repositories
                 .Take(maxCount)
                 .ToListAsync();
         }
-        public async Task<int> GetCompletedEventCountByClubIdAsync(Guid clubId, DateTimeOffset now)
+        public async Task<int> GetCompletedEventCountByClubIdAsync(Guid clubId)
         {
             return await context.Events
-                .Where(e => e.ClubId == clubId && e.EndDate < now)
+                .Where(e => e.ClubId == clubId)
                 .CountAsync();
         }
         public async Task<List<Event>> GetCompletedEventsByClubIdAndDateRangeAsync(Guid clubId, DateTimeOffset startDate, DateTimeOffset endDate)
@@ -207,14 +209,17 @@ namespace UniTrack.Persistence.Repositories
             return await context.Events
                 .Where(e => e.ClubId == clubId
                          && e.EndDate >= startDate
-                         && e.EndDate <= endDate)
+                         && e.EndDate <= endDate
+                         && e.IsDeleted == false)
+                
                 .ToListAsync();
         }
 
         public async Task<List<Event>> GetAllByClubIdAsync(Guid clubId)
         {
             return await context.Events
-                .Where(e => e.ClubId == clubId && e.IsActived)
+                .Where(e => e.ClubId == clubId)
+                .Include(e => e.EventUsers )
                 .OrderByDescending(e => e.StartDate)
                 .ToListAsync();
         }

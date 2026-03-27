@@ -252,17 +252,16 @@ namespace UniTrack.Persistence.Context
             modelBuilder.Entity<ClubTeam>(builder =>
             {
                 builder.HasKey(ct => ct.Id);
-                builder.Property(ct => ct.UserDetailId).IsRequired().HasMaxLength(50);
-                builder.Property(ct => ct.Title).IsRequired().HasMaxLength(50);
+                builder.Property(ct => ct.Title).IsRequired();
 
                 builder.HasOne(ct => ct.Club)
                        .WithMany(c => c.ClubTeams)
                        .HasForeignKey(ct => ct.ClubId)
                        .OnDelete(DeleteBehavior.Cascade);
 
-                builder.HasOne(ct => ct.UserDetail)
-                       .WithOne(ud => ud.ClubTeam)
-                       .HasForeignKey<ClubTeam>(ct => ct.UserDetailId)
+                builder.HasOne(ct => ct.User)
+                       .WithOne(u => u.ClubTeam)
+                       .HasForeignKey<ClubTeam>(ct => ct.UserId)
                           .OnDelete(DeleteBehavior.Cascade);
 
             });
@@ -386,6 +385,7 @@ namespace UniTrack.Persistence.Context
                 builder.Property(c => c.TwitterLink);
                 builder.Property(c => c.WebsiteLink);
                 builder.Property(c => c.LinkedlnLink);
+                builder.Property(c => c.TikTokLink);
                 builder.Property(c => c.LogoUrl);
                 builder.Property(c => c.CoverImageUrl);
                 builder.Property(c => c.Name).HasMaxLength(50);

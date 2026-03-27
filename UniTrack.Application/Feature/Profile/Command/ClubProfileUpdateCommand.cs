@@ -18,6 +18,7 @@ namespace UniTrack.Application.Feature.Profile.Command
         public string? TwitterLink { get; set; }
         public string? WebsiteLink { get; set; }
         public string? LinkedlnLink { get; set; }
+        public string? TikTokLink { get; set; }
         public string? LogoUrl { get; set; }
         public string? CoverImageUrl { get; set; }
         public Tag? Tag { get; set; }

@@ -30,9 +30,9 @@ namespace UniTrack.Application.Feature.Event.Query
 
         public async Task<ServiceResponse<IPagingExecutionResult<GetClubEventQueryResponseDTO>>> Handle(GetClubEventQuery request, CancellationToken cancellationToken)
         {
-          
-            var events = await eventRepository.GetAllClubEventAsync(e => e.ClubId == request.ClubId);
-            if(events == null || events.Count == 0)
+
+            var events = await eventRepository.GetAllClubEventAsync(e => e.ClubId == request.ClubId && e.IsDeleted == false);
+            if (events == null || events.Count == 0)
             {
                 return new ServiceResponse<IPagingExecutionResult<GetClubEventQueryResponseDTO>> {
                    
@@ -59,7 +59,7 @@ namespace UniTrack.Application.Feature.Event.Query
                     EndDate = e.EndDate,
                     StartTime = e.StartTime,
                     EndTime = e.EndTime,
-                Location = e.Location,
+                    Location = e.Location,
                     Quota = e.Quota,
                     Time=e.Time,
                     ClubId = e.ClubId,

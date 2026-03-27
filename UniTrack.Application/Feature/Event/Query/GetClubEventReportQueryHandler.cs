@@ -40,7 +40,7 @@ namespace UniTrack.Application.Feature.Event.Query
             {
                 EventId = e.Id,
                 Title = e.Title,
-                JoinedCount = e.Joiner,
+                JoinedCount = e.EventUsers != null ? e.EventUsers.Count(eu => eu.IsCheckedIn) : 0,
                 Quota = e.Quota,
                 FillRate = e.Quota > 0 ? Math.Round((double)e.Joiner / e.Quota * 100, 1) : 0
             }).ToList();

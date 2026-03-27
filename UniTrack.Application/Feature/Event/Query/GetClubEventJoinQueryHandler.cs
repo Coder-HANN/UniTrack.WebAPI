@@ -28,9 +28,8 @@ namespace UniTrack.Application.Feature.Event.Query
         // Etkinliğe katılan kullanıcıları getir
         public async Task<ServiceResponse<List<GetClubEventJoinQueryResponseDTO>>> Handle(GetClubEventJoinQuery request, CancellationToken cancellationToken)
         {
-            var userId = currentUserServices.CurrentUser();
             var clubId = currentUserServices.CurrentClub();
-            if (userId == null && clubId == null)
+            if (clubId == null)
             {
                 return new ServiceResponse<List<GetClubEventJoinQueryResponseDTO>>
                 {
@@ -69,8 +68,9 @@ namespace UniTrack.Application.Feature.Event.Query
             {
                 Name = eu.User.UserDetail.Name,
                 Surname = eu.User.UserDetail.Surname,
-                Department = eu.User.UserDetail.Department.ToString(),
-                UniversityId = eu.User.UserDetail.UniverstiyId,
+                Department = eu.User.UserDetail.Department.Name,
+                UniversityName = eu.User.UserDetail.University.Name,
+                Email = eu.User.Email
 
             }).ToList();
 

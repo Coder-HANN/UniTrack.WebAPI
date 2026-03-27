@@ -49,6 +49,7 @@ namespace UniTrack.Application.Feature.Profile.Query
                 TwitterLink = club.TwitterLink,
                 WebsiteLink = club.WebsiteLink,
                 LinkedlnLink = club.LinkedlnLink,
+                TikTokLink = club.TikTokLink,
                 LogoUrl = club.LogoUrl,
                 CoverImageUrl = club.CoverImageUrl,
                 Tag = club.Tag,

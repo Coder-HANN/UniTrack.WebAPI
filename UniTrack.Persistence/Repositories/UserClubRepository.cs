@@ -18,9 +18,9 @@ namespace UniTrack.Persistence.Repositories
                 .ToListAsync();
         }
 
-        public Task<UserClub> GetClubFollowersByUserIdAsync(Guid value, Guid userDetailId)
+        public Task<UserClub> GetClubFollowersByUserIdAsync(Guid value, Guid userId)
         {
-            return dbSet.FirstOrDefaultAsync(c => c.ClubId == value && c.UserId == userDetailId && c.IsFollowing == true);
+            return dbSet.FirstOrDefaultAsync(c => c.ClubId == value && c.UserId == userId && c.IsFollowing == true);
 		}
 
         public Task<int> GetFollowedClubCountAsync(Guid? userId)

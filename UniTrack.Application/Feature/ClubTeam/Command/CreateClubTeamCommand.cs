@@ -6,7 +6,7 @@ namespace UniTrack.Application.Feature.ClubTeam.Command
     public class CreateClubTeamCommand : IRequest<ServiceResponse<string>>
     {
         public Guid ClubId { get; set; }
-        public Guid UserDetailId { get; set; }
+        public Guid UserId { get; set; }
         public string Title { get; set; }
     }
 }
