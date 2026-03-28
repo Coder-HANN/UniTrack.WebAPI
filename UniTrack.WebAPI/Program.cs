@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.JsonConverter;
 using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Abstraction.Services.Logger;
 using UniTrack.Application.Abstraction.Services.Mail;
@@ -136,9 +137,14 @@ builder.Services.AddSingleton<LoggerServiceBase, MsSqlLogger>();
 
 builder.Services.AddScoped<IUniversityRepository, UniversityRepository>();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDocumentation();
+
 
 var app = builder.Build();
 
