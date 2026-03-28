@@ -5,45 +5,69 @@ using UniTrack.Application.Abstraction.Services.VerificationCode;
 using UniTrack.Application.Common;
 using UniTrack.Application.Common.Constants;
 using UniTrack.Application.Feature.VerificationCode.Command;
-using UniTrack.Domain.Enums; 
+using UniTrack.Domain.Enums;
 
-public class VerifyClubCommandHandler : IRequestHandler<VerificationCommand, ServiceResponse<string>>
+public class VerifyCommandHandler : IRequestHandler<VerificationCommand, ServiceResponse<string>>
 {
     private readonly IClubRepository _clubRepository;
+    private readonly IUserRepository _userRepository;
     private readonly IVerificationCodeService _codeService;
-    private readonly ILocalizationService localizationService;
+    private readonly ILocalizationService _localizationService;
 
-    public VerifyClubCommandHandler(IClubRepository clubRepository, IVerificationCodeService codeService, ILocalizationService localizationService)
+    public VerifyCommandHandler(
+        IClubRepository clubRepository,
+        IUserRepository userRepository,
+        IVerificationCodeService codeService,
+        ILocalizationService localizationService)
     {
         _clubRepository = clubRepository;
+        _userRepository = userRepository;
         _codeService = codeService;
-        this.localizationService = localizationService;
+        _localizationService = localizationService;
     }
 
     public async Task<ServiceResponse<string>> Handle(VerificationCommand request, CancellationToken cancellationToken)
     {
-        // 1. Kulübü bul
-        var club = await _clubRepository.GetByEmailAsync(request.Email);
-        if (club == null)
-            return new ServiceResponse<string> { IsSuccess = false, Message = await localizationService.Get(ValidationKeys.ClubNotFound) };
-
-        // 2. Kodu Generic Servis ile Kontrol Et (Tip: ClubRegistration)
-        bool isValid = _codeService.ValidateCode(request.Email, request.VerificationCode, VerificationType.ClubRegistration);
-
-        if (!isValid)
+        if (request.VerificationType == VerificationType.ClubRegistration)
         {
+            var club = await _clubRepository.GetByEmailAsync(request.Email);
+            if (club == null)
+                return new ServiceResponse<string> { IsSuccess = false, Message = await _localizationService.Get(ValidationKeys.ClubNotFound) };
 
-            await _clubRepository.DeleteAsync(club);
-            return new ServiceResponse<string> { IsSuccess = false, Message = await localizationService.Get(ValidationKeys.InvalidOrExpiredCode) };
+            bool isValid = _codeService.ValidateCode(request.Email, request.VerificationCode, VerificationType.ClubRegistration);
+            if (!isValid)
+            {
+                await _clubRepository.DeleteAsync(club);
+                return new ServiceResponse<string> { IsSuccess = false, Message = await _localizationService.Get(ValidationKeys.InvalidOrExpiredCode) };
+            }
+
+            club.IsVerified = true;
+            await _clubRepository.UpdateAsync(club);
+            _codeService.RemoveCode(request.Email, VerificationType.ClubRegistration);
+
+            return new ServiceResponse<string> { IsSuccess = true, Message = await _localizationService.Get(ValidationKeys.ClubVerifiedSuccess) };
         }
 
-        // 3. Başarılı ise durumu güncelle
-        club.IsVerified = true;
-        await _clubRepository.UpdateAsync(club);
+        if (request.VerificationType == VerificationType.UserRegistration)
+        {
+            var user = await _userRepository.GetByEmailAsync(request.Email);
+            if (user == null)
+                return new ServiceResponse<string> { IsSuccess = false, Message = await _localizationService.Get(ValidationKeys.UserNotFound) };
 
-        // 4. Kodu temizle (Tekrar kullanılamasın)
-        _codeService.RemoveCode(request.Email, VerificationType.ClubRegistration);
+            bool isValid = _codeService.ValidateCode(request.Email, request.VerificationCode, VerificationType.UserRegistration);
+            if (!isValid)
+            {
+                await _userRepository.DeleteAsync(user);
+                return new ServiceResponse<string> { IsSuccess = false, Message = await _localizationService.Get(ValidationKeys.InvalidOrExpiredCode) };
+            }
 
-        return new ServiceResponse<string> { IsSuccess = true, Message = await localizationService.Get(ValidationKeys.ClubVerifiedSuccess) };
+            user.IsVerified = true;
+            await _userRepository.UpdateAsync(user);
+            _codeService.RemoveCode(request.Email, VerificationType.UserRegistration);
+
+            return new ServiceResponse<string> { IsSuccess = true, Message = await _localizationService.Get(ValidationKeys.UserVerifiedSuccess) };
+        }
+
+        return new ServiceResponse<string> { IsSuccess = false, Message = await _localizationService.Get(ValidationKeys.InvalidRequest) };
     }
 }

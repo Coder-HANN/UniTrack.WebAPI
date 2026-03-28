@@ -72,7 +72,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ServiceResponse
             var result = clubPasswordHasher.VerifyHashedPassword(club, club.Password, request.Password);
             if (result == PasswordVerificationResult.Success)
             {
-                var token = GenerateJwtToken(club.Id, Role.Club, club.PresidentMail, name: club.Name);
+                var token = GenerateJwtToken(club.Id, Role.Club, club.ContectEmail, name: club.Name);
 
                 club.LastLoginDate = DateTime.UtcNow;
                 await clubRepository.UpdateAsync(club);
@@ -132,6 +132,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ServiceResponse
         {
             claims.Add(new Claim("clubId", id.ToString()));
             if (!string.IsNullOrEmpty(name)) claims.Add(new Claim("ClubName", name));
+
         }
 
         var token = new JwtSecurityToken(

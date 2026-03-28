@@ -45,6 +45,7 @@ namespace UniTrack.Application.Feature.Notification.Query
 
             result.AddRange(clubNotification.Select(n => new NotificationListResponse
             {
+                Id = n.Id,
                 Title = n.Notification.Title ?? n.Notification.Type.ToString(),
                 Message = n.Notification.Message,
                 LogoUrl = n.Notification.LogoUrl,
@@ -56,10 +57,11 @@ namespace UniTrack.Application.Feature.Notification.Query
 
             result.AddRange(targetNotification.Select(n => new NotificationListResponse
             {
+                Id = n.Id,
                 Title = n.Notification.Title ?? n.Notification.Type.ToString(),
                 Message = n.Notification.Message,
                 LogoUrl = n.Notification.LogoUrl,
-                IsRead = false, // şimdilik
+                IsRead = false, 
                 CreatedAt = n.Notification.CreatedAt,
                 RelatedEntityId = n.Notification.RelatedEntityId,
                 NotificationType = n.Notification.Type

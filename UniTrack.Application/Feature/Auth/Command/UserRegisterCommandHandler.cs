@@ -4,6 +4,7 @@ using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Abstraction.Services.Transaction;
 using UniTrack.Application.Abstraction.Services.UserHub;
+using UniTrack.Application.Abstraction.Services.VerificationCode;
 using UniTrack.Application.Common;
 using UniTrack.Application.Common.Constants;
 using UniTrack.Application.DTOs.Auth;
@@ -20,6 +21,7 @@ namespace UniTrack.Application.Feature.Auth.Command
         private readonly IUserRegisterCountService countService;
         private readonly ILocalizationService localizationService;
         private readonly ITransactionService transactionService;
+        private readonly IVerificationCodeService _verificationCodeService;
 
         public UserRegisterCommandHandler(
             IUserRepository userRepository,
@@ -27,7 +29,8 @@ namespace UniTrack.Application.Feature.Auth.Command
             IUserDetailRepository userDetailRepository,
             IUserRegisterCountService countService,
             ITransactionService transactionService,
-            ILocalizationService localizationService)
+            ILocalizationService localizationService,
+            IVerificationCodeService verificationCodeService)
         {
             this.userRepository = userRepository;
             this.passwordHash = passwordHash;
@@ -35,6 +38,7 @@ namespace UniTrack.Application.Feature.Auth.Command
             this.countService = countService;
             this.localizationService = localizationService;
             this.transactionService = transactionService;
+            this._verificationCodeService = verificationCodeService;
         }
         public async Task<ServiceResponse<UserRegisterResponseDTO>> Handle(UserRegisterCommand request, CancellationToken cancellationToken)
         {
@@ -85,6 +89,7 @@ namespace UniTrack.Application.Feature.Auth.Command
                 await countService.NotifyUserCountUpdatedAsync();
 
                 transactionService.Commit();
+                await _verificationCodeService.GenerateAndSendCodeAsync(request.Email, VerificationType.UserRegistration);
 
                 return new ServiceResponse<UserRegisterResponseDTO>
                 {

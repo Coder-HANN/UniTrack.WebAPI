@@ -56,6 +56,7 @@ namespace UniTrack.Application.Feature.Notification.Query
                 .Where(n => n.Notification != null)
                 .Select(n => new NotificationListResponse
             {
+                Id = n.Id,
                 Title = n.Notification.Title ?? n.Notification.Type.ToString(),
                 Message = n.Notification.Message,
                 LogoUrl = n.Notification.LogoUrl,
@@ -67,6 +68,7 @@ namespace UniTrack.Application.Feature.Notification.Query
 
             result.AddRange(targetNotifications.Select(n => new NotificationListResponse
             {
+                Id=n.Id,
                 Title = n.Notification.Title ?? n.Notification.Type.ToString(),
                 Message = n.Notification.Message,
                 LogoUrl = n.Notification.LogoUrl,

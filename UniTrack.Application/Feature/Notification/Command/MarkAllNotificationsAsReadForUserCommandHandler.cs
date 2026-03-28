@@ -7,31 +7,32 @@ using UniTrack.Application.Common.Constants;
 
 namespace UniTrack.Application.Feature.Notification.Command
 {
-    public class MarkAllClubNotificaitonAsReadCommandHandler : IRequestHandler<MarkAllNotificationsAsReadCommand, ServiceResponse<string>>
+    internal class MarkAllNotificationsAsReadForUserCommandHandler : IRequestHandler<MarkAllNotificationsAsReadForUserCommand, ServiceResponse<string>>
     {
-        private readonly ILocalizationService localizationService;
         private readonly ICurrentUserServices currentUserServices;
-        private readonly IClubNotificationRepository clubNotificationRepository;
-        public MarkAllClubNotificaitonAsReadCommandHandler(
-            ILocalizationService localizationService,
+        private readonly ILocalizationService localizationService;
+        private readonly IUserNotificationRepository userNotificationRepository;
+
+        public MarkAllNotificationsAsReadForUserCommandHandler(
             ICurrentUserServices currentUserServices,
-            IClubNotificationRepository clubNotificationRepository)
+            ILocalizationService localizationService,
+            IUserNotificationRepository userNotificationRepository)
         {
-            this.localizationService = localizationService;
             this.currentUserServices = currentUserServices;
-            this.clubNotificationRepository = clubNotificationRepository;
+            this.localizationService = localizationService;
+            this.userNotificationRepository = userNotificationRepository;
         }
 
-        public async Task<ServiceResponse<string>> Handle(MarkAllNotificationsAsReadCommand request, CancellationToken cancellationToken)
+        public async Task<ServiceResponse<string>> Handle(MarkAllNotificationsAsReadForUserCommand request, CancellationToken cancellationToken)
         {
-            var clubId = currentUserServices.CurrentClub();
+            var userId = currentUserServices.CurrentUser();
 
-            if (clubId == null)
+            if (userId == null)
             {
                 return ServiceResponse<string>.Fail(await localizationService.Get(ValidationKeys.NotAuthorized));
             }
 
-            bool isSuccess = await clubNotificationRepository.MarkAllAsReadAsync(clubId);
+            bool isSuccess = await userNotificationRepository.MarkAllAsReadAsync(userId);
 
             if (!isSuccess)
             {

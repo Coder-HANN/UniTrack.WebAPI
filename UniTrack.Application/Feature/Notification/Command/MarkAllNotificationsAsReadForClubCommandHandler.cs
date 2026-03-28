@@ -7,13 +7,13 @@ using UniTrack.Application.Common.Constants;
 
 namespace UniTrack.Application.Feature.Notification.Command
 {
-    public class MarkAllNotificationsAsReadCommandHandler : IRequestHandler<MarkAllNotificationsAsReadCommand, ServiceResponse<string>>
+    public class MarkAllNotificationsAsReadForClubCommandHandler : IRequestHandler<MarkAllNotificationsAsReadForClubCommand, ServiceResponse<string>>
     {
         private readonly ICurrentUserServices currentUserServices;
         private readonly ILocalizationService localizationService;
         private readonly IUserNotificationRepository userNotificationRepository;
         
-        public MarkAllNotificationsAsReadCommandHandler(
+        public MarkAllNotificationsAsReadForClubCommandHandler(
             ICurrentUserServices currentUserServices,
             ILocalizationService localizationService,
             IUserNotificationRepository userNotificationRepository)
@@ -23,7 +23,7 @@ namespace UniTrack.Application.Feature.Notification.Command
             this.userNotificationRepository = userNotificationRepository;
         }
 
-        public async Task<ServiceResponse<string>> Handle(MarkAllNotificationsAsReadCommand request, CancellationToken cancellationToken)
+        public async Task<ServiceResponse<string>> Handle(MarkAllNotificationsAsReadForClubCommand request, CancellationToken cancellationToken)
         {
             var userId = currentUserServices.CurrentUser();
 

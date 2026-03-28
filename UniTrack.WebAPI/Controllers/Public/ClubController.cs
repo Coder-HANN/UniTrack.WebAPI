@@ -41,7 +41,7 @@ namespace UniTrack.WebAPI.Controllers.Public
         }
 
         [HttpPost("ClubFollower")]
-        public async Task<ServiceResponse<string>> ClubFollower([FromBody]  FollowClubCommand command)
+        public async Task<ServiceResponse<string>> ClubFollower([FromBody] FollowClubCommand command)
         {
             return await mediator.Send(command);
         }
@@ -90,6 +90,12 @@ namespace UniTrack.WebAPI.Controllers.Public
 
         [HttpGet("GetClubDetail")]
         public async Task<ServiceResponse<GetClubDetailResponseDTO>> GetClubDetail([FromQuery] GetClubDetailQuery query)
+        {
+            return await mediator.Send(query);
+        }
+
+        [HttpGet("GetAllClubForGuest")]
+        public async Task<ServiceResponse<IPagingExecutionResult<GetAllClubForGuestQueryResponseDTO>>> GetAllClubForGuest([FromQuery] GetAllClubForGuestQuery query)
         {
             return await mediator.Send(query);
         }

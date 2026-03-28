@@ -25,13 +25,13 @@ namespace UniTrack.WebAPI.Controllers.Club
         }
 
         [HttpPost("ClubNotificationRead")]
-        public Task<ServiceResponse<string>> ClubNotificationRead([FromBody] MarkNotificationAsReadCommand command)
+        public Task<ServiceResponse<string>> ClubNotificationRead([FromBody] MarkClubNotificationAsReadCommand command)
         {
             return mediator.Send(command);
         }
 
         [HttpPost("ClubReadAllNotification")]
-        public Task<ServiceResponse<string>> ClubReadAllNotification([FromBody] MarkAllNotificationsAsReadCommand command)
+        public Task<ServiceResponse<string>> ClubReadAllNotification([FromBody] MarkAllNotificationsAsReadForClubCommand command)
         {
             return mediator.Send(command);
         }

@@ -4,6 +4,7 @@ namespace UniTrack.Application.DTOs.Notification
 {
     public class NotificationListResponse
     {
+        public Guid Id { get; set; }
         public string Title { get; set; }
         public string Message { get; set; }
         public string? LogoUrl { get; set; }

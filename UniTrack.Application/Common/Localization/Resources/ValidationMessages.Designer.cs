@@ -736,6 +736,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalide request..
+        /// </summary>
+        internal static string InvalideRequest {
+            get {
+                return ResourceManager.GetString("InvalideRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The code is invalid or has expired..
         /// </summary>
         internal static string InvalidOrExpiredCode {
@@ -1114,6 +1123,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User already verified.
+        /// </summary>
+        internal static string UserAlreadyVerified {
+            get {
+                return ResourceManager.GetString("UserAlreadyVerified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The user must follow the club..
         /// </summary>
         internal static string UserMustFollowClub {
@@ -1155,6 +1173,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         internal static string UserRegisterSuccess {
             get {
                 return ResourceManager.GetString("UserRegisterSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User verified success.
+        /// </summary>
+        internal static string UserVerifiedSuccess {
+            get {
+                return ResourceManager.GetString("UserVerifiedSuccess", resourceCulture);
             }
         }
         

@@ -62,9 +62,9 @@ namespace UniTrack.Persistence.Repositories
                 .ToListAsync();
         }
 
-        public Task<Club> GetByEmailAndVerifyAsync(string presidentEmail)
+        public Task<Club> GetByEmailAndVerifyAsync(string ContectEmail)
         {
-           return dbSet.FirstOrDefaultAsync(c => c.PresidentMail == presidentEmail && c.IsVerified == true);
+           return dbSet.FirstOrDefaultAsync(c => c.ContectEmail == ContectEmail  && c.IsVerified == true);
         }
 
         public Task<Club> GetByEmailAsync(string email)

@@ -342,6 +342,9 @@
   <data name="InvalidEmailOrPassword" xml:space="preserve">
     <value>Invalid email or password</value>
   </data>
+  <data name="InvalideRequest" xml:space="preserve">
+    <value>Invalide request.</value>
+  </data>
   <data name="InvalidOrExpiredCode" xml:space="preserve">
     <value>The code is invalid or has expired.</value>
   </data>
@@ -468,6 +471,9 @@
   <data name="UpdateTitleInvalid" xml:space="preserve">
     <value>Title must be between 3 and 150 characters</value>
   </data>
+  <data name="UserAlreadyVerified" xml:space="preserve">
+    <value>User already verified</value>
+  </data>
   <data name="UserMustFollowClub" xml:space="preserve">
     <value>The user must follow the club.</value>
   </data>
@@ -482,6 +488,9 @@
   </data>
   <data name="UserRegisterSuccess" xml:space="preserve">
     <value>Account has been created successfully</value>
+  </data>
+  <data name="UserVerifiedSuccess" xml:space="preserve">
+    <value>User verified success</value>
   </data>
   <data name="VerificationCodeInvalidOrExpired" xml:space="preserve">
     <value>The code is invalid or has expired.</value>

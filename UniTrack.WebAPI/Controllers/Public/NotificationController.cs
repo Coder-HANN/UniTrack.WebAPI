@@ -22,13 +22,13 @@ namespace UniTrack.WebAPI.Controllers.Public
 
 
         [HttpPost("UserNotificationRead")]
-        public async Task<ServiceResponse<string>> UserNotificationRead([FromBody] MarkNotificationAsReadCommand command)
+        public async Task<ServiceResponse<string>> UserNotificationRead([FromBody] MarkUserNotificationAsReadCommand command)
         {
             return await mediator.Send(command);
         }
 
         [HttpPost("UserReadAllNotification")]
-        public async Task<ServiceResponse<string>> UserReadAllNotification([FromBody] MarkAllNotificationsAsReadCommand command)
+        public async Task<ServiceResponse<string>> UserReadAllNotification([FromBody] MarkAllNotificationsAsReadForUserCommand command)
         {
             return await mediator.Send(command);
         }

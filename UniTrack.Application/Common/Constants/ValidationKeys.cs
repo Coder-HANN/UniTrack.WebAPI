@@ -185,5 +185,10 @@
         internal static string GoogleSheetCreationFailed = "GoogleSheetCreationFailed";
         internal static string EventCreationFailed = "EventCreationFailed";
         internal static string EventTimeInvalied = "EventTimeInvalied";
+
+        public static string UserAlreadyVerified = "UserAlreadyVerified";
+
+        public static string InvalidRequest = "InvalidRequest";
+        internal static string UserVerifiedSuccess = "UserVerifiedSuccess";
     }
 }

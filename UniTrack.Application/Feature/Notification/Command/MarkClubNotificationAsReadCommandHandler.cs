@@ -7,7 +7,7 @@ using UniTrack.Application.Common.Constants;
 
 namespace UniTrack.Application.Feature.Notification.Command
 {
-    public class MarkClubNotificationAsReadCommandHandler : IRequestHandler<MarkNotificationAsReadCommand, ServiceResponse<string>>
+    public class MarkClubNotificationAsReadCommandHandler : IRequestHandler<MarkClubNotificationAsReadCommand, ServiceResponse<string>>
     {
         private readonly IClubNotificationRepository clubNotificationRepository;
         private readonly ICurrentUserServices currentUserServices;
@@ -23,7 +23,7 @@ namespace UniTrack.Application.Feature.Notification.Command
             this.clubNotificationRepository = clubNotificationRepository;
         }
         // Bildirimleri okundu işaretle
-        public async Task<ServiceResponse<string>> Handle(MarkNotificationAsReadCommand request, CancellationToken cancellationToken)
+        public async Task<ServiceResponse<string>> Handle(MarkClubNotificationAsReadCommand request, CancellationToken cancellationToken)
         {
             var clubId = currentUserServices.CurrentClub();
 

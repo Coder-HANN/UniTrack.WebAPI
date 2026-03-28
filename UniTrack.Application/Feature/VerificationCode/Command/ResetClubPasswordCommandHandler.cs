@@ -13,7 +13,7 @@ namespace UniTrack.Application.Feature.VerificationCode.Command
     {
         private readonly IClubRepository _clubRepository;
         private readonly IVerificationCodeService _codeService;
-        private readonly IPasswordHasher<Domain.Entities.Club> _passwordHasher; // <User> yerine <Club>
+        private readonly IPasswordHasher<Domain.Entities.Club> _passwordHasher;
         private readonly ILocalizationService localizationService;
 
         public ResetClubPasswordCommandHandler(

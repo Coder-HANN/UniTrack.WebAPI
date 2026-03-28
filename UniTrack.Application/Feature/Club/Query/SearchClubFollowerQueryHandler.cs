@@ -35,7 +35,7 @@ namespace UniTrack.Application.Feature.Club.Query
 
             var result = followers.Select(f => new ClubFollowerSearchResponseDTO
             {
-                UserDetailId = f.User.UserDetail.Id,
+                UserId = f.User.Id,
                 FullName = $"{f.User.UserDetail.Name} {f.User.UserDetail.Surname}",
                 ProfileImageUrl = f.User.UserDetail.ProfileImageUrl,
                 Mail = f.User.Email

@@ -40,7 +40,7 @@ namespace UniTrack.Application.Feature.Auth.Command
                 return ServiceResponse<ClubRegisterResponseDTO>.Fail(await localizationService.Get(ValidationKeys.PresidentEmailRequired));
             }
 
-            var existingClub =await clubRepository.GetByEmailAndVerifyAsync(request.PresidentEmail);
+            var existingClub =await clubRepository.GetByEmailAndVerifyAsync(request.ContactEmail);
 
             if (existingClub != null)
             {
