@@ -23,5 +23,7 @@ namespace UniTrack.Application.Feature.Profile.Command
         public string? CoverImageUrl { get; set; }
         public Tag? Tag { get; set; }
         public DateOnly? ClubCreatedDate { get; set; }
+        public string? NowPassword { get; set; }
+        public string? Password { get; set; }
     }
 }

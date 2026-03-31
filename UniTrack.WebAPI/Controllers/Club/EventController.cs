@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using UniTrack.Application.Common;
 using UniTrack.Application.DTOs.Event;
+using UniTrack.Application.DTOs.Profile;
 using UniTrack.Application.Feature.Event.Command;
 using UniTrack.Application.Feature.Event.Query;
 using UniTrack.Application.Feature.EventImage.Command;
@@ -77,6 +78,12 @@ namespace UniTrack.WebAPI.Controllers.Club
         public async Task<ServiceResponse<List<ClubEventReportResponseDTO>>> GetClubEventReport([FromQuery] GetClubEventReportQuery query)
         {
             return await mediator.Send(query);
+        }
+
+        [HttpPost("UploadEventImage")]
+        public async Task<ServiceResponse<UploadProfileImageResponseDTO>> UploadEventImage([FromBody] UploadEventImageCommand command)
+        {
+            return await mediator.Send(command);
         }
     }
 }

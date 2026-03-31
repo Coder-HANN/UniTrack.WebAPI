@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Google.Apis.Auth.OAuth2;
+using Google.Apis.Sheets.v4;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
@@ -12,6 +14,8 @@ using UniTrack.Application.Abstraction.Services.Logger;
 using UniTrack.Application.Abstraction.Services.Mail;
 using UniTrack.Application.Abstraction.Services.MemoryCach;
 using UniTrack.Application.Abstraction.Services.Notification;
+using UniTrack.Application.Abstraction.Services.QrCode;
+using UniTrack.Application.Abstraction.Services.Sheets;
 using UniTrack.Application.Abstraction.Services.Storage;
 using UniTrack.Application.Abstraction.Services.Transaction;
 using UniTrack.Application.Abstraction.Services.UserHub;
@@ -21,11 +25,14 @@ using UniTrack.Domain.Entities;
 using UniTrack.Infrastructure.Localization;
 using UniTrack.Infrastructure.Services;
 using UniTrack.Infrastructure.Services.Background;
+using UniTrack.Infrastructure.Services.QrCode;
 using UniTrack.Infrastructure.Services.Sheets;
+using UniTrack.Infrastructure.Services.Storage;
 using UniTrack.Persistence.Context;
 using UniTrack.Persistence.Repositories;
 using UniTrack.WebAPI.Extensions;
 using UniTrack.WebAPI.Middleware;
+using Microsoft.Extensions.FileProviders;
 
 // 1. Claim isimlerinin bozulmaması için bu satır EN TEPEDE kalmalı
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
@@ -73,7 +80,9 @@ builder.Services.AddScoped<IEventQuestionRepository, EventQuestionEntityReposito
 
 // Redis Bağlantısı (Singleton olması performans için iyidir)
 builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
-    ConnectionMultiplexer.Connect("localhost:6379"));
+    ConnectionMultiplexer.Connect(
+        configuration.GetValue<string>("Redis:Connection") ?? "localhost:6379"
+    ));
 
 // Producer Servisi
 builder.Services.AddScoped<INotificationService, NotificationService>();
@@ -94,7 +103,7 @@ builder.Services.AddScoped<IClubTeamRepository, ClubTeamRepository>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<ILikeRepository, LikeRepository>();
-builder.Services.AddScoped<IStorageService, FakeStorageService>();
+builder.Services.AddScoped<IStorageService, LocalStorageService>();
 builder.Services.AddScoped<IUserNotificationRepository, UserNotificationRepository>();
 builder.Services.AddScoped<IClubNotificationRepository, ClubNotificationRepository>();
 builder.Services.AddScoped<ITargetNotificationCityRepository, TargetNotificationCityRepository>();
@@ -112,7 +121,43 @@ builder.Services.AddScoped<IMailNotificationService, MailNotificationService>();
 builder.Services.AddHostedService<EventTimeUpdateBackgroundService>();
 
 builder.Services.AddHostedService<MailWorker>();
+// Google Sheets servisleri
+// Google credential ve servislerini kaydedin
+builder.Services.AddSingleton<GoogleCredential>(sp =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    var keyPath = config["GoogleSheets:ServiceAccountJsonPath"];
+    return GoogleCredential
+        .FromFile(keyPath)
+        .CreateScoped(
+            SheetsService.Scope.Spreadsheets,
+            Google.Apis.Drive.v3.DriveService.Scope.Drive
+        );
+});
 
+builder.Services.AddSingleton<SheetsService>(sp =>
+{
+    var credential = sp.GetRequiredService<GoogleCredential>();
+    return new SheetsService(new Google.Apis.Services.BaseClientService.Initializer
+    {
+        HttpClientInitializer = credential,
+        ApplicationName = "UniTrack CampusConnect App"
+    });
+});
+
+builder.Services.AddSingleton<Google.Apis.Drive.v3.DriveService>(sp =>
+{
+    var credential = sp.GetRequiredService<GoogleCredential>();
+    return new Google.Apis.Drive.v3.DriveService(new Google.Apis.Services.BaseClientService.Initializer
+    {
+        HttpClientInitializer = credential,
+        ApplicationName = "UniTrack CampusConnect App"
+    });
+});
+
+builder.Services.AddScoped<IGoogleSheetCreationService, GoogleSheetCreationService>();
+builder.Services.AddScoped<IParticipantSheetRepository, ParticipantSheetRepository>();
+builder.Services.AddScoped<IQrCodeService, QrCodeService>();
 builder.Services.AddScoped<IEventQuestionAnswerRepository, EventQuestionAnswerEntityRepository>();
 
 
@@ -148,6 +193,8 @@ builder.Services.AddSwaggerDocumentation();
 
 var app = builder.Build();
 
+
+
 // Seed Data
 await using (var scope = app.Services.CreateAsyncScope())
 {
@@ -179,7 +226,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerDocumentation();
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 var supportedCultures = new[] { "tr-TR", "en-US" };
 
@@ -191,11 +241,19 @@ var localizationOptions = new RequestLocalizationOptions
 };
 
 app.UseRequestLocalization(localizationOptions);
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider("C:\\UniTrack-Storage"),
+    RequestPath = "/storage"
+});
+
+
 
 // 🔥 ROUTING MUTLAKA BURADA OLMALI
 app.UseRouting();
 
 app.UseCors("DevCors");
+
 // 🔐 AUTH
 app.UseAuthentication();
 app.UseAuthorization();

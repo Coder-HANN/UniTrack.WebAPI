@@ -44,9 +44,8 @@ namespace UniTrack.Application.Feature.Auth.Command
         {
             transactionService.Begin();
 
-            
                 var mail = await userRepository.GetByEmailAsync(request.Email);
-                if (mail != null)
+                if (mail != null && mail.IsVerified == true)
                 {
                     return new ServiceResponse<UserRegisterResponseDTO>
                     {
@@ -90,6 +89,7 @@ namespace UniTrack.Application.Feature.Auth.Command
 
                 transactionService.Commit();
                 await _verificationCodeService.GenerateAndSendCodeAsync(request.Email, VerificationType.UserRegistration);
+                
 
                 return new ServiceResponse<UserRegisterResponseDTO>
                 {

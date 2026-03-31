@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Identity;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
 using UniTrack.Application.Abstraction.Services.Localization;
@@ -15,17 +16,20 @@ namespace UniTrack.Application.Feature.Profile.Command
         private readonly IClubRepository _clubRepository;
         private readonly IUserRepository _userRepository;
         private readonly ILocalizationService _localizationService;
+        private readonly IPasswordHasher<Domain.Entities.Club> _passwordHasher;
 
         public ClubProfileUpdateCommandHandler(
             ICurrentUserServices currentUserServices,
             IClubRepository clubRepository,
             IUserRepository userRepository,
-            ILocalizationService localizationService)
+            ILocalizationService localizationService,
+            IPasswordHasher<Domain.Entities.Club> passwordHasher)
         {
             _currentUserServices = currentUserServices;
             _clubRepository = clubRepository;
             _userRepository = userRepository;
             _localizationService = localizationService;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<ServiceResponse<ClubProfileUpdateResponseDTO>> Handle(ClubProfileUpdateCommand request, CancellationToken cancellationToken)
@@ -177,6 +181,36 @@ namespace UniTrack.Application.Feature.Profile.Command
                     null
                 );
             }
+
+            // Şifre değişikliği
+            var hasNowPassword = !string.IsNullOrWhiteSpace(request.NowPassword);
+            var hasNewPassword = !string.IsNullOrWhiteSpace(request.Password);
+
+            if (!hasNowPassword && hasNewPassword)
+                return ServiceResponse<ClubProfileUpdateResponseDTO>.Fail(
+                    await _localizationService.Get(ValidationKeys.CurrentPasswordRequired));
+
+            if (hasNowPassword && !hasNewPassword)
+                return ServiceResponse<ClubProfileUpdateResponseDTO>.Fail(
+                    await _localizationService.Get(ValidationKeys.NewPasswordRequired));
+
+            if (hasNowPassword && hasNewPassword)
+            {
+                var verification = _passwordHasher.VerifyHashedPassword(existingClub, existingClub.Password, request.NowPassword!);
+                if (verification == PasswordVerificationResult.Failed)
+                    return ServiceResponse<ClubProfileUpdateResponseDTO>.Fail(
+                        await _localizationService.Get(ValidationKeys.CurrentPasswordIncorrect));
+
+                var isSame = _passwordHasher.VerifyHashedPassword(existingClub, existingClub.Password, request.Password!);
+                if (isSame == PasswordVerificationResult.Success)
+                    return ServiceResponse<ClubProfileUpdateResponseDTO>.Fail(
+                        await _localizationService.Get(ValidationKeys.NewPasswordCannotBeSameAsOld));
+
+                existingClub.Password = _passwordHasher.HashPassword(existingClub, request.Password!);
+                isUpdated = true;
+            }
+            DateTime now = DateTime.UtcNow;
+            existingClub.UpdatedDate = now;
 
             await _clubRepository.UpdateAsync(existingClub);
 

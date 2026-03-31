@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -22,6 +23,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ServiceResponse
     private readonly IPasswordHasher<Club> clubPasswordHasher;
     private readonly IConfiguration configuration;
     private readonly ILocalizationService localizationService;
+    private readonly IHttpContextAccessor httpContextAccessor;
 
     public LoginCommandHandler(
         IUserRepository userRepository,
@@ -29,7 +31,8 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ServiceResponse
         IPasswordHasher<User> userPasswordHasher,
         IPasswordHasher<Club> clubPasswordHasher,
         IConfiguration configuration,
-        ILocalizationService localizationService)
+        ILocalizationService localizationService,
+        IHttpContextAccessor httpContextAccessor)
     {
         this.userRepository = userRepository;
         this.clubRepository = clubRepository;
@@ -37,11 +40,12 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ServiceResponse
         this.clubPasswordHasher = clubPasswordHasher;
         this.configuration = configuration;
         this.localizationService = localizationService;
+        this.httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<ServiceResponse<LoginResponseDTO>> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        // 1. USER KONTROLÜ
+        // 1. USER
         var user = await userRepository.GetByEmailAsync(request.Email);
         if (user != null && user.Role == Role.User)
         {
@@ -52,20 +56,34 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ServiceResponse
                 string surname = user.UserDetail?.Surname ?? "";
                 var token = GenerateJwtToken(user.Id, Role.User, user.Email, name, surname);
 
-                user.LastLoginDate = DateTime.UtcNow;
+                SetTokenCookie(token, 5);
 
+                user.LastLoginDate = DateTime.UtcNow;
                 await userRepository.UpdateAsync(user);
 
                 return new ServiceResponse<LoginResponseDTO>
                 {
                     IsSuccess = true,
-                    Data = new LoginResponseDTO { Token = token, Expiration = DateTime.UtcNow.AddHours(5) },
+                    Data = new LoginResponseDTO
+                    {
+
+                        Expiration = DateTime.UtcNow.AddHours(5),
+                        Role = Role.User.ToString().ToLower(),
+                        UserId = user.Id.ToString(),
+                        FullName = $"{name} {surname}".Trim(),
+                        Email = user.Email,
+                        UniversityId = user.UserDetail.UniverstiyId.ToString(),
+                        CityId = user.UserDetail.CityId,
+                        DepartmentId = user.UserDetail.DepartmentId,
+                        Gender = user.UserDetail.Gender != null ? (int)user.UserDetail.Gender : null
+
+                    },
                     Message = await localizationService.Get(ValidationKeys.LoginSuccess)
                 };
             }
         }
 
-        // 2. CLUB KONTROLÜ
+        // 2. CLUB
         var club = await clubRepository.GetByEmailAsync(request.Email);
         if (club != null && club.Role == Role.Club)
         {
@@ -74,19 +92,28 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ServiceResponse
             {
                 var token = GenerateJwtToken(club.Id, Role.Club, club.ContectEmail, name: club.Name);
 
+                SetTokenCookie(token, 5);
+
                 club.LastLoginDate = DateTime.UtcNow;
                 await clubRepository.UpdateAsync(club);
 
                 return new ServiceResponse<LoginResponseDTO>
                 {
                     IsSuccess = true,
-                    Data = new LoginResponseDTO { Token = token, Expiration = DateTime.UtcNow.AddHours(5) },
+                    Data = new LoginResponseDTO
+                    {
+                        Expiration = DateTime.UtcNow.AddHours(5),
+                        Role = Role.Club.ToString().ToLower(),
+                        ClubId = club.Id.ToString(),
+                        FullName = club.Name,
+                        Email = club.ContectEmail
+                    },
                     Message = await localizationService.Get(ValidationKeys.LoginSuccess)
                 };
             }
         }
 
-        // 3. ADMIN KONTROLÜ
+        // 3. ADMIN
         if (user != null && user.Role == Role.Admin)
         {
             var result = userPasswordHasher.VerifyHashedPassword(user, user.Password, request.Password);
@@ -95,22 +122,45 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ServiceResponse
                 string name = user.UserDetail?.Name ?? "Admin";
                 var token = GenerateJwtToken(user.Id, Role.Admin, user.Email, name);
 
+                SetTokenCookie(token, 1);
+
                 return new ServiceResponse<LoginResponseDTO>
                 {
                     IsSuccess = true,
-                    Data = new LoginResponseDTO { Token = token, Expiration = DateTime.UtcNow.AddHours(1) },
+                    Data = new LoginResponseDTO
+                    {
+                        Expiration = DateTime.UtcNow.AddHours(1),
+                        Role = Role.Admin.ToString().ToLower(),
+                        UserId = user.Id.ToString(),
+                        FullName = name,
+                        Email = user.Email
+                    },
                     Message = await localizationService.Get(ValidationKeys.LoginSuccess)
                 };
             }
         }
 
-        return new ServiceResponse<LoginResponseDTO> { IsSuccess = false, Message = await localizationService.Get(ValidationKeys.InvalidEmailOrPassword) };
+        return new ServiceResponse<LoginResponseDTO>
+        {
+            IsSuccess = false,
+            Message = await localizationService.Get(ValidationKeys.InvalidEmailOrPassword)
+        };
+    }
+
+    private void SetTokenCookie(string token, int hours)
+    {
+        httpContextAccessor.HttpContext?.Response.Cookies.Append("auth_token", token, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Strict,
+            Expires = DateTime.UtcNow.AddHours(hours)
+        });
     }
 
     private string GenerateJwtToken(Guid id, Role role, string email, string name = "", string surname = "")
     {
         var jwtSettings = configuration.GetSection("Jwt");
-       
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -132,7 +182,6 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ServiceResponse
         {
             claims.Add(new Claim("clubId", id.ToString()));
             if (!string.IsNullOrEmpty(name)) claims.Add(new Claim("ClubName", name));
-
         }
 
         var token = new JwtSecurityToken(

@@ -12,34 +12,37 @@ namespace UniTrack.Application.Abstraction.Services.Logger
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
-            var columnOptions = new ColumnOptions();
-
-            // Standart sütunlardan 'Properties' XML/JSON karmaşasını temizlemek isterseniz:
-            // columnOptions.Store.Remove(StandardColumn.Properties); 
-
-            // Özel Sütunları Tanımlıyoruz (SQL Tablosuyla birebir aynı olmalı)
-            columnOptions.AdditionalColumns = new Collection<SqlColumn>
+            // connectionString boşsa sadece Console'a yaz, uygulama çökmesin
+            if (string.IsNullOrEmpty(connectionString))
             {
-                new SqlColumn { ColumnName = "Name", PropertyName = "Name", DataType = SqlDbType.NVarChar, DataLength = 255, AllowNull = true },
-                new SqlColumn { ColumnName = "UserId", PropertyName = "UserId", DataType = SqlDbType.NVarChar, DataLength = 100, AllowNull = true },
-                new SqlColumn { ColumnName = "ClientIp", PropertyName = "ClientIp", DataType = SqlDbType.NVarChar, DataLength = 50, AllowNull = true },
-                new SqlColumn { ColumnName = "Device", PropertyName = "Device", DataType = SqlDbType.NVarChar, DataLength = 500, AllowNull = true },
-                new SqlColumn { ColumnName = "AuditStatus", PropertyName = "AuditStatus", DataType = SqlDbType.NVarChar, DataLength = 50, AllowNull = true }
-            };
+                Logger = new LoggerConfiguration()
+                    .Enrich.FromLogContext()
+                    .CreateLogger();
+                return;
+            }
+
+            var columnOptions = new ColumnOptions();
+            columnOptions.AdditionalColumns = new Collection<SqlColumn>
+    {
+        new SqlColumn { ColumnName = "Name", PropertyName = "Name", DataType = SqlDbType.NVarChar, DataLength = 255, AllowNull = true },
+        new SqlColumn { ColumnName = "UserId", PropertyName = "UserId", DataType = SqlDbType.NVarChar, DataLength = 100, AllowNull = true },
+        new SqlColumn { ColumnName = "ClientIp", PropertyName = "ClientIp", DataType = SqlDbType.NVarChar, DataLength = 50, AllowNull = true },
+        new SqlColumn { ColumnName = "Device", PropertyName = "Device", DataType = SqlDbType.NVarChar, DataLength = 500, AllowNull = true },
+        new SqlColumn { ColumnName = "AuditStatus", PropertyName = "AuditStatus", DataType = SqlDbType.NVarChar, DataLength = 50, AllowNull = true }
+    };
 
             Logger = new LoggerConfiguration()
-                .Enrich.FromLogContext() // Context'ten veri çekebilmek için kritik
+                .Enrich.FromLogContext()
                 .WriteTo.MSSqlServer(
                     connectionString: connectionString,
                     sinkOptions: new MSSqlServerSinkOptions
                     {
                         TableName = "Logs",
-                        AutoCreateSqlTable = true 
+                        AutoCreateSqlTable = true
                     },
                     columnOptions: columnOptions
                 )
                 .CreateLogger();
-        }
-
-    }
+                    }
+                }
 }

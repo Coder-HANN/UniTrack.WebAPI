@@ -42,7 +42,7 @@ namespace UniTrack.Application.Feature.Auth.Command
 
             var existingClub =await clubRepository.GetByEmailAndVerifyAsync(request.ContactEmail);
 
-            if (existingClub != null)
+            if (existingClub != null && existingClub.IsVerified == true)
             {
                 return ServiceResponse<ClubRegisterResponseDTO>.Fail(await localizationService.Get(ValidationKeys.ClubEmailAlreadyExists));
             }
@@ -70,7 +70,7 @@ namespace UniTrack.Application.Feature.Auth.Command
 
                 await clubRepository.AddAsync(club);
 
-                await codeService.GenerateAndSendCodeAsync(request.PresidentEmail,VerificationType.ClubRegistration);
+                await codeService.GenerateAndSendCodeAsync(request.ContactEmail,VerificationType.ClubRegistration);
 
                 transactionService.Commit();
 

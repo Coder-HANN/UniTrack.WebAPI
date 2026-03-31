@@ -105,5 +105,11 @@ namespace UniTrack.WebAPI.Controllers.Club
         {
             return await mediator.Send(query);
         }
+
+        [HttpPost("UploadClubImage")]
+        public async Task<ServiceResponse<UploadProfileImageResponseDTO>> UploadClubImage([FromBody] UploadClubImageCommand command)
+        {
+            return await mediator.Send(command);
+        }
     }
 }

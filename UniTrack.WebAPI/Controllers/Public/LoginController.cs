@@ -23,6 +23,11 @@ namespace UniTrack.WebAPI.Controllers.Public
             return await mediator.Send(command);
         }
 
-       
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete("auth_token");
+            return Ok();
+        }
     }
 }

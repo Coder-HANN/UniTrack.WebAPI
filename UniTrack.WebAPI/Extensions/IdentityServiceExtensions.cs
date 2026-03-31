@@ -37,6 +37,12 @@ namespace UniTrack.WebAPI.Extensions
                 // --- DEDEKTİF MODU: HATAYI KONSOLA YAZ ---
                 options.Events = new JwtBearerEvents
                 {
+                    OnMessageReceived = context =>
+                    {
+                        // Token'ı Authorization header yerine cookie'den oku
+                        context.Token = context.Request.Cookies["auth_token"];
+                        return Task.CompletedTask;
+                    },
                     OnAuthenticationFailed = context =>
                     {
                         Console.ForegroundColor = ConsoleColor.Red;

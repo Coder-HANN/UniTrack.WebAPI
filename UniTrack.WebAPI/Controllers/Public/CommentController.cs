@@ -55,5 +55,11 @@ namespace UniTrack.WebAPI.Controllers.Public
         {
             return await mediator.Send(query);
         }
+
+        [HttpGet("GetClubRatingById")]
+        public async Task<ServiceResponse<ShowCommentForClubResponseDTO>> GetClubRatingById([FromQuery] GetClubRatingByIdQuery query)
+        {
+            return await mediator.Send(query);
+        }
     }
 }
