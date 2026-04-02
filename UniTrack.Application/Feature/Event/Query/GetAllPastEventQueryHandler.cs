@@ -49,9 +49,19 @@ namespace UniTrack.Application.Feature.Event.Query
 
             var responses = events.Select(e => new GetAllPastEventQueryResponseDTO
             {
+                // 1. Sadece kapak fotoğrafı (Eski kodun aynısı)
                 CoverImageUrl = e.Images?
-                    .OrderBy(i => i.Order)
-                    .FirstOrDefault(i => i.IsCover)?.ImageUrl,
+                     .OrderBy(i => i.Order)
+                     .FirstOrDefault(i => i.IsCover)?.ImageUrl
+                     ?? e.Images?.FirstOrDefault()?.ImageUrl, // Kapak yoksa ilkini al
+
+                // 2. YENİ EKLENEN KISIM: Tüm resimlerin listesi
+                ImageUrls = e.Images?
+                     .OrderBy(i => i.Order)
+                     .Select(i => i.ImageUrl)
+                     .Where(url => !string.IsNullOrWhiteSpace(url))
+                     .ToList() ?? new List<string>(),
+
                 Title = e.Title,
                 Description = e.Description,
                 StartDate = e.StartDate,
@@ -59,7 +69,7 @@ namespace UniTrack.Application.Feature.Event.Query
                 Location = e.Location,
                 Quota = e.Quota,
                 ClubId = e.ClubId,
-                ClubName = e.Club.Name,
+                ClubName = e.Club?.Name ?? "Bilinmeyen Kulüp",
                 EventTag = e.EventTag,
                 Time = e.Time,
                 Status = e.Status,
@@ -97,7 +107,8 @@ namespace UniTrack.Application.Feature.Event.Query
               responses,
               pageSize: request.PageSize,
               pageIndex: request.Page,
-              ordering: q => q.OrderByDescending(x => x.StartDate),
+              // DÜZELTME: Sıralamayı yukarıda manuel yaptık, burada null geçiyoruz ki ezilmesin!
+              ordering: null,
               cancellationToken: cancellationToken
             );
 

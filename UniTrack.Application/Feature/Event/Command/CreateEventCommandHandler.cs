@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using MediatR;
 using StackExchange.Redis;
 using UniTrack.Application.Abstraction.Repositories;
@@ -27,6 +28,7 @@ namespace UniTrack.Application.Feature.Event.Command
         private readonly IStorageService storageService;
         private readonly ILocalizationService localization;
         private readonly ITransactionService transactionService;
+        private readonly IValidator<CreateEventCommand> _validator;
 
         public CreateEventCommandHandler(
             ICurrentUserServices currentUserServices,
@@ -37,7 +39,8 @@ namespace UniTrack.Application.Feature.Event.Command
             IQrCodeService qrCodeService,
             IStorageService storageService,
             ILocalizationService localizationService,
-            ITransactionService transactionService)
+            ITransactionService transactionService,
+            IValidator<CreateEventCommand> validator)
         {
             this.currentUserServices = currentUserServices;
             this.eventRepository = eventRepository;
@@ -48,6 +51,7 @@ namespace UniTrack.Application.Feature.Event.Command
             this.storageService = storageService;
             this.localization = localizationService;
             this.transactionService = transactionService;
+            this._validator = validator;
         }
 
         public async Task<ServiceResponse<CreateEventResponseDTO>> Handle(CreateEventCommand request, CancellationToken cancellationToken)
@@ -60,6 +64,15 @@ namespace UniTrack.Application.Feature.Event.Command
             {
                 return ServiceResponse<CreateEventResponseDTO>.Fail(await localization.Get(ValidationKeys.NotAuthorized));
             }
+
+            var validationResult = await _validator.ValidateAsync(request, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                // Hataları al ve Frontend'e dön
+                var errors = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage));
+                return ServiceResponse<CreateEventResponseDTO>.Fail(errors);
+            }
+
             transactionService.Begin();
             try {
                 

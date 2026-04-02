@@ -69,46 +69,52 @@ namespace UniTrack.Application.Feature.Event.Query
 
             var eventIds = events.Select(e => e.Id).ToList();
 
+            // Etkinliklere ait TÜM resimleri çekiyoruz (IsCover şartı olmadan!)
             var images = await eventImageRepository.GetByEventIdsAsync(eventIds);
 
+            // Resimleri etkinlik Id'sine göre grupluyoruz (Artık IsCover filtresi yapmıyoruz, çünkü tüm resimler lazım)
             var imageLookup = images
-                .Where(i => i.IsCover)
                 .GroupBy(i => i.EventId)
                 .ToDictionary(
                     g => g.Key,
-                    g => g.OrderBy(i => i.Order)
-                          .Select(i => i.ImageUrl)
-                          .ToArray()
+                    g => g.OrderBy(i => i.Order).ToList() // Resimleri sırasına göre listeledik
                 );
 
-            var responses = events.Select(e => new GetAllFeatureEventQueryResponseDTO
+            var responses = events.Select(e =>
             {
-                EventId = e.Id,
-                Title = e.Title,
-                Description = e.Description,
-                StartDate = e.StartDate,
-                CityId = e.CityId,
-                UniversityId = e.UniversityId,
-                Location = e.Location,
-                Quota = e.Quota,
-                ClubId = e.ClubId,
+                // Bu etkinliğe ait resimleri sözlükten (dictionary) güvenli bir şekilde al
+                var eventImages = imageLookup.TryGetValue(e.Id, out var imgs) ? imgs : new List<Domain.Entities.EventImage>();
 
-                // FIX 2: ClubName'i takip listesinden değil, doğrudan Club navigation property'den al
-                // GetFeatureEventsAsync() içinde .Include(e => e.Club) olmalı
-                ClubName = e.Club?.Name ?? "Bilinmeyen Kulüp",
+                return new GetAllFeatureEventQueryResponseDTO
+                {
+                    EventId = e.Id,
+                    Title = e.Title,
+                    Description = e.Description,
+                    StartDate = e.StartDate,
+                    CityId = e.CityId,
+                    UniversityId = e.UniversityId,
+                    Location = e.Location,
+                    Quota = e.Quota,
+                    ClubId = e.ClubId,
+                    ClubName = e.Club?.Name ?? "Bilinmeyen Kulüp",
+                    EventTag = e.EventTag,
+                    Time = e.Time,
+                    Status = e.Status,
 
-                EventTag = e.EventTag,
-                Time = e.Time,
-                Status = e.Status,
-                CoverImageUrls = imageLookup.TryGetValue(e.Id, out var urls)
-                    ? urls
-                    : Array.Empty<string>(),
-                IsJoin = userId.HasValue && e.EventUsers.Any()
-                    ? e.EventUsers.Any(eu => eu.UserId == userId.Value && eu.IsJoined)
-                    : false,
-                Rate = e.EventUsers.Count > 0
-                    ? ((float)e.EventUsers.Count(eu => eu.IsJoined) / e.Quota) * 100
-                    : 0
+                    // 1. Kapak Fotoğrafını Ayarla: IsCover true olanın URL'sini al, yoksa ilk resmi al, o da yoksa null bırak
+                    CoverImageUrl = eventImages.FirstOrDefault(i => i.IsCover)?.ImageUrl
+                                    ?? eventImages.FirstOrDefault()?.ImageUrl,
+
+                    // 2. Tüm Resimleri Ayarla: Sadece URL'leri seç ve string listesine çevir
+                    ImageUrls = eventImages.Select(i => i.ImageUrl).Where(url => !string.IsNullOrWhiteSpace(url)).ToList(),
+
+                    IsJoin = userId.HasValue && e.EventUsers.Any()
+                        ? e.EventUsers.Any(eu => eu.UserId == userId.Value && eu.IsJoined)
+                        : false,
+                    Rate = e.EventUsers.Count > 0
+                        ? ((float)e.EventUsers.Count(eu => eu.IsJoined) / e.Quota) * 100
+                        : 0
+                };
             }).ToList();
 
             // FIX 3: Sıralama tek yerde yapılıyor, GetPagedResult'a ordering verilmiyor

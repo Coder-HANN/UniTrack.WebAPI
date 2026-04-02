@@ -1,8 +1,10 @@
-﻿using Google.Apis.Auth.OAuth2;
+﻿using FluentValidation;
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Sheets.v4;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using StackExchange.Redis;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
@@ -32,7 +34,6 @@ using UniTrack.Persistence.Context;
 using UniTrack.Persistence.Repositories;
 using UniTrack.WebAPI.Extensions;
 using UniTrack.WebAPI.Middleware;
-using Microsoft.Extensions.FileProviders;
 
 // 1. Claim isimlerinin bozulmaması için bu satır EN TEPEDE kalmalı
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
@@ -160,6 +161,7 @@ builder.Services.AddScoped<IParticipantSheetRepository, ParticipantSheetReposito
 builder.Services.AddScoped<IQrCodeService, QrCodeService>();
 builder.Services.AddScoped<IEventQuestionAnswerRepository, EventQuestionAnswerEntityRepository>();
 
+builder.Services.AddValidatorsFromAssembly(typeof(UniTrack.Application.Feature.Event.Command.CreateEventCommandValidator).Assembly);
 
 builder.Services.AddSignalR();
 
@@ -199,6 +201,9 @@ var app = builder.Build();
 await using (var scope = app.Services.CreateAsyncScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<UniTrackDbContext>();
+
+    await dbContext.Database.MigrateAsync();
+
     var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
     var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher<User>>();
 
@@ -241,9 +246,24 @@ var localizationOptions = new RequestLocalizationOptions
 };
 
 app.UseRequestLocalization(localizationOptions);
+
+var storagePath = builder.Configuration["Storage:PhysicalPath"];
+
+if (string.IsNullOrWhiteSpace(storagePath))
+{
+    storagePath = "/app/storage";
+}
+
+// Yolun gerçekten var olduğundan emin ol, yoksa oluştur
+if (!Directory.Exists(storagePath))
+{
+    Directory.CreateDirectory(storagePath);
+}
+
 app.UseStaticFiles(new StaticFileOptions
 {
-    FileProvider = new PhysicalFileProvider("C:\\UniTrack-Storage"),
+    // Path.GetFullPath kullanarak yolun her zaman "absolute" olmasını garanti ediyoruz
+    FileProvider = new PhysicalFileProvider(Path.GetFullPath(storagePath)),
     RequestPath = "/storage"
 });
 

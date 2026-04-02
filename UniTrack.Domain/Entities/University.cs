@@ -9,7 +9,6 @@
         public ICollection<Event> Events { get; set; }
         public int CityId { get; set; }
         public City City { get; set; }
-        public ICollection<Department> Departments { get; set; }
         public ICollection<TargetNotificationUniversity> TargetNotificationUniversities { get; set; }
     }
 }

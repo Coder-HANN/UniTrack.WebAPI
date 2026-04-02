@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UniTrack.Persistence.Context;
 
@@ -11,9 +12,11 @@ using UniTrack.Persistence.Context;
 namespace UniTrack.Persistence.Migrations
 {
     [DbContext(typeof(UniTrackDbContext))]
-    partial class UniTrackDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260401214841_ChangeEntity")]
+    partial class ChangeEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

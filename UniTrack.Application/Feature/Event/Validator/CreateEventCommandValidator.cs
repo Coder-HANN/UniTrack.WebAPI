@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common.Constants;
 
 namespace UniTrack.Application.Feature.Event.Command

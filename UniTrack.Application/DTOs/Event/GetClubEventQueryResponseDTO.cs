@@ -5,6 +5,7 @@ namespace UniTrack.Application.DTOs.Event
     public class GetClubEventQueryResponseDTO
     {
         public string? CoverImageUrl { get; set; }
+        public List<string> ImageUrls { get; set; } = new();
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTimeOffset StartDate { get; set; }

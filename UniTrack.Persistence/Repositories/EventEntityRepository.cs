@@ -92,6 +92,7 @@ namespace UniTrack.Persistence.Repositories
             return context.Set<Event>()
                 .Include(e => e.EventUsers)
                 .Include(e => e.Club)
+                .Include(e=> e.Images)
                 .FirstOrDefaultAsync(e => e.Id == eventId);
         }
 
@@ -114,6 +115,7 @@ namespace UniTrack.Persistence.Repositories
         public async Task<List<Event>> GetPastEventsAsync()
         {
             return await context.Set<Event>()
+                .Include(e => e.Images)
                 .Include(e=> e.EventUsers)
                 .Include(e => e.Club)
                     .ThenInclude(e => e.UserClubs)

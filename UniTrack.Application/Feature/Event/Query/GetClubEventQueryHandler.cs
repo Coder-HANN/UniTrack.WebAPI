@@ -49,11 +49,17 @@ namespace UniTrack.Application.Feature.Event.Query
 
             var response = events.Select(e => new GetClubEventQueryResponseDTO
             {
-                    CoverImageUrl = e.Images?
+                CoverImageUrl = e.Images?
                     .OrderBy(i => i.Order)
                     .FirstOrDefault(i => i.IsCover)?.ImageUrl,
 
-                    Title = e.Title,
+                ImageUrls = e.Images?
+                    .OrderBy(i => i.Order)
+                    .Select(i => i.ImageUrl)
+                    .Where(url => !string.IsNullOrWhiteSpace(url))
+                    .ToList() ?? new List<string>(),  // ← bunu ekle
+
+                Title = e.Title,
                     Description = e.Description,
                     StartDate = e.StartDate,
                     EndDate = e.EndDate,

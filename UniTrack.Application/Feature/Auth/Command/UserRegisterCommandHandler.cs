@@ -87,9 +87,10 @@ namespace UniTrack.Application.Feature.Auth.Command
 
                 await countService.NotifyUserCountUpdatedAsync();
 
-                transactionService.Commit();
-                await _verificationCodeService.GenerateAndSendCodeAsync(request.Email, VerificationType.UserRegistration);
                 
+                await _verificationCodeService.GenerateAndSendCodeAsync(request.Email, VerificationType.UserRegistration);
+
+                transactionService.Commit();
 
                 return new ServiceResponse<UserRegisterResponseDTO>
                 {

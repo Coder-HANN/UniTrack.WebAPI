@@ -52,19 +52,27 @@ namespace UniTrack.Infrastructure.Services
                 }
             }
 
+            ServicePointManager.ServerCertificateValidationCallback =
+        (sender, certificate, chain, sslPolicyErrors) => true;
+
             using var smtp = new SmtpClient(host, port)
             {
                 Credentials = new NetworkCredential(fromEmail, password),
-                EnableSsl = true,
-                Timeout = 10000
+                EnableSsl = true, // Port 587 kullanıyorsan bu true olmalı
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                Timeout = 10000 // 10 saniye yeterlidir
             };
 
             try
             {
+             
                 await smtp.SendMailAsync(mail);
+
             }
             catch (SmtpException ex)
             {
+                Console.WriteLine("SMTP Error: " + ex.Message);
+                Console.WriteLine("Stack Trace: " + ex.StackTrace);
                 // burada log atılmalı
                 throw new InvalidOperationException("Mail sending failed", ex);
             }
