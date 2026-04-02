@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
-using System.Net;
-using System.Net.Mail;
-using System.Text;
+﻿using MailKit.Net.Smtp;
+using MailKit.Security;
+using Microsoft.Extensions.Configuration;
+using MimeKit;
 using UniTrack.Application.Abstraction.Services.Mail;
 
 namespace UniTrack.Infrastructure.Services
@@ -22,7 +22,8 @@ namespace UniTrack.Infrastructure.Services
             bool isBodyHtml = true,
             List<(Stream Stream, string FileName)> attachments = null)
         {
-            var fromEmail = configuration["MailSettings:Username"];
+            var fromEmail = configuration["MailSettings:FromEmail"];
+            var username = configuration["MailSettings:Username"];
             var password = configuration["MailSettings:Password"];
             var host = configuration["MailSettings:SmtpHost"];
 
@@ -34,47 +35,40 @@ namespace UniTrack.Infrastructure.Services
                 string.IsNullOrWhiteSpace(host))
                 throw new InvalidOperationException("MailSettings missing");
 
-            using var mail = new MailMessage
-            {
-                From = new MailAddress(fromEmail, "Öğrencity", Encoding.UTF8),
-                Subject = subject,
-                Body = body,
-                IsBodyHtml = isBodyHtml
-            };
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("Öğrencity", fromEmail));
+            message.To.Add(MailboxAddress.Parse(to));
+            message.Subject = subject;
 
-            mail.To.Add(to);
+            var builder = new BodyBuilder();
+            if (isBodyHtml)
+                builder.HtmlBody = body;
+            else
+                builder.TextBody = body;
 
             if (attachments != null)
             {
                 foreach (var (stream, fileName) in attachments)
-                {
-                    mail.Attachments.Add(new Attachment(stream, fileName));
-                }
+                    await builder.Attachments.AddAsync(fileName, stream);
             }
 
-            ServicePointManager.ServerCertificateValidationCallback =
-        (sender, certificate, chain, sslPolicyErrors) => true;
+            message.Body = builder.ToMessageBody();
 
-            using var smtp = new SmtpClient(host, port)
-            {
-                Credentials = new NetworkCredential(fromEmail, password),
-                EnableSsl = true, // Port 587 kullanıyorsan bu true olmalı
-                DeliveryMethod = SmtpDeliveryMethod.Network,
-                Timeout = 10000 // 10 saniye yeterlidir
-            };
-
+            using var smtp = new SmtpClient();
             try
             {
-             
-                await smtp.SendMailAsync(mail);
-
+                await smtp.ConnectAsync(host, port, SecureSocketOptions.StartTls);
+                await smtp.AuthenticateAsync(username, password);
+                await smtp.SendAsync(message);
+                await smtp.DisconnectAsync(true);
             }
-            catch (SmtpException ex)
+            catch (Exception ex)
             {
-                Console.WriteLine("SMTP Error: " + ex.Message);
-                Console.WriteLine("Stack Trace: " + ex.StackTrace);
-                // burada log atılmalı
-                throw new InvalidOperationException("Mail sending failed", ex);
+                Console.WriteLine($"MAIL ERROR TYPE: {ex.GetType().Name}");
+                Console.WriteLine($"MAIL ERROR: {ex.Message}");
+                Console.WriteLine($"MAIL INNER: {ex.InnerException?.Message}");
+                Console.WriteLine($"MAIL STACK: {ex.StackTrace}");
+                throw new InvalidOperationException("Mail sending failed: " + ex.Message, ex);
             }
         }
     }
