@@ -40,22 +40,61 @@ namespace UniTrack.Application.Feature.Auth.Command
             this.transactionService = transactionService;
             this._verificationCodeService = verificationCodeService;
         }
+
         public async Task<ServiceResponse<UserRegisterResponseDTO>> Handle(UserRegisterCommand request, CancellationToken cancellationToken)
         {
             transactionService.Begin();
 
-                var mail = await userRepository.GetByEmailAsync(request.Email);
-                if (mail != null && mail.IsVerified == true)
-                {
-                    return new ServiceResponse<UserRegisterResponseDTO>
-                    {
-                        IsSuccess = false,
-                        Data = null,
-                        Message = await localizationService.Get(ValidationKeys.UserEmailAlreadyExists)
-                    };
-                }
             try
             {
+                var existingUser = await userRepository.GetByEmailAsync(request.Email);
+
+                if (existingUser != null)
+                {
+                    // Zaten doğrulanmış kullanıcı
+                    if (existingUser.IsVerified == true)
+                    {
+                        transactionService.Rollback();
+                        return new ServiceResponse<UserRegisterResponseDTO>
+                        {
+                            IsSuccess = false,
+                            Data = null,
+                            Message = await localizationService.Get(ValidationKeys.UserEmailAlreadyExists)
+                        };
+                    }
+
+                    // Doğrulanmamış kullanıcı var → bilgileri güncelle, yeni kod gönder
+                    existingUser.Password = passwordHash.HashPassword(null, request.Password);
+                    await userRepository.UpdateAsync(existingUser);
+
+                    var existingDetail = await userDetailRepository.GetByUserIdAsync(existingUser.Id);
+                    if (existingDetail != null)
+                    {
+                        existingDetail.Name = request.Name;
+                        existingDetail.Surname = request.Surname;
+                        existingDetail.UniverstiyId = request.UniversityId;
+                        existingDetail.DepartmentId = request.DepartmentId;
+                        existingDetail.CityId = request.CityId;
+                        existingDetail.Gender = request.Gender;
+                        existingDetail.BirthDate = request.BirthDate;
+                        existingDetail.Graduaiton_Date = request.Graduaiton_Date;
+                        await userDetailRepository.UpdateAsync(existingDetail);
+                    }
+
+                    transactionService.Commit();
+
+                    // Commit sonrası yan etkiler
+                    await _verificationCodeService.GenerateAndSendCodeAsync(request.Email, VerificationType.UserRegistration);
+
+                    return new ServiceResponse<UserRegisterResponseDTO>
+                    {
+                        IsSuccess = true,
+                        Data = null,
+                        Message = await localizationService.Get(ValidationKeys.UserRegisterSuccess)
+                    };
+                }
+
+                // Yeni kullanıcı kaydı
                 var hashedPassword = passwordHash.HashPassword(null, request.Password);
 
                 var user = new User
@@ -85,12 +124,11 @@ namespace UniTrack.Application.Feature.Auth.Command
 
                 await userDetailRepository.AddAsync(userDetail);
 
-                await countService.NotifyUserCountUpdatedAsync();
-
-                
-                await _verificationCodeService.GenerateAndSendCodeAsync(request.Email, VerificationType.UserRegistration);
-
                 transactionService.Commit();
+
+                // Commit sonrası yan etkiler
+                await countService.NotifyUserCountUpdatedAsync();
+                await _verificationCodeService.GenerateAndSendCodeAsync(request.Email, VerificationType.UserRegistration);
 
                 return new ServiceResponse<UserRegisterResponseDTO>
                 {
@@ -102,14 +140,30 @@ namespace UniTrack.Application.Feature.Auth.Command
             catch (Exception ex)
             {
                 transactionService.Rollback();
-                string errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+
+                // Race condition: unique constraint ihlali
+                bool isUniqueViolation =
+                    ex.InnerException?.Message.Contains("unique", StringComparison.OrdinalIgnoreCase) == true ||
+                    ex.InnerException?.Message.Contains("duplicate", StringComparison.OrdinalIgnoreCase) == true;
+
+                if (isUniqueViolation)
+                {
+                    await _verificationCodeService.GenerateAndSendCodeAsync(request.Email, VerificationType.UserRegistration);
+
+                    return new ServiceResponse<UserRegisterResponseDTO>
+                    {
+                        IsSuccess = true,
+                        Data = null,
+                        Message = await localizationService.Get(ValidationKeys.UserRegisterSuccess)
+                    };
+                }
+
                 return new ServiceResponse<UserRegisterResponseDTO>
                 {
                     IsSuccess = false,
                     Data = null,
                     Message = await localizationService.Get("İşlem başarısız")
                 };
-                
             }
         }
     }

@@ -11,6 +11,12 @@ namespace UniTrack.Persistence.Repositories
         {
         }
 
+        public async Task<UserDetail?> GetByUserIdAsync(Guid userId)
+        {
+            return await context.UserDetails
+                .FirstOrDefaultAsync(x => x.UserId == userId);
+        }
+
         public async Task<List<UserDetail>> GetUsersByTargetAsync(List<int>? cityIds,List<Guid>? universityIds,List<int>? departmentIds,List<Guid>? clubIds)
         {
             var query = context.UserDetails

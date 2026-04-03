@@ -33,24 +33,55 @@ namespace UniTrack.Application.Feature.Auth.Command
             this.localizationService = localizationService;
         }
 
-        public async Task<ServiceResponse<ClubRegisterResponseDTO>> Handle(ClubRegisterCommand request,CancellationToken cancellationToken)
+        public async Task<ServiceResponse<ClubRegisterResponseDTO>> Handle(ClubRegisterCommand request, CancellationToken cancellationToken)
         {
+            // Validation - DB gerektirmeyen kontroller transaction dışında
             if (string.IsNullOrWhiteSpace(request.PresidentEmail))
             {
-                return ServiceResponse<ClubRegisterResponseDTO>.Fail(await localizationService.Get(ValidationKeys.PresidentEmailRequired));
-            }
-
-            var existingClub =await clubRepository.GetByEmailAndVerifyAsync(request.ContactEmail);
-
-            if (existingClub != null && existingClub.IsVerified == true)
-            {
-                return ServiceResponse<ClubRegisterResponseDTO>.Fail(await localizationService.Get(ValidationKeys.ClubEmailAlreadyExists));
+                return ServiceResponse<ClubRegisterResponseDTO>.Fail(
+                    await localizationService.Get(ValidationKeys.PresidentEmailRequired));
             }
 
             transactionService.Begin();
 
             try
             {
+                var existingClub = await clubRepository.GetByEmailAndVerifyAsync(request.ContactEmail);
+
+                if (existingClub != null)
+                {
+                    // Zaten doğrulanmış kulüp
+                    if (existingClub.IsVerified == true)
+                    {
+                        transactionService.Rollback();
+                        return ServiceResponse<ClubRegisterResponseDTO>.Fail(
+                            await localizationService.Get(ValidationKeys.ClubEmailAlreadyExists));
+                    }
+
+                    // Doğrulanmamış kulüp var → bilgileri güncelle, yeni kod gönder
+                    existingClub.Name = request.ClubName;
+                    existingClub.PresidentMail = request.PresidentEmail;
+                    existingClub.ContectEmail = request.ContactEmail;
+                    existingClub.President = request.PresidentName;
+                    existingClub.UniversityId = request.UniversityId;
+                    existingClub.CityId = request.CityId;
+                    existingClub.Tag = request.Tag;
+                    existingClub.Description = request.ClubName;
+                    existingClub.Password = passwordHasher.HashPassword(existingClub, request.Password);
+
+                    await clubRepository.UpdateAsync(existingClub);
+
+                    transactionService.Commit();
+
+                    // Commit sonrası yan etki
+                    await codeService.GenerateAndSendCodeAsync(request.ContactEmail, VerificationType.ClubRegistration);
+
+                    return ServiceResponse<ClubRegisterResponseDTO>.Success(
+                        await localizationService.Get(ValidationKeys.VerificationCodeSent),
+                        new ClubRegisterResponseDTO { ClubId = existingClub.Id });
+                }
+
+                // Yeni kulüp kaydı
                 var club = new Domain.Entities.Club
                 {
                     Name = request.ClubName,
@@ -66,22 +97,38 @@ namespace UniTrack.Application.Feature.Auth.Command
                     IsVerified = false
                 };
 
-                club.Password =passwordHasher.HashPassword(club, request.Password);
+                club.Password = passwordHasher.HashPassword(club, request.Password);
 
                 await clubRepository.AddAsync(club);
 
-                await codeService.GenerateAndSendCodeAsync(request.ContactEmail,VerificationType.ClubRegistration);
-
                 transactionService.Commit();
 
-                return ServiceResponse<ClubRegisterResponseDTO>.Success(await localizationService.Get(ValidationKeys.VerificationCodeSent),
+                // Commit sonrası yan etki
+                await codeService.GenerateAndSendCodeAsync(request.ContactEmail, VerificationType.ClubRegistration);
+
+                return ServiceResponse<ClubRegisterResponseDTO>.Success(
+                    await localizationService.Get(ValidationKeys.VerificationCodeSent),
                     new ClubRegisterResponseDTO { ClubId = club.Id });
             }
-            catch
+            catch (Exception ex)
             {
                 transactionService.Rollback();
 
-                return ServiceResponse<ClubRegisterResponseDTO>.Fail(await localizationService.Get(ValidationKeys.ClubRegisterFailed));
+                // Race condition: unique constraint ihlali
+                bool isUniqueViolation =
+                    ex.InnerException?.Message.Contains("unique", StringComparison.OrdinalIgnoreCase) == true ||
+                    ex.InnerException?.Message.Contains("duplicate", StringComparison.OrdinalIgnoreCase) == true;
+
+                if (isUniqueViolation)
+                {
+                    await codeService.GenerateAndSendCodeAsync(request.ContactEmail, VerificationType.ClubRegistration);
+
+                    return ServiceResponse<ClubRegisterResponseDTO>.Success(
+                        await localizationService.Get(ValidationKeys.VerificationCodeSent), null);
+                }
+
+                return ServiceResponse<ClubRegisterResponseDTO>.Fail(
+                    await localizationService.Get(ValidationKeys.ClubRegisterFailed));
             }
         }
     }

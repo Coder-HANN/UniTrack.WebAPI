@@ -340,6 +340,9 @@ namespace UniTrack.Persistence.Context
                        .HasForeignKey<UserDetail>(ud => ud.UserId)
                        .OnDelete(DeleteBehavior.Cascade);
 
+                builder.HasIndex(u => u.Email)
+                .IsUnique();
+
             });
 
             modelBuilder.Entity<UserDetail>(builder =>
@@ -379,6 +382,7 @@ namespace UniTrack.Persistence.Context
             modelBuilder.Entity<Club>(builder => 
             { 
                 builder.HasKey(c => c.Id);
+                builder.HasIndex(c => c.ContectEmail).IsUnique();
                 builder.Property(c => c.Description).HasMaxLength(200);
                 builder.Property(c => c.LongDescription).HasMaxLength(750);
                 builder.Property(c => c.InstagramLink);
@@ -388,11 +392,10 @@ namespace UniTrack.Persistence.Context
                 builder.Property(c => c.TikTokLink);
                 builder.Property(c => c.LogoUrl);
                 builder.Property(c => c.CoverImageUrl);
-                builder.Property(c => c.Name).HasMaxLength(50);
+                builder.Property(c => c.Name).HasMaxLength(100);
                 builder.Property(c => c.Tag);
                 builder.Property(c => c.President);
                 builder.Property(c => c.Follower);
-                builder.Property(c => c.ContectEmail);
                 builder.Property(c => c.PresidentMail);
                 builder.Property(c => c.Password);
                 builder.Property(c => c.Role);
@@ -414,6 +417,7 @@ namespace UniTrack.Persistence.Context
                         .WithOne(c => c.Club)
                         .HasForeignKey(cu => cu.ClubId)
                         .OnDelete(DeleteBehavior.Cascade);
+
             });
 
             modelBuilder.Entity<Event>(builder =>

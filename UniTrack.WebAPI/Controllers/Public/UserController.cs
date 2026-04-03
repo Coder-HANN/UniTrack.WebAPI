@@ -40,7 +40,7 @@ namespace UniTrack.WebAPI.Controllers.Public
         }
 
         [HttpPost("Upload")]
-        public async Task<ServiceResponse<UploadProfileImageResponseDTO>> Upload([FromBody] UploadProfileImageCommand command)
+        public async Task<ServiceResponse<UploadProfileImageResponseDTO>> Upload([FromForm] UploadProfileImageCommand command)
         {
             return await mediator.Send(command);
         }
