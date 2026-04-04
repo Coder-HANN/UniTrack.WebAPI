@@ -36,35 +36,44 @@ namespace UniTrack.Application.Feature.Event.Command.EventCheckInCommandHandler
         public async Task<ServiceResponse<string>> Handle(EventCheckInCommand request, CancellationToken cancellationToken)
         {
             var userId = currentUserServices.CurrentUser();
+            if (userId == null)
+                return ServiceResponse<string>.Fail(await localization.Get(ValidationKeys.NotAuthorized));
 
             var eventEntity = await eventRepository.GetByIdAsync(request.EventCheckInId);
-
             var userEntity = await userRepository.GetByIdAsync(userId.Value);
 
             if (eventEntity == null)
-            {
                 return ServiceResponse<string>.Fail(await localization.Get(ValidationKeys.EventNotFound));
-            }
+
+            if (userEntity == null)
+                return ServiceResponse<string>.Fail(await localization.Get(ValidationKeys.UserNotFound));
+
             var eventUser = await eventUserRepository.GetEventUserCheckInAsync(userId.Value, request.EventCheckInId);
             if (eventUser != null)
-            {
                 return ServiceResponse<string>.Fail(ValidationKeys.AlreadyCheckedIn);
+
+            if (eventEntity.EndDate < DateTimeOffset.UtcNow)
+                return ServiceResponse<string>.Fail(await localization.Get(ValidationKeys.EventAlreadyEnded));
+
+
+            // 1. ÖNCE DB'ye yaz — bu senin için kritik olan
+            eventUser.IsCheckedIn = true;
+            eventUser.CheckedInAt = DateTimeOffset.UtcNow;
+
+            await eventUserRepository.UpdateAsync(eventUser);
+
+            // 2. SONRA Sheets — hata olursa DB zaten yazıldı, Sheets sonradan sync edilebilir
+            try
+            {
+                await sheetRepository.MarkUserAsCheckedInAsync(eventEntity.SheetsId, userEntity.Email);
+            }
+            catch (Exception)
+            {
+                // Sheets hatası check-in'i engellemez
+                // Loglayıp devam et — ör: logger.LogWarning("Sheets sync başarısız: {UserId}", userId)
             }
 
-            await sheetRepository.MarkUserAsCheckedInAsync(eventEntity.SheetsId,userEntity.Email); // Sheets'te kayıtlı olan eşsiz değer (genellikle Email)
-
-            await eventUserRepository.UpdateAsync(new EventUser
-            {
-                EventId = request.EventCheckInId,
-                UserId = userId.Value,
-                IsJoined = true,
-                IsCheckedIn = true,
-                CheckedInAt = DateTimeOffset.UtcNow
-            });
-
             return ServiceResponse<string>.Success(await localization.Get(ValidationKeys.CheckInSuccess));
-
-            // TO DO: Eğer qr okutulduysa kullanıcıya katıldınız bilgisi verilecek. eğer katılmadıysa katılmadınız bilgisi verilecek. Bunu Katıldığım etkinlikler kısmında göstereceğiz.
         }
     }
 }

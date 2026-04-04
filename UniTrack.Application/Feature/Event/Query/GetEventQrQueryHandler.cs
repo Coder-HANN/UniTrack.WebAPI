@@ -47,7 +47,7 @@ namespace UniTrack.Application.Feature.Event.Query
                 };
             }
 
-            var eventEntity = eventRepository.GetEventByIdAndClubIdAsync(request.EventId, clubId.Value);
+            var eventEntity = await eventRepository.GetEventByIdAndClubIdAsync(request.EventId, clubId.Value);
 
             if(eventEntity == null)
             {
@@ -61,7 +61,7 @@ namespace UniTrack.Application.Feature.Event.Query
 
             return new ServiceResponse<string>
             {
-                Data = eventEntity.Result.QrCodeUrl,
+                Data = eventEntity.QrCodeUrl,
                 IsSuccess = true,
                 Message = null
             };

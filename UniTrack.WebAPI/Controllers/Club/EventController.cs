@@ -63,13 +63,13 @@ namespace UniTrack.WebAPI.Controllers.Club
         }
 
         [HttpPost("UpdateEventImages")]
-        public async Task<ServiceResponse<string>> UpdateEventImages([FromBody] UpdateEventImagesCommand command)
+        public async Task<ServiceResponse<string>> UpdateEventImages([FromForm] UpdateEventImagesCommand command)
         {
             return await mediator.Send(command);
         }
 
         [HttpPost("ChangeEventCoverImage")]
-        public async Task<string> ChangeEventCoverImage([FromBody] ChangeEventCoverImageCommand command)
+        public async Task<ServiceResponse<string>> ChangeEventCoverImage([FromForm] ChangeEventCoverImageCommand command)
         {
             return await mediator.Send(command);
         }
@@ -81,7 +81,7 @@ namespace UniTrack.WebAPI.Controllers.Club
         }
 
         [HttpPost("UploadEventImage")]
-        public async Task<ServiceResponse<UploadProfileImageResponseDTO>> UploadEventImage([FromBody] UploadEventImageCommand command)
+        public async Task<ServiceResponse<UploadProfileImageResponseDTO>> UploadEventImage([FromForm] UploadEventImageCommand command)
         {
             return await mediator.Send(command);
         }

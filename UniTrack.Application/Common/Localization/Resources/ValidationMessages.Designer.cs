@@ -367,6 +367,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Event already ended..
+        /// </summary>
+        internal static string EventAlreadyEnded {
+            get {
+                return ResourceManager.GetString("EventAlreadyEnded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You already reported this event..
         /// </summary>
         internal static string EventAlreadyReported {

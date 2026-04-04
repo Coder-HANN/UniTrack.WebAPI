@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
 using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Abstraction.Services.Storage;
@@ -34,25 +33,22 @@ namespace UniTrack.Application.Feature.Profile.Command
                 return ServiceResponse<UploadProfileImageResponseDTO>.Fail(
                     await _localizationService.Get(ValidationKeys.NotAuthorized));
 
-            if (string.IsNullOrWhiteSpace(request.Base64))
+            if (request.File == null || request.File.Length == 0)
                 return ServiceResponse<UploadProfileImageResponseDTO>.Fail("Görsel verisi boş.");
 
             try
             {
-                var base64 = request.Base64.Contains(',')
-                    ? request.Base64.Split(',')[1]
-                    : request.Base64;
-
-                var bytes = Convert.FromBase64String(base64);
-
-                var fileType = request.ImageType?.ToLower() == "cover"
-                    ? StorageFileType.ClubImage
-                    : StorageFileType.ClubImage;
+                using var stream = new MemoryStream();
+                await request.File.CopyToAsync(stream);
+                var bytes = stream.ToArray();
 
                 var fileName = $"club-{clubId}-{request.ImageType}-{Guid.NewGuid()}.png";
 
                 var url = await _storageService.UploadFileAsync(
-                    bytes, fileName, fileType, "image/png");
+                    bytes,
+                    fileName,
+                    StorageFileType.ClubImage,
+                    "image/png");
 
                 return ServiceResponse<UploadProfileImageResponseDTO>.Success(
                     "Görsel başarıyla yüklendi.",

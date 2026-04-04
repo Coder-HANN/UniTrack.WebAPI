@@ -190,5 +190,7 @@
 
         public static string InvalidRequest = "InvalidRequest";
         internal static string UserVerifiedSuccess = "UserVerifiedSuccess";
+
+        public static string EventAlreadyEnded = "EventAlreadyEndend";
     }
 }

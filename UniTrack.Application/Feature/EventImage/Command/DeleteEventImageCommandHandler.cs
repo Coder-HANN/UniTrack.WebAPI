@@ -9,83 +9,67 @@ using UniTrack.Domain.Enums;
 
 namespace UniTrack.Application.Feature.EventImage.Command
 {
-    public class DeleteEventImageCommandHandler: IRequestHandler<DeleteEventImageCommand, ServiceResponse<string>>
+    public class DeleteEventImageCommandHandler : IRequestHandler<DeleteEventImageCommand, ServiceResponse<string>>
     {
-        private readonly ICurrentUserServices currentUserServices;
-        private readonly IEventImageRepository eventImageRepository;
-        private readonly IEventRepository eventRepository;
-        private readonly IStorageService storageService;
-        private readonly ILocalizationService localization;
+        private readonly ICurrentUserServices _currentUserServices;
+        private readonly IEventImageRepository _eventImageRepository;
+        private readonly IEventRepository _eventRepository;
+        private readonly IStorageService _storageService;
+        private readonly ILocalizationService _localizationService;
 
         public DeleteEventImageCommandHandler(
             ICurrentUserServices currentUserServices,
             IEventImageRepository eventImageRepository,
             IEventRepository eventRepository,
             IStorageService storageService,
-            ILocalizationService localization)
+            ILocalizationService localizationService)
         {
-            this.currentUserServices = currentUserServices;
-            this.eventImageRepository = eventImageRepository;
-            this.eventRepository = eventRepository;
-            this.storageService = storageService;
-            this.localization = localization;
+            _currentUserServices = currentUserServices;
+            _eventImageRepository = eventImageRepository;
+            _eventRepository = eventRepository;
+            _storageService = storageService;
+            _localizationService = localizationService;
         }
 
-        public async Task<ServiceResponse<string>> Handle(DeleteEventImageCommand request,CancellationToken cancellationToken)
+        public async Task<ServiceResponse<string>> Handle(
+            DeleteEventImageCommand request, CancellationToken cancellationToken)
         {
-            var clubId = currentUserServices.CurrentClub();
-            var role = currentUserServices.Role();
-
+            var clubId = _currentUserServices.CurrentClub();
+            var role = _currentUserServices.Role();
             if (clubId == null || role == null || role == Role.User)
-            {
                 return ServiceResponse<string>.Fail(
-                    await localization.Get(ValidationKeys.NotAuthorized));
-            }
+                    await _localizationService.Get(ValidationKeys.NotAuthorized));
 
-            var image = await eventImageRepository.GetByIdAsync(request.ImageId);
-
+            var image = await _eventImageRepository.GetByIdAsync(request.ImageId);
             if (image == null || image.EventId != request.EventId)
-            {
-                return ServiceResponse<string>.Fail(await localization.Get(ValidationKeys.ImageNotFound));
-            }
+                return ServiceResponse<string>.Fail(
+                    await _localizationService.Get(ValidationKeys.ImageNotFound));
 
-            var eventEntity = await eventRepository.GetByIdAsync(request.EventId);
-
+            var eventEntity = await _eventRepository.GetByIdAsync(request.EventId);
             if (eventEntity == null || eventEntity.ClubId != clubId)
-            {
-                return ServiceResponse<string>.Fail(await localization.Get(ValidationKeys.NotAuthorized));
-            }
+                return ServiceResponse<string>.Fail(
+                    await _localizationService.Get(ValidationKeys.NotAuthorized));
 
             bool wasCover = image.IsCover;
 
-            // 1️⃣ DB’den sil
-            await eventImageRepository.DeleteAsync(image);
+            await _eventImageRepository.DeleteAsync(image);
 
-            // 2️⃣ Storage’dan sil
             if (!string.IsNullOrEmpty(image.ImageUrl))
-            {
-                await storageService.DeleteFileAsync(image.ImageUrl);
-            }
+                await _storageService.DeleteFileAsync(image.ImageUrl);
 
-            // 3️⃣ Cover silindiyse → yeni cover belirle
             if (wasCover)
             {
-                var remainingImages =
-                    await eventImageRepository.GetByEventIdAsync(request.EventId);
-
-                var newCover = remainingImages
-                    .OrderBy(x => x.Order)
-                    .FirstOrDefault();
-
+                var remainingImages = await _eventImageRepository.GetByEventIdAsync(request.EventId);
+                var newCover = remainingImages.OrderBy(x => x.Order).FirstOrDefault();
                 if (newCover != null)
                 {
                     newCover.IsCover = true;
-                    await eventImageRepository.UpdateRangeAsync(new List<Domain.Entities.EventImage> { newCover });
+                    await _eventImageRepository.UpdateRangeAsync(new List<Domain.Entities.EventImage> { newCover });
                 }
             }
 
-            return ServiceResponse<string>.Success(await localization.Get(ValidationKeys.OperationSuccessful));
+            return ServiceResponse<string>.Success(
+                await _localizationService.Get(ValidationKeys.OperationSuccessful));
         }
     }
-
 }

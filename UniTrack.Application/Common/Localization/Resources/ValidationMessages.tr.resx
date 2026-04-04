@@ -219,6 +219,9 @@
   <data name="EmailAlreadyUsed" xml:space="preserve">
     <value>Bu e-posta adresi zaten kullanılıyor.</value>
   </data>
+  <data name="EventAlreadyEnded" xml:space="preserve">
+    <value>Etkinlik sona erdi.</value>
+  </data>
   <data name="EventAlreadyReported" xml:space="preserve">
     <value>Bu etkinliği zaten bildirdiniz.</value>
   </data>

@@ -24,10 +24,12 @@ namespace UniTrack.Persistence.Repositories
             return joinerCount > 0;
         }
 
-        public Task<List<Event>> GetAllClubEventAsync(Expression<Func<Event, bool>> expression)
+        public async Task<List<Event>> GetAllClubEventAsync(Expression<Func<Event, bool>> expression)
         {
-            return dbSet
-                .Include(e=> e.EventUsers)
+            return await dbSet
+                .Where(expression) // 🔥 en kritik eksik buydu
+                .Include(e => e.EventUsers)
+                .Include(e => e.Images) // 🔥 BU YOKTU → senin hata buradan
                 .ToListAsync();
         }
 

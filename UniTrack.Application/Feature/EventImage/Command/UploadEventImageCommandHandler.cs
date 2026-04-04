@@ -33,28 +33,27 @@ namespace UniTrack.Application.Feature.EventImage.Command
                 return ServiceResponse<UploadProfileImageResponseDTO>.Fail(
                     await _localizationService.Get(ValidationKeys.NotAuthorized));
 
-            if (string.IsNullOrWhiteSpace(request.Base64))
+            if (request.File == null || request.File.Length == 0)
                 return ServiceResponse<UploadProfileImageResponseDTO>.Fail("Görsel verisi boş.");
 
             try
             {
-                var base64 = request.Base64.Contains(',')
-                    ? request.Base64.Split(',')[1]
-                    : request.Base64;
+                using var stream = new MemoryStream();
+                await request.File.CopyToAsync(stream);
+                var bytes = stream.ToArray();
 
-                var bytes = Convert.FromBase64String(base64);
                 var fileName = $"event-{clubId}-{Guid.NewGuid()}.png";
+                var contentType = request.File.ContentType ?? "image/png";
 
                 var url = await _storageService.UploadFileAsync(
-                    bytes, fileName, StorageFileType.EventImage, "image/png");
+                    bytes,
+                    fileName,
+                    StorageFileType.EventImage,
+                    contentType);
 
                 return ServiceResponse<UploadProfileImageResponseDTO>.Success(
                     "Görsel başarıyla yüklendi.",
                     new UploadProfileImageResponseDTO { Url = url });
-            }
-            catch (FormatException)
-            {
-                return ServiceResponse<UploadProfileImageResponseDTO>.Fail("Görsel formatı geçersiz.");
             }
             catch (Exception)
             {
