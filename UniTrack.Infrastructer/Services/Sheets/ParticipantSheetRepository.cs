@@ -10,12 +10,19 @@ public class ParticipantSheetRepository : IParticipantSheetRepository
 {
     private readonly SheetsService _sheetsService;
 
-    // Verinin yazılacağı/okunacağı aralık (Sheets'in ilk sayfası)
-    private const string SheetRange = "Sayfa1!A:Z";
+    // Sütun indeksleri — tabloya göre sabit
+    private const int ColJoinDate = 0; // A
+    private const int ColName = 1; // B
+    private const int ColSurname = 2; // C
+    private const int ColUniversity = 3; // D
+    private const int ColDepartment = 4; // E
+    private const int ColGrade = 5; // F — Kaçıncı Sınıf
+    private const int ColEmail = 6; // G
+    private const int ColSponsor = 7; // H
+    private const int ColCheckIn = 8; // I
 
     public ParticipantSheetRepository(GoogleCredential credential)
     {
-        // SheetsService'in DI ile hazır geldiğini varsayıyoruz.
         _sheetsService = new SheetsService(new BaseClientService.Initializer()
         {
             HttpClientInitializer = credential,
@@ -24,27 +31,51 @@ public class ParticipantSheetRepository : IParticipantSheetRepository
     }
 
     /// <summary>
+    /// Spreadsheet'in ilk sayfasının adını döner.
+    /// Dile bağımsız çalışır (Sheet1 / Sayfa1 / Tabelle1 fark etmez).
+    /// </summary>
+    private async Task<string> GetFirstSheetTitleAsync(string sheetId)
+    {
+        var spreadsheet = await _sheetsService.Spreadsheets.Get(sheetId).ExecuteAsync();
+        return spreadsheet.Sheets[0].Properties.Title;
+    }
+
+    /// <summary>
+    /// Sütun indeksini harf gösterimine çevirir. Örn: 0 → "A", 8 → "I"
+    /// </summary>
+    private static string ColumnIndexToLetter(int index)
+    {
+        return ((char)('A' + index)).ToString();
+    }
+
+    /// <summary>
     /// Katılımcı bilgilerini belirtilen Sheets'e satır olarak ekler.
     /// </summary>
     public async Task AddParticipantAsync(string sheetId, SheetParticipantDTO participantData)
     {
+        var sheetTitle = await GetFirstSheetTitleAsync(sheetId);
+
+        // Tablodaki sütun sırasına göre: A B C D E F G H
         var newRow = new List<object>
         {
-            participantData.JoinDate.ToString("yyyy-MM-dd HH:mm:ss K"),
-            participantData.Name,
-            participantData.Surname,
-            participantData.UniversityName,
-            participantData.DepartmentName,
-            participantData.Email,
-            participantData.IsJoinedForSponsor ? "Evet" : "Hayır"
+            participantData.JoinDate.ToString("yyyy-MM-dd HH:mm:ss K"), // A - Katılım Tarihi
+            participantData.Name,                                         // B - Adı
+            participantData.Surname,                                      // C - Soyadı
+            participantData.UniversityName,                               // D - Üniversite
+            participantData.DepartmentName,                               // E - Bölüm
+            participantData.Graduaiton_Date.ToString() ?? "",                      // F - Kaçıncı Sınıf
+            participantData.Email,                                        // G - Email
+            participantData.IsJoinedForSponsor ? "Evet" : "Hayır"        // H - Sponsor Katılımı
+            // I (CheckIn) sütunu başlangıçta boş bırakılır
         };
 
         var valueRange = new ValueRange { Values = new List<IList<object>> { newRow } };
 
-        // 2. Sheets API çağrısı: Veriyi en sona ekle (APPEND)
-        var appendRequest = _sheetsService.Spreadsheets.Values.Append(valueRange, sheetId, SheetRange);
-        // Kullanıcının girdiği veri formatında işlenmesini sağlar (tarih, sayı formatları için önemlidir)
-        appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
+        var appendRequest = _sheetsService.Spreadsheets.Values.Append(
+            valueRange, sheetId, $"{sheetTitle}!A:H");
+
+        appendRequest.ValueInputOption =
+            SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
 
         await appendRequest.ExecuteAsync();
     }
@@ -54,190 +85,153 @@ public class ParticipantSheetRepository : IParticipantSheetRepository
     /// </summary>
     public async Task RemoveParticipantAsync(string sheetId, string email)
     {
-        // 1. Sheets'teki tüm veriyi oku (Silme işlemi için satır numarasını bulmalıyız)
-        var getRequest = _sheetsService.Spreadsheets.Values.Get(sheetId, SheetRange);
+        var sheetTitle = await GetFirstSheetTitleAsync(sheetId);
+        var range = $"{sheetTitle}!A:H";
+
+        // 1. Tüm veriyi oku
+        var getRequest = _sheetsService.Spreadsheets.Values.Get(sheetId, range);
         var response = await getRequest.ExecuteAsync();
         var values = response.Values;
 
         if (values == null || values.Count == 0)
-        {
-            // Kayıt bulunamadı. Silinecek bir şey yok.
             return;
-        }
 
-        // 2. Silinecek satırın indeksini (sıra numarasını) bulma
-        const int emailColumnIndex = 6;
-
+        // 2. Silinecek satırı bul (başlık satırı 0. indeks, veri 1'den başlar)
         int rowIndexToDelete = -1;
 
-        for (int i = 1; i < values.Count; i++) // Başlık satırını (0) atlıyoruz
+        for (int i = 1; i < values.Count; i++)
         {
             var row = values[i];
 
-            // Satırın en azından E-posta sütununa kadar dolu olduğundan emin ol
-            if (row.Count > emailColumnIndex)
+            if (row.Count > ColEmail &&
+                row[ColEmail]?.ToString().Equals(email, StringComparison.OrdinalIgnoreCase) == true)
             {
-                // İndeks 6'daki değeri (Email) aradığımız e-posta ile karşılaştır
-                if (row[emailColumnIndex]?.ToString().Equals(email, StringComparison.OrdinalIgnoreCase) == true)
-                {
-                    rowIndexToDelete = i + 1; // Sheets API satır numarası (1-tabanlı)
-                    break;
-                }
+                rowIndexToDelete = i + 1; // Sheets API 1-tabanlı satır numarası
+                break;
             }
+        }
 
-            if (rowIndexToDelete != -1)
+        if (rowIndexToDelete == -1)
+            return; // Kayıt bulunamadı, sessizce çık
+
+        // 3. Satırı sil (BatchUpdate — 0-tabanlı indeks ister)
+        var deleteRequest = new BatchUpdateSpreadsheetRequest
+        {
+            Requests = new List<Request>
             {
-                // 3. Silme İsteği (Batch Update Request ile satır silme)
-                var deleteRequest = new BatchUpdateSpreadsheetRequest
+                new Request
                 {
-                    Requests = new List<Request>
+                    DeleteDimension = new DeleteDimensionRequest
                     {
-                        new Request
+                        Range = new DimensionRange
                         {
-                            DeleteDimension = new DeleteDimensionRequest
-                            {
-                                Range = new DimensionRange
-                                {
-                                    SheetId = 0, // Varsayılan Sheet ID (genellikle ilk sayfa 0'dır)
-                                    Dimension = "ROWS", // Satır siliyoruz
-                                    StartIndex = rowIndexToDelete - 1, // API 0-tabanlı başlangıç indeksi ister
-                                    EndIndex = rowIndexToDelete // API 0-tabanlı bitiş indeksi ister
-                                }
-                            }
+                            SheetId = 0,
+                            Dimension = "ROWS",
+                            StartIndex = rowIndexToDelete - 1, // 0-tabanlı
+                            EndIndex = rowIndexToDelete        // exclusive
                         }
                     }
-                };
-
-                await _sheetsService.Spreadsheets.BatchUpdate(deleteRequest, sheetId).ExecuteAsync();
+                }
             }
-            // Eğer kayıt bulunamazsa, işlem sessizce tamamlanır.
-        }
+        };
+
+        await _sheetsService.Spreadsheets.BatchUpdate(deleteRequest, sheetId).ExecuteAsync();
     }
 
     /// <summary>
-    /// Sheets API, 0 tabanlı indeksi (örneğin A=0, B=1) harfe çevirir (örneğin I=8).
+    /// Belirtilen kullanıcıyı Sheets'te "Checked In" olarak işaretler
+    /// ve I sütunundaki hücreyi yeşil renkle boyar.
     /// </summary>
-    private string ColumnIndexToLetter(int index)
-    {
-        // ASCII 'A' = 65. İndeksi ekleyerek harfi buluruz.
-        return ((char)('A' + index)).ToString();
-    }
-
-    /// <summary>
-    /// Belirtilen kullanıcıyı Sheets'te "Checked In" olarak işaretler ve hücreyi yeşil renkle boyar.
-    /// </summary>
-    /// <param name="sheetId"></param>
-    /// <param name="userEmail"></param>
-    /// <returns></returns>
     public async Task MarkUserAsCheckedInAsync(string sheetId, string userEmail)
     {
-        // E-posta'nın Sheets'te hangi sütunda olduğunu varsayalım (G sütunu = 6. indeks)
-        const int EmailColumnIndex = 6;
+        var sheetTitle = await GetFirstSheetTitleAsync(sheetId);
+        var range = $"{sheetTitle}!A:{ColumnIndexToLetter(ColCheckIn)}"; // A:I
 
-        // Boyanacak sütunun indeksi (I sütunu = 8. indeks, bu sütunda Check-In durumu tutuluyor)
-        const int CheckInColumnIndex = 8;
-
-        // --- 1. Sheets'ten mevcut tüm verileri alarak hedef satırı bulma ---
-
-        // A:I aralığını oku
-        var range = "Sayfa1!A:I";
+        // 1. Tüm veriyi oku
         var request = _sheetsService.Spreadsheets.Values.Get(sheetId, range);
         var response = await request.ExecuteAsync();
         var values = response.Values;
 
-        // Veri yoksa veya boşsa işlemi sonlandır
         if (values == null || !values.Any())
             return;
 
+        // 2. Hedef satırı bul
         int targetRowIndex = -1;
-        for (int i = 1; i < values.Count; i++) // Başlık satırını (0. indeks) atla
+
+        for (int i = 1; i < values.Count; i++)
         {
-            // E-posta sütununda geçerli bir değer olup olmadığını kontrol et
-            if (values[i].Count > EmailColumnIndex && values[i][EmailColumnIndex] is string emailValue)
+            if (values[i].Count > ColEmail &&
+                values[i][ColEmail] is string emailValue &&
+                emailValue.Equals(userEmail, StringComparison.OrdinalIgnoreCase))
             {
-                // Kullanıcının E-posta adresiyle eşleşen satırı bul
-                if (emailValue.Equals(userEmail, StringComparison.OrdinalIgnoreCase))
-                {
-                    targetRowIndex = i; // 0 tabanlı satır indeksi (Sheets'te bu i + 1. satırdır)
-                    break;
-                }
+                targetRowIndex = i; // 0-tabanlı (Sheets'te i+1. satır)
+                break;
             }
         }
 
         if (targetRowIndex == -1)
+            return; // Kullanıcı bulunamadı
+
+        // 3. I sütununa "Checked In" yaz
+        string cellAddress = $"{sheetTitle}!{ColumnIndexToLetter(ColCheckIn)}{targetRowIndex + 1}";
+
+        var textValueRange = new ValueRange
         {
-            // Kullanıcı Sheets tablosunda bulunamadı
-            return;
-        }
+            Values = new List<IList<object>> { new List<object> { "Checked In" } }
+        };
 
-        // --- 2. Hücreye "Checked In" Metnini Yazma (Values.Update) ---
+        var updateValueRequest = _sheetsService.Spreadsheets.Values.Update(
+            textValueRange, sheetId, cellAddress);
 
-        // Güncellenecek hücrenin adını oluştur (Örn: I + (targetRowIndex + 1))
-        string cellToUpdate = $"Sayfa1!{ColumnIndexToLetter(CheckInColumnIndex)}{targetRowIndex + 1}";
+        updateValueRequest.ValueInputOption =
+            SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
 
-        var textValueRange = new ValueRange();
-        // Hücreye yazılacak metin
-        textValueRange.Values = new List<IList<object>> { new List<object> { "Checked In" } };
-
-        var updateValueRequest = _sheetsService.Spreadsheets.Values.Update(textValueRange, sheetId, cellToUpdate);
-        updateValueRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
-
-        // Metin güncelleme isteğini çalıştır
         await updateValueRequest.ExecuteAsync();
 
-
-        // --- 3. Hücreyi Yeşil Renkle Boyama (BatchUpdate) ---
-
-        var batchUpdateRequest = new BatchUpdateSpreadsheetRequest();
-
-        batchUpdateRequest.Requests = new List<Request>
-{
-    new Request
-    {
-        UpdateCells = new UpdateCellsRequest
+        // 4. Hücreyi yeşil renkle boya
+        var batchUpdateRequest = new BatchUpdateSpreadsheetRequest
         {
-            // Hücre formatının sadece arkaplan rengini güncellemek istediğimizi belirtiyoruz
-            Fields = "userEnteredFormat.background",
-            
-            // Formatın uygulanacağı hücre şablonu
-            Rows = new List<RowData>
+            Requests = new List<Request>
             {
-                new RowData
+                new Request
                 {
-                    Values = new List<CellData>
+                    UpdateCells = new UpdateCellsRequest
                     {
-                        new CellData
+                        Fields = "userEnteredFormat.backgroundColor",
+                        Rows = new List<RowData>
                         {
-                            // Renk Tanımı
-                            UserEnteredFormat = new CellFormat
+                            new RowData
                             {
-                                BackgroundColor = new Color
+                                Values = new List<CellData>
                                 {
-                                    Red = 0.5f,
-                                    Green = 1.0f, // Tam yeşil
-                                    Blue = 0.5f
+                                    new CellData
+                                    {
+                                        UserEnteredFormat = new CellFormat
+                                        {
+                                            BackgroundColor = new Color
+                                            {
+                                                Red   = 0.5f,
+                                                Green = 1.0f,
+                                                Blue  = 0.5f
+                                            }
+                                        }
+                                    }
                                 }
                             }
+                        },
+                        Range = new GridRange
+                        {
+                            SheetId          = 0,
+                            StartRowIndex    = targetRowIndex,
+                            EndRowIndex      = targetRowIndex + 1,
+                            StartColumnIndex = ColCheckIn,
+                            EndColumnIndex   = ColCheckIn + 1
                         }
                     }
                 }
-            },
-            
-            // Uygulanacak Hücre Aralığı
-            Range = new GridRange
-            {
-                SheetId = 0,
-                StartRowIndex = targetRowIndex,
-                EndRowIndex = targetRowIndex + 1,
-                StartColumnIndex = CheckInColumnIndex,
-                EndColumnIndex = CheckInColumnIndex + 1
             }
-        }
-    }
-    };
+        };
 
-        // Renklendirme isteğini çalıştır
-        var batchRequest = _sheetsService.Spreadsheets.BatchUpdate(batchUpdateRequest, sheetId);
-        await batchRequest.ExecuteAsync();
+        await _sheetsService.Spreadsheets.BatchUpdate(batchUpdateRequest, sheetId).ExecuteAsync();
     }
 }

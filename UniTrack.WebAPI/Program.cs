@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Sheets.v4;
+using Google.Apis.Util.Store;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
@@ -124,40 +125,56 @@ builder.Services.AddHostedService<EventTimeUpdateBackgroundService>();
 builder.Services.AddHostedService<MailWorker>();
 // Google Sheets servisleri
 // Google credential ve servislerini kaydedin
-builder.Services.AddSingleton<GoogleCredential>(sp =>
+// --- GOOGLE SHEETS VE OAUTH AYARLARI (GÜNCEL) ---
+
+// 1. Kimlik Bilgilerini (OAuth) Alacak UserCredential Kaydı
+builder.Services.AddScoped<UserCredential>(sp =>
 {
     var config = sp.GetRequiredService<IConfiguration>();
-    var keyPath = config["GoogleSheets:ServiceAccountJsonPath"];
-    return GoogleCredential
-        .FromFile(keyPath)
-        .CreateScoped(
-            SheetsService.Scope.Spreadsheets,
-            Google.Apis.Drive.v3.DriveService.Scope.Drive
-        );
+    // İndirdiğin JSON dosyasının yolu (client_secrets.json)
+    string clientSecretsPath = "client_secrets.json";
+    string[] scopes = {
+        SheetsService.Scope.Spreadsheets,
+        Google.Apis.Drive.v3.DriveService.Scope.DriveFile
+    };
+
+    using (var stream = new FileStream(clientSecretsPath, FileMode.Open, FileAccess.Read))
+    {
+        // token.json otomatik oluşacak, sakın silme
+        string credPath = "token.json";
+        return GoogleWebAuthorizationBroker.AuthorizeAsync(
+            GoogleClientSecrets.FromStream(stream).Secrets,
+            scopes,
+            "user",
+            CancellationToken.None,
+            new FileDataStore(credPath, true)).Result;
+    }
 });
 
-builder.Services.AddSingleton<SheetsService>(sp =>
+// 2. SheetsService Kaydı (UserCredential kullanarak)
+builder.Services.AddScoped<SheetsService>(sp =>
 {
-    var credential = sp.GetRequiredService<GoogleCredential>();
+    var credential = sp.GetRequiredService<UserCredential>();
     return new SheetsService(new Google.Apis.Services.BaseClientService.Initializer
     {
         HttpClientInitializer = credential,
-        ApplicationName = "UniTrack CampusConnect App"
+        ApplicationName = "Ogrencity"
     });
 });
 
-builder.Services.AddSingleton<Google.Apis.Drive.v3.DriveService>(sp =>
+// 3. DriveService Kaydı (UserCredential kullanarak)
+builder.Services.AddScoped<Google.Apis.Drive.v3.DriveService>(sp =>
 {
-    var credential = sp.GetRequiredService<GoogleCredential>();
+    var credential = sp.GetRequiredService<UserCredential>();
     return new Google.Apis.Drive.v3.DriveService(new Google.Apis.Services.BaseClientService.Initializer
     {
         HttpClientInitializer = credential,
-        ApplicationName = "UniTrack CampusConnect App"
+        ApplicationName = "Ogrencity"
     });
 });
 
 builder.Services.AddScoped<IGoogleSheetCreationService, GoogleSheetCreationService>();
-builder.Services.AddScoped<IParticipantSheetRepository, ParticipantSheetRepository>();
+// -----------------------------------------------builder.Services.AddScoped<IParticipantSheetRepository, ParticipantSheetRepository>();
 builder.Services.AddScoped<IQrCodeService, QrCodeService>();
 builder.Services.AddScoped<IEventQuestionAnswerRepository, EventQuestionAnswerEntityRepository>();
 

@@ -7,6 +7,6 @@
         /// </summary>
         /// <param name="sheetTitle">E-Tabloya verilecek başlık (Genellikle Etkinlik Adı).</param>
         /// <returns>Oluşturulan E-Tablo'nun benzersiz ID'si.</returns>
-        Task<string> CreateSheetAsync(string sheetTitle);
+        Task<string> CreateSheetAsync(string eventId,string sheetTitle);
     }
 }

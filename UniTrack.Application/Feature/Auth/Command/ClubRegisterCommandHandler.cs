@@ -46,7 +46,7 @@ namespace UniTrack.Application.Feature.Auth.Command
 
             try
             {
-                var existingClub = await clubRepository.GetByEmailAndVerifyAsync(request.ContactEmail);
+                var existingClub = await clubRepository.GetByEmailAsync(request.ContactEmail);
 
                 if (existingClub != null)
                 {
@@ -84,6 +84,7 @@ namespace UniTrack.Application.Feature.Auth.Command
                 // Yeni kulüp kaydı
                 var club = new Domain.Entities.Club
                 {
+                    Id = Guid.NewGuid(),
                     Name = request.ClubName,
                     PresidentMail = request.PresidentEmail,
                     ContectEmail = request.ContactEmail,

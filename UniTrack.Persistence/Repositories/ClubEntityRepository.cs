@@ -69,7 +69,7 @@ namespace UniTrack.Persistence.Repositories
 
         public Task<Club> GetByEmailAsync(string email)
         {
-            return dbSet.FirstOrDefaultAsync(c => c.PresidentMail == email);
+            return dbSet.FirstOrDefaultAsync(c => c.ContectEmail == email);
         }
 
         public Task<Club> GetByIdAsync(Guid Id)

@@ -104,38 +104,37 @@ namespace UniTrack.Application.Feature.Event.Command
                     }
 
 
-                    // 4. QR KODU OLUŞTURMA VE DEPOLAMA
-
-                    // A. QR Görüntüsünü Byte Olarak Oluştur
-                    var qrCodeBytes = await qrCodeService.GenerateQrCodeAsync(createdEvent.CheckInToken.Value);
-
-                        // B. Benzersiz Dosya Adı Oluştur
-                        var qrFileName = $"event-{createdEvent.Id}-qr.png";
-
-                        // C. Görüntüyü Depolama Servisine Yükle ve URL'yi al
-                        qrUrl = await storageService.UploadFileAsync(qrCodeBytes, qrFileName);
-                        createdEvent.QrCodeUrl = qrUrl;
-
+                var qrCodeBytes = await qrCodeService.GenerateQrCodeAsync(createdEvent.CheckInToken.Value);
+                var qrFileName = $"event-{createdEvent.Id}-qr.png";
+                qrUrl = await storageService.UploadFileAsync(qrCodeBytes, qrFileName);
+                createdEvent.QrCodeUrl = qrUrl;
 
                 // 5. GOOGLE SHEETS İŞLEMİ
                 try
                 {
-                    // E-Tablo oluşturuluyor ve ID'si alınıyor.
-                    sheetsId = await googleSheetCreationService.CreateSheetAsync(createdEvent.Title);
+                    sheetsId = await googleSheetCreationService.CreateSheetAsync(createdEvent.Id.ToString(), createdEvent.Title);
                     createdEvent.SheetsId = sheetsId;
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
-                   
+                    // Tüm detayları logla
+                    Console.WriteLine($"=== GOOGLE SHEETS HATA ===");
+                    Console.WriteLine($"Message: {ex.Message}");
+                    Console.WriteLine($"InnerException: {ex.InnerException?.Message}");
+                    Console.WriteLine($"InnerInner: {ex.InnerException?.InnerException?.Message}");
+                    Console.WriteLine($"StackTrace: {ex.StackTrace}");
+                    Console.WriteLine($"=========================");
+
+                    throw new Exception($"Google Sheets oluşturulamadı: {ex.Message} - Detay: {ex.InnerException?.Message}");
                 }
 
-                    // 6. DB GÜNCELLEMESİ (QR URL ve Sheets ID'yi kaydetme)
-                    // En az biri başarıyla oluşturulup entity'ye atanmışsa (null değilse) DB'yi güncelliyoruz.
-                        await eventRepository.UpdateAsync(createdEvent);
-           
-                    var message = await localization.Get(ValidationKeys.EventCreatedNotification,createdEvent.Title, clubName);
+                // 6. DB GÜNCELLEMESİ (QR URL ve Sheets ID'yi kaydetme)
+                await eventRepository.UpdateAsync(createdEvent);
 
-                    // 7. BİLDİRİM GÖNDERME
-                    await notificationProducer.ClubIsCreateEventAsync(clubId.Value,message);
+                var message = await localization.Get(ValidationKeys.EventCreatedNotification, createdEvent.Title, clubName);
+
+                // 7. BİLDİRİM GÖNDERME
+                await notificationProducer.ClubIsCreateEventAsync(clubId.Value, message);
 
                 transactionService.Commit();
             }

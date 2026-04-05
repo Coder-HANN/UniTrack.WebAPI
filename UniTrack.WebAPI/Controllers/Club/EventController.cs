@@ -63,7 +63,7 @@ namespace UniTrack.WebAPI.Controllers.Club
         }
 
         [HttpPost("UpdateEventImages")]
-        public async Task<ServiceResponse<string>> UpdateEventImages([FromForm] UpdateEventImagesCommand command)
+        public async Task<ServiceResponse<string>> UpdateEventImages([FromBody] UpdateEventImagesCommand command)
         {
             return await mediator.Send(command);
         }

@@ -1,78 +1,86 @@
-﻿using Google.Apis.Drive.v3;
+﻿using Google.Apis.Auth.OAuth2;
+using Google.Apis.Drive.v3;
+using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
+using Google.Apis.Util.Store;
 using Microsoft.Extensions.Configuration;
 using UniTrack.Application.Abstraction.Services.Sheets;
 
 namespace UniTrack.Infrastructure.Services.Sheets;
+
 public class GoogleSheetCreationService : IGoogleSheetCreationService
 {
-    private readonly SheetsService _sheetsService;
-    private readonly DriveService _driveService; 
     private readonly string _rootFolderId;
+    private readonly string _applicationName = "Ogrencity";
+    private readonly string[] _scopes = { DriveService.Scope.DriveFile, SheetsService.Scope.Spreadsheets };
 
-    // Sheets'e yazılacak başlık satırları
     private readonly IList<object> _headerRow = new List<object>
     {
         "Katılım Tarihi", "Adı", "Soyadı", "Üniversite", "Bölüm",
-        "Kaçıncı Sınıf", "Email", "Sponsor Katılımı"
+        "Mezuniyet Tarihi", "Email", "Sponsor Katılımı"
     };
 
-    // Constructor güncellendi: DriveService ve IConfiguration alıyor
-    public GoogleSheetCreationService(SheetsService sheetsService, DriveService driveService, IConfiguration configuration)
+    public GoogleSheetCreationService(IConfiguration configuration)
     {
-        _sheetsService = sheetsService;
-        _driveService = driveService;
-
-        // Klasör ID'sini Configuration'dan okuma
         var sheetsConfig = configuration.GetSection("GoogleSheets").Get<GoogleSheetsConfig>();
-
-        if (sheetsConfig == null || string.IsNullOrEmpty(sheetsConfig.RootFolderId))
-        {
-            throw new InvalidOperationException("GoogleSheets:RootFolderId configuration'da tanımlanmalıdır.");
-        }
-
-        _rootFolderId = sheetsConfig.RootFolderId;
+        _rootFolderId = sheetsConfig?.RootFolderId ?? throw new InvalidOperationException("RootFolderId eksik.");
     }
 
-    public async Task<string> CreateSheetAsync(string sheetTitle)
+    // Bu metod kimlik doğrulamasını yapar
+    private async Task<UserCredential> GetCredentialsAsync()
     {
-        // 1. E-Tablo Oluşturma İsteği (Sheets API)
-        var spreadsheet = new Spreadsheet()
-        {
-            Properties = new SpreadsheetProperties()
-            {
-                Title = $"Etkinlik Katılımcıları: {sheetTitle}"
-            }
-        };
+        // Uygulamanın nerede çalıştığını anlıyoruz (Docker'da Production, Local'de Development olur)
+        var isProduction = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production";
 
-        var request = _sheetsService.Spreadsheets.Create(spreadsheet);
-        request.Fields = "spreadsheetId";
-        var response = await request.ExecuteAsync();
-        string sheetId = response.SpreadsheetId;
+        // Klasör yolunu ortamına göre belirliyoruz
+        string authFolderPath = isProduction ? "/app/google_auth" : Directory.GetCurrentDirectory();
 
-        if (string.IsNullOrEmpty(sheetId))
+        string secretsPath = Path.Combine(authFolderPath, "service-account-key.json");
+        string credPath = Path.Combine(authFolderPath, "token.json");
+
+        using (var stream = new FileStream(secretsPath, FileMode.Open, FileAccess.Read))
         {
-            throw new Exception("Google Sheets API'den geçerli bir Spreadsheet ID alınamadı.");
+            return await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                GoogleClientSecrets.FromStream(stream).Secrets,
+                _scopes,
+                "user",
+                CancellationToken.None,
+                new FileDataStore(credPath, true));
         }
+    }
 
-        // 2. Drive API ile Dosyayı Hedef Klasöre Taşıma (**YENİ VE KRİTİK KISIM**)
-        var fileMetadata = new Google.Apis.Drive.v3.Data.File
+    public async Task<string> CreateSheetAsync(string eventId, string sheetTitle)
+    {
+        var credential = await GetCredentialsAsync();
+
+        var driveService = new DriveService(new BaseClientService.Initializer()
         {
-            // Yeni Parent ID'sini belirle
+            HttpClientInitializer = credential,
+            ApplicationName = _applicationName,
+        });
+
+        var sheetsService = new SheetsService(new BaseClientService.Initializer()
+        {
+            HttpClientInitializer = credential,
+            ApplicationName = _applicationName,
+        });
+
+        // İSİMLENDİRME BURADA QR MANTIĞIYLA EŞLEŞTİRİLDİ
+        var fileMetadata = new Google.Apis.Drive.v3.Data.File()
+        {
+            Name = $"event-{eventId} - Etkinlik Katılımcıları: {sheetTitle}",
+            MimeType = "application/vnd.google-apps.spreadsheet",
             Parents = new List<string> { _rootFolderId }
         };
 
-        // Taşıma isteği: Mevcut (root) parent'ını kaldırıp, RootFolderId'yi ekle
-        var updateRequest = _driveService.Files.Update(fileMetadata, sheetId);
-        updateRequest.RemoveParents = "root";
-        await updateRequest.ExecuteAsync();
+        var createRequest = driveService.Files.Create(fileMetadata);
+        createRequest.Fields = "id";
+        var file = await createRequest.ExecuteAsync();
+        string sheetId = file.Id;
 
-        // 3. Başlık Satırını Ekleme İsteği (Sheets API)
-        var valueRange = new ValueRange();
-        valueRange.Values = new List<IList<object>> { _headerRow };
-
-        var appendRequest = _sheetsService.Spreadsheets.Values.Append(valueRange, sheetId, "Sayfa1!A1");
+        var valueRange = new ValueRange { Values = new List<IList<object>> { _headerRow } };
+        var appendRequest = sheetsService.Spreadsheets.Values.Append(valueRange, sheetId, "A1");
         appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
 
         await appendRequest.ExecuteAsync();
