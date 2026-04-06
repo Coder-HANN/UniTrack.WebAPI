@@ -131,26 +131,26 @@ builder.Services.AddHostedService<MailWorker>();
 builder.Services.AddScoped<UserCredential>(sp =>
 {
     var config = sp.GetRequiredService<IConfiguration>();
-    // İndirdiğin JSON dosyasının yolu (client_secrets.json)
-    string clientSecretsPath = "client_secrets.json";
+
+    string clientSecretsPath = config["GoogleSheets:ServiceAccountJsonPath"]
+        ?? "service-account-key.json";
+    string credPath = config["GoogleSheets:TokenPath"]    // ← artık ezilmiyor
+        ?? "token_store";
+
     string[] scopes = {
         SheetsService.Scope.Spreadsheets,
         Google.Apis.Drive.v3.DriveService.Scope.DriveFile
     };
 
-    using (var stream = new FileStream(clientSecretsPath, FileMode.Open, FileAccess.Read))
-    {
-        // token.json otomatik oluşacak, sakın silme
-        string credPath = "token.json";
-        return GoogleWebAuthorizationBroker.AuthorizeAsync(
-            GoogleClientSecrets.FromStream(stream).Secrets,
-            scopes,
-            "user",
-            CancellationToken.None,
-            new FileDataStore(credPath, true)).Result;
-    }
-});
+    using var stream = new FileStream(clientSecretsPath, FileMode.Open, FileAccess.Read);
 
+    return GoogleWebAuthorizationBroker.AuthorizeAsync(
+        GoogleClientSecrets.FromStream(stream).Secrets,
+        scopes,
+        "user",
+        CancellationToken.None,
+        new FileDataStore(credPath, true)).Result;
+});
 // 2. SheetsService Kaydı (UserCredential kullanarak)
 builder.Services.AddScoped<SheetsService>(sp =>
 {
@@ -174,7 +174,7 @@ builder.Services.AddScoped<Google.Apis.Drive.v3.DriveService>(sp =>
 });
 
 builder.Services.AddScoped<IGoogleSheetCreationService, GoogleSheetCreationService>();
-// -----------------------------------------------builder.Services.AddScoped<IParticipantSheetRepository, ParticipantSheetRepository>();
+builder.Services.AddScoped<IParticipantSheetRepository, ParticipantSheetRepository>();
 builder.Services.AddScoped<IQrCodeService, QrCodeService>();
 builder.Services.AddScoped<IEventQuestionAnswerRepository, EventQuestionAnswerEntityRepository>();
 

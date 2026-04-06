@@ -56,7 +56,7 @@ namespace UniTrack.Application.Feature.Event.Command
                 );
             }
 
-            var alreadyJoined = await eventUserRepository.GetAsync(eu => eu.EventId == request.EventId && eu.UserId == userId.Value);
+            var alreadyJoined = await eventUserRepository.GetAsync(eu => eu.EventId == request.EventId && eu.UserId == userId.Value && eu.IsJoined == true);
 
             if (alreadyJoined != null)
             {
@@ -70,7 +70,8 @@ namespace UniTrack.Application.Feature.Event.Command
                 );
             }
 
-            var userDetail = await userDetailRepository.GetAsync(ud => ud.UserId == userId.Value);
+
+            var userDetail = await userDetailRepository.GetUserForJoinAsync(userId.Value);
 
             if (eventEntity.Status != Status.Public && eventEntity.Club.UniversityId != userDetail.UniverstiyId)
             {
@@ -92,6 +93,8 @@ namespace UniTrack.Application.Feature.Event.Command
 
             await eventRepository.UpdateAsync(eventEntity);
 
+
+
             // === SIDE EFFECT (Sheets) ===
             if (!string.IsNullOrEmpty(eventEntity.SheetsId))
             {
@@ -104,7 +107,7 @@ namespace UniTrack.Application.Feature.Event.Command
                         Surname = userDetail.Surname,
                         UniversityName = userDetail.University?.Name,
                         DepartmentName = userDetail.Department?.Name,
-                        Graduaiton_Date = userDetail.Graduaiton_Date,
+                        Graduaiton_Date = userDetail.Graduaiton_Date.ToString("dd.MM.yyyy"),
                         JoinDate = DateTimeOffset.UtcNow
                     };
 

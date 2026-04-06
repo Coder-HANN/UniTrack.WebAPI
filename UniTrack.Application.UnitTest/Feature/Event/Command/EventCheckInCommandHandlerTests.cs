@@ -36,62 +36,65 @@ public class EventCheckInCommandHandlerTests
     }
 
     [Fact]
-    public async Task Handle_WhenValidRequest_ShouldCheckInSuccessfully()
+    public async Task Handle_WhenValidToken_ShouldUpdateDatabase()
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var eventId = Guid.NewGuid();
+        var eventCheckInToken = Guid.NewGuid(); // QR'dan gelen Token
+        var actualEventId = Guid.NewGuid();     // DB'deki gerçek PK
 
-        _currentUserServicesMock
-            .Setup(x => x.CurrentUser())
-            .Returns(userId);
+        _currentUserServicesMock.Setup(x => x.CurrentUser()).Returns(userId);
 
+        // 1. ADIM: Handler artık GetCheckinIdAsync (Token ile) çağırmalı
         _eventRepositoryMock
-            .Setup(x => x.GetByIdAsync(eventId))
+            .Setup(x => x.GetCheckinIdAsync(eventCheckInToken))
             .ReturnsAsync(new Event
             {
-                Id = eventId,
+                Id = actualEventId,
+                CheckInToken = eventCheckInToken,
+                EndDate = DateTimeOffset.UtcNow.AddDays(1),
                 SheetsId = "sheet-123"
             });
 
         _userRepositoryMock
             .Setup(x => x.GetByIdAsync(userId))
-            .ReturnsAsync(new User
-            {
-                Id = userId,
-                Email = "test@unitrack.com"
-            });
+            .ReturnsAsync(new User { Id = userId, Email = "test@test.com" });
+
+        // 2. ADIM: EventUser mutlaka DOLU dönmeli (Kullanıcı etkinliğe kayıtlı olmalı)
+        var eventUser = new EventUser
+        {
+            UserId = userId,
+            EventId = actualEventId,
+            IsCheckedIn = false
+        };
 
         _eventUserRepositoryMock
-            .Setup(x => x.GetEventUserCheckInAsync(userId, eventId))
-            .ReturnsAsync((EventUser)null);
+            .Setup(x => x.GetEventUserCheckInAsync(userId, eventCheckInToken))
+            .ReturnsAsync(eventUser);
 
         _localizationMock
-            .Setup(x => x.Get(ValidationKeys.CheckInSuccess))
-            .ReturnsAsync("Check-in successful");
+            .Setup(x => x.Get(It.IsAny<string>()))
+            .ReturnsAsync("Success");
 
-        var command = new EventCheckInCommand
-        {
-            EventCheckInId = eventId
-        };
+        var command = new EventCheckInCommand { EventCheckInId = eventCheckInToken };
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        result.Message.Should().Be("Check-in successful");
 
-        _sheetRepositoryMock.Verify(x =>
-            x.MarkUserAsCheckedInAsync("sheet-123", "test@unitrack.com"),
-            Times.Once);
-
+        // 3. ADIM: VERİTABANI GÜNCELLEME KONTROLÜ
+        // UpdateAsync'in tam olarak bu nesneyle çağrıldığını doğrula
         _eventUserRepositoryMock.Verify(x =>
             x.UpdateAsync(It.Is<EventUser>(eu =>
-                eu.EventId == eventId &&
-                eu.UserId == userId &&
-                eu.IsCheckedIn &&
-                eu.IsJoined)),
+                eu.IsCheckedIn == true &&
+                eu.UserId == userId)),
+            Times.Once);
+
+        // Google Sheets kontrolü
+        _sheetRepositoryMock.Verify(x =>
+            x.MarkUserAsCheckedInAsync("sheet-123", "test@test.com"),
             Times.Once);
     }
 }

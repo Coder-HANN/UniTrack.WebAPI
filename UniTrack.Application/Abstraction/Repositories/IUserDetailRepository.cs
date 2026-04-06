@@ -1,4 +1,5 @@
-﻿using UniTrack.Domain.Entities;
+﻿using System.Linq.Expressions;
+using UniTrack.Domain.Entities;
 
 namespace UniTrack.Application.Abstraction.Repositories
 {
@@ -6,6 +7,7 @@ namespace UniTrack.Application.Abstraction.Repositories
     {
         Task<UserDetail?> GetByUserIdAsync(Guid userId);
         Task<List<UserDetail>> GetUsersByTargetAsync(List<int>? cityIds,List<Guid>? universityIds,List<int>? departmentIds,List<Guid>? clubIds);
+        Task<UserDetail> GetUserForJoinAsync(Guid userId);
 
     }
 }

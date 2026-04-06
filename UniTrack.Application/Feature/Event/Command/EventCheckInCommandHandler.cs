@@ -35,42 +35,72 @@ namespace UniTrack.Application.Feature.Event.Command.EventCheckInCommandHandler
 
         public async Task<ServiceResponse<string>> Handle(EventCheckInCommand request, CancellationToken cancellationToken)
         {
+
             var userId = currentUserServices.CurrentUser();
             if (userId == null)
+            {
                 return ServiceResponse<string>.Fail(await localization.Get(ValidationKeys.NotAuthorized));
+            }
 
-            var eventEntity = await eventRepository.GetByIdAsync(request.EventCheckInId);
-            var userEntity = await userRepository.GetByIdAsync(userId.Value);
-
+            // 1. Etkinliği Token ile bul
+            var eventEntity = await eventRepository.GetCheckinIdAsync(request.EventCheckInId);
             if (eventEntity == null)
+            {
                 return ServiceResponse<string>.Fail(await localization.Get(ValidationKeys.EventNotFound));
+            }
 
-            if (userEntity == null)
-                return ServiceResponse<string>.Fail(await localization.Get(ValidationKeys.UserNotFound));
-
-            var eventUser = await eventUserRepository.GetEventUserCheckInAsync(userId.Value, request.EventCheckInId);
-            if (eventUser != null)
-                return ServiceResponse<string>.Fail(ValidationKeys.AlreadyCheckedIn);
-
+            // 2. Tarih kontrolü
             if (eventEntity.EndDate < DateTimeOffset.UtcNow)
+            {
                 return ServiceResponse<string>.Fail(await localization.Get(ValidationKeys.EventAlreadyEnded));
+            }
 
+            // 3. Kullanıcıyı getir
+            var userEntity = await userRepository.GetByIdAsync(userId.Value);
+            if (userEntity == null)
+            {
+                return ServiceResponse<string>.Fail(await localization.Get(ValidationKeys.UserNotFound));
+            }
 
-            // 1. ÖNCE DB'ye yaz — bu senin için kritik olan
-            eventUser.IsCheckedIn = true;
-            eventUser.CheckedInAt = DateTimeOffset.UtcNow;
+            // 4. Katılımcı kaydını (EventUser) bul
+            // NOT: Repository'de Include(eu => eu.Event) olduğundan emin ol!
+            var eventUser = await eventUserRepository.GetEventUserCheckInAsync(userId.Value, request.EventCheckInId);
 
-            await eventUserRepository.UpdateAsync(eventUser);
+            if (eventUser == null)
+            {
+                return ServiceResponse<string>.Fail(await localization.Get(ValidationKeys.UserNotJoinedEvent));
+            }
 
-            // 2. SONRA Sheets — hata olursa DB zaten yazıldı, Sheets sonradan sync edilebilir
+            // 5. Mükerrer Check-in kontrolü
+            if (eventUser.IsCheckedIn)
+            {
+                return ServiceResponse<string>.Fail(await localization.Get(ValidationKeys.AlreadyCheckedIn));
+            }
+
+            // 6. Güncelleme İşlemi
+            try
+            {
+                eventUser.IsCheckedIn = true;
+                eventUser.CheckedInAt = DateTimeOffset.UtcNow;
+
+                await eventUserRepository.UpdateAsync(eventUser);
+
+                // DİKKAT: Eğer UpdateAsync içinde SaveChanges yoksa buraya eklemelisin!
+                // await unitOfWork.SaveChangesAsync(); 
+
+            }
+            catch (Exception ex)
+            {
+                return ServiceResponse<string>.Fail("Veritabanı güncelleme hatası.");
+            }
+
+            // 7. Sheets Entegrasyonu (Arka plan işlemi gibi davranır)
             try
             {
                 await sheetRepository.MarkUserAsCheckedInAsync(eventEntity.SheetsId, userEntity.Email);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Sheets hatası check-in'i engellemez
-                // Loglayıp devam et — ör: logger.LogWarning("Sheets sync başarısız: {UserId}", userId)
             }
 
             return ServiceResponse<string>.Success(await localization.Get(ValidationKeys.CheckInSuccess));

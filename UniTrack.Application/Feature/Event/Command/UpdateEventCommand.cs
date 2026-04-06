@@ -18,5 +18,7 @@ namespace UniTrack.Application.Feature.Event.Command
         public int Quota { get; set; }
         public string Location { get; set; }
         public Status Status { get; set; }
+        public int CityId { get; set; }    
+        public Guid UniversityId { get; set; }
     }
 }

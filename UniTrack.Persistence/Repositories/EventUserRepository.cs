@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Domain.Entities;
 using UniTrack.Persistence.Context;
@@ -42,7 +43,9 @@ namespace UniTrack.Persistence.Repositories
 
         public async Task<EventUser> GetEventUserCheckInAsync(Guid userId, Guid eventCheckInId)
         {
-            return await dbSet.FirstOrDefaultAsync(eu => eu.IsCheckedIn == true && eu.UserId == userId && eu.Event.CheckInToken == eventCheckInId);
+            return await dbSet
+                .Include(eu => eu.Event)
+                .FirstOrDefaultAsync(eu =>eu.UserId == userId && eu.Event.CheckInToken == eventCheckInId);
         }
 
         public async Task<int> GetJoinEventCountAsync(Guid? userId)
@@ -60,6 +63,14 @@ namespace UniTrack.Persistence.Repositories
                 .Where(eu => eu.Event.ClubId == clubId && eu.IsJoined == true)
                 .CountAsync();
         }
+
+        public async Task<EventUser> GetUserForLeftEventAsync(Expression<Func<EventUser, bool>> predicate)
+        {
+            return await dbSet
+                .Include(eu => eu.User)
+                .FirstOrDefaultAsync(predicate);
+        }
+
         public async Task<List<Guid>> GetUsersJoinedToEventAsync(Guid eventId)
         {
             return await context.Set<EventUser>()

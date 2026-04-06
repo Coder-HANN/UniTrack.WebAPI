@@ -1,4 +1,5 @@
-﻿using UniTrack.Domain.Entities;
+﻿using System.Linq.Expressions;
+using UniTrack.Domain.Entities;
 
 namespace UniTrack.Application.Abstraction.Repositories
 {
@@ -13,5 +14,6 @@ namespace UniTrack.Application.Abstraction.Repositories
 
         //  Etkinliğe katılan kullanıcıları çeker 
         Task<List<Guid>> GetUsersJoinedToEventAsync(Guid eventId);
+        Task<EventUser> GetUserForLeftEventAsync(Expression<Func<EventUser, bool>> predicate);
     }
 }

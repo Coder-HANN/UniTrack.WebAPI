@@ -21,13 +21,9 @@ public class ParticipantSheetRepository : IParticipantSheetRepository
     private const int ColSponsor = 7; // H
     private const int ColCheckIn = 8; // I
 
-    public ParticipantSheetRepository(GoogleCredential credential)
+    public ParticipantSheetRepository(SheetsService sheetsService)
     {
-        _sheetsService = new SheetsService(new BaseClientService.Initializer()
-        {
-            HttpClientInitializer = credential,
-            ApplicationName = "UniTrack CampusConnect App",
-        });
+        _sheetsService = sheetsService;
     }
 
     /// <summary>
@@ -80,64 +76,73 @@ public class ParticipantSheetRepository : IParticipantSheetRepository
         await appendRequest.ExecuteAsync();
     }
 
+
+    private async Task<SheetProperties> GetFirstSheetPropertiesAsync(string spreadsheetId)
+    {
+        var spreadsheet = await _sheetsService.Spreadsheets.Get(spreadsheetId).ExecuteAsync();
+        return spreadsheet.Sheets[0].Properties;
+    }
     /// <summary>
     /// Belirtilen e-posta adresine sahip katılımcıyı Sheets'ten siler.
     /// </summary>
     public async Task RemoveParticipantAsync(string sheetId, string email)
     {
-        var sheetTitle = await GetFirstSheetTitleAsync(sheetId);
-        var range = $"{sheetTitle}!A:H";
+        // Dinamik sayfa özelliklerini al
+        var sheetProps = await GetFirstSheetPropertiesAsync(sheetId);
+        var sheetTitle = sheetProps.Title;
+        int? realSheetId = sheetProps.SheetId;
 
-        // 1. Tüm veriyi oku
-        var getRequest = _sheetsService.Spreadsheets.Values.Get(sheetId, range);
-        var response = await getRequest.ExecuteAsync();
+        // Veriyi oku (A:G arası yeterli, e-posta G'de)
+        var range = $"{sheetTitle}!A:G";
+        var response = await _sheetsService.Spreadsheets.Values.Get(sheetId, range).ExecuteAsync();
         var values = response.Values;
 
-        if (values == null || values.Count == 0)
-            return;
+        if (values == null || values.Count == 0) return;
 
-        // 2. Silinecek satırı bul (başlık satırı 0. indeks, veri 1'den başlar)
         int rowIndexToDelete = -1;
 
         for (int i = 1; i < values.Count; i++)
         {
             var row = values[i];
 
-            if (row.Count > ColEmail &&
-                row[ColEmail]?.ToString().Equals(email, StringComparison.OrdinalIgnoreCase) == true)
+            // Sütun sayısını kontrol et ve Trim() kullanarak karşılaştır
+            if (row.Count > ColEmail)
             {
-                rowIndexToDelete = i + 1; // Sheets API 1-tabanlı satır numarası
-                break;
+                var cellValue = row[ColEmail]?.ToString()?.Trim();
+                if (string.Equals(cellValue, email.Trim(), StringComparison.OrdinalIgnoreCase))
+                {
+                    rowIndexToDelete = i;
+                    break;
+                }
             }
         }
 
-        if (rowIndexToDelete == -1)
-            return; // Kayıt bulunamadı, sessizce çık
+        // Kayıt bulunamazsa çık
+        if (rowIndexToDelete == -1) return;
 
-        // 3. Satırı sil (BatchUpdate — 0-tabanlı indeks ister)
+        // 3. Silme isteği (BatchUpdate)
         var deleteRequest = new BatchUpdateSpreadsheetRequest
         {
             Requests = new List<Request>
+        {
+            new Request
             {
-                new Request
+                DeleteDimension = new DeleteDimensionRequest
                 {
-                    DeleteDimension = new DeleteDimensionRequest
+                    Range = new DimensionRange
                     {
-                        Range = new DimensionRange
-                        {
-                            SheetId = 0,
-                            Dimension = "ROWS",
-                            StartIndex = rowIndexToDelete - 1, // 0-tabanlı
-                            EndIndex = rowIndexToDelete        // exclusive
-                        }
+                        SheetId = realSheetId, // 0 yerine gerçek ID
+                        Dimension = "ROWS",
+                        StartIndex = rowIndexToDelete,
+                        EndIndex = rowIndexToDelete + 1
                     }
                 }
             }
+        }
         };
 
         await _sheetsService.Spreadsheets.BatchUpdate(deleteRequest, sheetId).ExecuteAsync();
     }
-
     /// <summary>
     /// Belirtilen kullanıcıyı Sheets'te "Checked In" olarak işaretler
     /// ve I sütunundaki hücreyi yeşil renkle boyar.

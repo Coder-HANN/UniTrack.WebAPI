@@ -117,6 +117,18 @@ namespace UniTrack.Application.Feature.Event.Command
                 isUpdated = true;
             }
 
+            if (request.CityId > 0 && existingEvent.CityId != request.CityId)
+            {
+                existingEvent.CityId = request.CityId;
+                isUpdated = true;
+            }
+
+            if (request.UniversityId != Guid.Empty && existingEvent.UniversityId != request.UniversityId)
+            {
+                existingEvent.UniversityId = request.UniversityId;
+                isUpdated = true;
+            }
+
             if (request.EndTime != default && existingEvent.EndTime != request.EndTime)
             {
                 existingEvent.EndTime = request.EndTime;

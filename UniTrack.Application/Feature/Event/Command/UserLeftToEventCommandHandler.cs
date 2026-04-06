@@ -46,10 +46,7 @@ namespace UniTrack.Application.Feature.Event.Command
                 return ServiceResponse<string>.Fail(await localizationService.Get(ValidationKeys.NotAuthorized));
             }
 
-            var eventUser = await eventUserRepository.GetAsync(
-                eu => eu.EventId == request.EventId
-                   && eu.UserId == userId
-                   && eu.IsJoined);
+            var eventUser = await eventUserRepository.GetUserForLeftEventAsync(eu => eu.EventId == request.EventId&& eu.UserId == userId&& eu.IsJoined);
 
             if (eventUser == null)
             {

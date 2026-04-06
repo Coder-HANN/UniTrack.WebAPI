@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Domain.Entities;
 using UniTrack.Persistence.Context;
@@ -15,6 +16,16 @@ namespace UniTrack.Persistence.Repositories
         {
             return await context.UserDetails
                 .FirstOrDefaultAsync(x => x.UserId == userId);
+        }
+
+        public async Task<UserDetail> GetUserForJoinAsync(Guid userId)
+        {
+            return await context.UserDetails
+                .Include(ud => ud.User)
+                .Include(ud => ud.City)
+                .Include(ud => ud.University)
+                .Include(ud => ud.Department)
+                .FirstOrDefaultAsync(ud => ud.UserId == userId);
         }
 
         public async Task<List<UserDetail>> GetUsersByTargetAsync(List<int>? cityIds,List<Guid>? universityIds,List<int>? departmentIds,List<Guid>? clubIds)

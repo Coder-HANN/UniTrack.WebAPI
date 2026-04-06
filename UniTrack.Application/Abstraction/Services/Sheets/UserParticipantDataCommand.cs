@@ -12,10 +12,10 @@
         public string Email { get; set; }
         public long PhoneNumber { get; set; }
         public string UniversityName { get; set; }
-        public DateTime Graduaiton_Date { get; set; }
+        public string Graduaiton_Date { get; set; }
         public string DepartmentName { get; set; }
         public DateTimeOffset JoinDate { get; set; } = DateTimeOffset.UtcNow; 
-        public bool IsJoinedForSponsor { get; set; }// Katılım zamanı
-                                                    // İhtiyaç duyulan diğer bilgiler buraya eklenebilir (Örn: Faculty, StudentId)
+        public bool IsJoinedForSponsor { get; set; }
+                                                 
     }
 }

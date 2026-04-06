@@ -72,11 +72,13 @@ namespace UniTrack.WebAPI.Controllers.Public
         {
             return await mediator.Send(query);
         }
+
         [HttpPost("EventCheckIn")]
         public async Task<ServiceResponse<string>> EventCheckIn([FromBody] EventCheckInCommand command)
         {
             return await mediator.Send(command);
         }
+
         [HttpGet("GetJoinEventCountQuery")]
         public async Task<ServiceResponse<int>> GetJoinEventCountQuery([FromQuery] GetJoinEventCountQuery query)
         {

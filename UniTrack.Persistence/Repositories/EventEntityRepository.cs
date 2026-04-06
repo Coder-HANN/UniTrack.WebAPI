@@ -20,8 +20,8 @@ namespace UniTrack.Persistence.Repositories
                 .ExecuteUpdateAsync(s =>
                     s.SetProperty(c => c.Joiner, c => c.Joiner + 1)
                 );
-
             return joinerCount > 0;
+
         }
 
         public async Task<List<Event>> GetAllClubEventAsync(Expression<Func<Event, bool>> expression)
@@ -197,7 +197,7 @@ namespace UniTrack.Persistence.Repositories
         {
             return await context.Events
                 .Include(e => e.Club)
-                .Where(e => e.ClubId == clubId && e.StartDate > now)
+                .Where(e => e.ClubId == clubId && e.StartDate > now && e.IsDeleted == false)
                 .OrderBy(e => e.StartDate)
                 .Take(maxCount)
                 .ToListAsync();
@@ -222,10 +222,22 @@ namespace UniTrack.Persistence.Repositories
         public async Task<List<Event>> GetAllByClubIdAsync(Guid clubId)
         {
             return await context.Events
+                .Include(e => e.EventUsers)
                 .Where(e => e.ClubId == clubId)
-                .Include(e => e.EventUsers )
                 .OrderByDescending(e => e.StartDate)
                 .ToListAsync();
+        }
+
+        public async Task<Event> GetCheckinIdAsync(Guid eventCheckInId)
+        {
+            return await dbSet.FirstOrDefaultAsync(e => e.CheckInToken == eventCheckInId);
+        }
+
+        public async Task<long> GetClubEventCheckedInCountAsync(Guid? clubId)
+        {
+            return await context.EventUsers
+                .Where(x => x.Event.ClubId == clubId && x.IsCheckedIn)
+                .LongCountAsync();
         }
     }
 }

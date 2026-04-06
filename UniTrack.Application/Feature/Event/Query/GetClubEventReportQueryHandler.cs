@@ -31,18 +31,25 @@ namespace UniTrack.Application.Feature.Event.Query
             var role = currentUserServices.Role();
 
             if (clubId == null || role == null || role == Role.User)
-                return ServiceResponse<List<ClubEventReportResponseDTO>>.Fail(
-                    await localization.Get(ValidationKeys.NotAuthorized));
+                return ServiceResponse<List<ClubEventReportResponseDTO>>.Fail(await localization.Get(ValidationKeys.NotAuthorized));
+            
 
             var events = await eventRepository.GetAllByClubIdAsync(clubId.Value);
 
-            var report = events.Select(e => new ClubEventReportResponseDTO
-            {
-                EventId = e.Id,
-                Title = e.Title,
-                JoinedCount = e.EventUsers != null ? e.EventUsers.Count(eu => eu.IsCheckedIn) : 0,
-                Quota = e.Quota,
-                FillRate = e.Quota > 0 ? Math.Round((double)e.Joiner / e.Quota * 100, 1) : 0
+            var report = events.Select(e => {
+
+                int currentCount = e.EventUsers?.Count(eu => eu.IsCheckedIn) ?? 0;
+
+                return new ClubEventReportResponseDTO
+                {
+                    EventId = e.Id,
+                    Title = e.Title,
+                    JoinedCount = currentCount,
+                    Quota = e.Quota,
+                    FillRate = e.Quota > 0
+                        ? Math.Round(((double)currentCount / e.Quota) * 100, 1)
+                        : 0
+                };
             }).ToList();
 
             return ServiceResponse<List<ClubEventReportResponseDTO>>.Success(null,report);

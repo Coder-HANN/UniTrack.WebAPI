@@ -32,6 +32,7 @@ namespace UniTrack.Application.Abstraction.Repositories
         Task<int> GetCompletedEventCountByClubIdAsync(Guid clubId);
         Task<List<Event>> GetCompletedEventsByClubIdAndDateRangeAsync(Guid clubId, DateTimeOffset startDate, DateTimeOffset endDate);
         Task<List<Event>> GetAllByClubIdAsync(Guid clubId);
-
+        Task<Event> GetCheckinIdAsync(Guid eventCheckInId);
+        Task<long> GetClubEventCheckedInCountAsync(Guid? clubId);
     }
 }

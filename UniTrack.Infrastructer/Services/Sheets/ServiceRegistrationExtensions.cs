@@ -2,6 +2,7 @@
 using Google.Apis.Drive.v3; 
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
+using Google.Apis.Util.Store;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using UniTrack.Application.Abstraction.Services.QrCode;
@@ -23,21 +24,26 @@ namespace UniTrack.Infrastructure.Services.Sheets
             }
 
             // 1. GoogleCredential'ı Singleton olarak kaydet (İki API için de yetki)
-            services.AddSingleton<GoogleCredential>(provider =>
+            // YENİ
+            services.AddSingleton<UserCredential>(provider =>
             {
-                using (var stream = new FileStream(sheetsConfig.ServiceAccountJsonPath, FileMode.Open, FileAccess.Read))
-                {
-                    // Sheets ve Drive API için gerekli kapsamları EKLE
-                    var scopes = new[] { GoogleSheetsConfig.SheetsScope, GoogleSheetsConfig.DriveScope };
-                    var credential = GoogleCredential.FromStream(stream).CreateScoped(scopes);
-                    return credential;
-                }
-            });
+                using var stream = new FileStream(
+                    sheetsConfig.ServiceAccountJsonPath, FileMode.Open, FileAccess.Read);
 
+                var scopes = new[] { GoogleSheetsConfig.SheetsScope, GoogleSheetsConfig.DriveScope };
+
+                return GoogleWebAuthorizationBroker.AuthorizeAsync(
+                    GoogleClientSecrets.FromStream(stream).Secrets,
+                    scopes,
+                    "user",
+                    CancellationToken.None,
+                    new FileDataStore(sheetsConfig.TokenPath, fullPath: true)
+                ).GetAwaiter().GetResult();
+            });
             // 2. SheetsService'i Singleton olarak kaydet (Mevcut)
             services.AddSingleton<SheetsService>(provider =>
             {
-                var credential = provider.GetRequiredService<GoogleCredential>();
+                var credential = provider.GetRequiredService<UserCredential>();
                 return new SheetsService(new BaseClientService.Initializer()
                 {
                     HttpClientInitializer = credential,
@@ -57,10 +63,6 @@ namespace UniTrack.Infrastructure.Services.Sheets
             });
 
             services.AddScoped<IQrCodeService, QrCodeService>();
-
-            // 4. Uygulama Servislerini Kaydet
-            services.AddScoped<IGoogleSheetCreationService, GoogleSheetCreationService>();
-            services.AddScoped<IParticipantSheetRepository, ParticipantSheetRepository>();
 
             return services;
         }

@@ -36,9 +36,9 @@ namespace UniTrack.Application.Feature.Event.Query
                 };
             }
 
-            var joinerCount = await eventRepository.GetAllClubEventJoinerCountAsync(clubId);
+            var checkedInCount = await eventRepository.GetClubEventCheckedInCountAsync(clubId);
 
-            if (joinerCount == 0) {
+            if (checkedInCount == 0) {
                 return new ServiceResponse<long>
                 {
                     IsSuccess = true,
@@ -50,7 +50,7 @@ namespace UniTrack.Application.Feature.Event.Query
             return new ServiceResponse<long>
             {
                 IsSuccess = true,
-                Data = joinerCount,
+                Data = checkedInCount,
                 Message = null
             };
         }
