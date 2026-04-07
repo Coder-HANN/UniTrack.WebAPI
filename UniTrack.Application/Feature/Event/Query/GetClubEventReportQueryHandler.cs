@@ -46,10 +46,9 @@ namespace UniTrack.Application.Feature.Event.Query
                     Title = e.Title,
                     JoinedCount = currentCount,
                     Quota = e.Quota,
-                    FillRate = e.Quota > 0
-                        ? Math.Round(((double)currentCount / e.Quota) * 100, 1)
-                        : 0
+                    FillRate = e.Quota > 0 ? Math.Round(((double)currentCount / e.Quota) * 100, 1) : 0
                 };
+
             }).ToList();
 
             return ServiceResponse<List<ClubEventReportResponseDTO>>.Success(null,report);

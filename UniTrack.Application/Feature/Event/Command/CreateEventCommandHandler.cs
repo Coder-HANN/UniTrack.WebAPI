@@ -117,13 +117,6 @@ namespace UniTrack.Application.Feature.Event.Command
                 }
                 catch (Exception ex)
                 {
-                    // Tüm detayları logla
-                    Console.WriteLine($"=== GOOGLE SHEETS HATA ===");
-                    Console.WriteLine($"Message: {ex.Message}");
-                    Console.WriteLine($"InnerException: {ex.InnerException?.Message}");
-                    Console.WriteLine($"InnerInner: {ex.InnerException?.InnerException?.Message}");
-                    Console.WriteLine($"StackTrace: {ex.StackTrace}");
-                    Console.WriteLine($"=========================");
 
                     throw new Exception($"Google Sheets oluşturulamadı: {ex.Message} - Detay: {ex.InnerException?.Message}");
                 }

@@ -19,7 +19,7 @@ public class GetUniversitiesQueryHandler : IRequestHandler<GetUniversitiesQuery,
     {
         var universities = await _universityRepository.GetAllAsync();
 
-        var result = universities.Select(u => new LookupServiceResponseDTO(
+        var result = universities.OrderBy(u => u.Name).Select(u => new LookupServiceResponseDTO(
             u.Id.ToString(),
             u.Name
         ));

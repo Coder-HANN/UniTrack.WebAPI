@@ -62,7 +62,8 @@ namespace UniTrack.Application.Feature.Event.Command
                 JoinedCount = joinedCount,
                 Rate = rate,
                 CityId = eventDetails.CityId,
-                UniversityId = eventDetails.UniversityId
+                UniversityId = eventDetails.UniversityId,
+                GoogleSheetsUrl = eventDetails.SheetsId
             };
 
             return ServiceResponse<GetEventDetailResponseDTO>.Success(null,response);

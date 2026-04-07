@@ -18,10 +18,12 @@ namespace UniTrack.Application.Feature.Lookups
         {
             var cities = await departmentRepository.GetAllAsync();
 
-            var result = cities.Select(c => new LookupServiceResponseDTO(
-                c.Id.ToString(), // CityId int olsa bile DTO'da string gönderiyoruz (Kurumsal standart)
-                c.Name
-            ));
+            var result = cities
+                .OrderBy(c => c.Name)
+                .Select(c => new LookupServiceResponseDTO(
+                    c.Id.ToString(),
+                    c.Name
+                ));
 
             return ServiceResponse<IEnumerable<LookupServiceResponseDTO>>.Success(null, result);
         }

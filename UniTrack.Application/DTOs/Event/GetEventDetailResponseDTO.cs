@@ -24,5 +24,6 @@ namespace UniTrack.Application.DTOs.Event
         public bool IsJoined { get; set; }
         public int CityId { get; set; }
         public Guid UniversityId { get; set; }
+        public string GoogleSheetsUrl { get; set; }
     }
 }

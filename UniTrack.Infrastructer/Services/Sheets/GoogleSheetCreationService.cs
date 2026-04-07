@@ -60,6 +60,8 @@ public class GoogleSheetCreationService : IGoogleSheetCreationService
             ApplicationName = _applicationName,
         });
 
+
+
         var sheetsService = new SheetsService(new BaseClientService.Initializer()
         {
             HttpClientInitializer = credential,
@@ -74,10 +76,18 @@ public class GoogleSheetCreationService : IGoogleSheetCreationService
             Parents = new List<string> { _rootFolderId }
         };
 
+        var permission = new Google.Apis.Drive.v3.Data.Permission
+        {
+            Type = "anyone",
+            Role = "reader" // Sadece görüntüleme yetkisi
+        };
+
         var createRequest = driveService.Files.Create(fileMetadata);
         createRequest.Fields = "id";
         var file = await createRequest.ExecuteAsync();
         string sheetId = file.Id;
+
+        await driveService.Permissions.Create(permission, sheetId).ExecuteAsync();
 
         var valueRange = new ValueRange { Values = new List<IList<object>> { _headerRow } };
         var appendRequest = sheetsService.Spreadsheets.Values.Append(valueRange, sheetId, "A1");

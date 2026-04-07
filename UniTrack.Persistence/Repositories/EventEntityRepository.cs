@@ -80,7 +80,8 @@ namespace UniTrack.Persistence.Repositories
 
         public async Task<long> GetCountAsync()
         {
-            return await context.Set<Event>().LongCountAsync();
+            return await context.Set<Event>()
+                .Where(e => e.IsDeleted == false).LongCountAsync();
         }
 
         public Task<Event> GetEventByIdAndClubIdAsync(Guid eventId, Guid clubId)
@@ -121,7 +122,7 @@ namespace UniTrack.Persistence.Repositories
                 .Include(e=> e.EventUsers)
                 .Include(e => e.Club)
                     .ThenInclude(e => e.UserClubs)
-                .Where(e => e.EndDate < DateTime.Today && e.IsDeleted == false)
+                .Where(e => e.EndDate < DateTimeOffset.UtcNow && e.IsDeleted == false)
                 .ToListAsync();
         }
 

@@ -138,29 +138,42 @@ namespace UniTrack.Persistence.Repositories
 
         public async Task<List<MonthlyFollowerResponseDTO>> GetMonthlyFollowerCountAsync(Guid clubId)
         {
-            var startDate = new DateTimeOffset(
-                DateTimeOffset.UtcNow.AddMonths(-11).Year,
-                DateTimeOffset.UtcNow.AddMonths(-11).Month,
-                1, 0, 0, 0,
-                TimeSpan.Zero
-            );
+            var now = DateTimeOffset.UtcNow;
+            // Başlangıç tarihini 11 ay öncesinin ilk gününe ayarla
+            var startDate = new DateTimeOffset(now.AddMonths(-11).Year, now.AddMonths(-11).Month, 1, 0, 0, 0, TimeSpan.Zero);
 
-            var result = await context.UserClubs
+            // 1. Veritabanından mevcut verileri çek
+            var dbData = await context.UserClubs
                 .Where(f => f.ClubId == clubId && f.CreatedDate >= startDate)
                 .GroupBy(f => new { f.CreatedDate.Year, f.CreatedDate.Month })
-                .Select(g => new MonthlyFollowerResponseDTO
+                .Select(g => new
                 {
                     Year = g.Key.Year,
-                    Month = g.Key.Month.ToString(),
+                    Month = g.Key.Month,
                     Count = g.Count()
                 })
-                .OrderBy(x => x.Year)
-                .ThenBy(x => x.Month)
                 .ToListAsync();
+
+            // 2. Son 12 ayın listesini manuel oluştur ve DB verisiyle eşleştir
+            var result = new List<MonthlyFollowerResponseDTO>();
+
+            for (int i = 0; i < 12; i++)
+            {
+                var targetDate = startDate.AddMonths(i);
+
+                // Bu aya ait veri DB'den gelmiş mi kontrol et
+                var match = dbData.FirstOrDefault(d => d.Year == targetDate.Year && d.Month == targetDate.Month);
+
+                result.Add(new MonthlyFollowerResponseDTO
+                {
+                    Year = targetDate.Year,
+                    Month = targetDate.Month.ToString(), // Gerekiyorsa targetDate.ToString("MMM") ile ay ismi dönebilirsin
+                    Count = match?.Count ?? 0 // Veri yoksa 0 ata
+                });
+            }
 
             return result;
         }
-
         public async Task<List<GenderDistributionDTO>> GetFollowerGenderDistributionAsync(Guid clubId)
         {
             var followers = await context.UserClubs

@@ -36,7 +36,7 @@ namespace UniTrack.Application.Feature.Club.Query
 
             var monthlyData = await clubRepository.GetMonthlyFollowerCountAsync(clubId.Value);
 
-            return ServiceResponse<List<MonthlyFollowerResponseDTO>>.Success(null, monthlyData);
+            return ServiceResponse<List<MonthlyFollowerResponseDTO>>.Success(string.Empty, monthlyData);
         }
     }
 }
