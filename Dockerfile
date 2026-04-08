@@ -10,7 +10,7 @@ WORKDIR /app
 COPY --from=build /app/publish .
 
 # Buradaki yolu da klasör yapına göre düzelttik
-COPY UniTrack.WebAPI/service-account-key.json .
+# COPY UniTrack.WebAPI/service-account-key.json .
 
 EXPOSE 8080
 ENTRYPOINT ["dotnet", "UniTrack.WebAPI.dll"]
