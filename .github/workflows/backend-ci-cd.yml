@@ -2,7 +2,7 @@ name: Backend CI-CD
 
 on:
   push:
-    branches: [ "main" ] # Main branch'e push geldiğinde tetiklenir
+    branches: [ "master" ] 
 
 jobs:
   build-and-push:
