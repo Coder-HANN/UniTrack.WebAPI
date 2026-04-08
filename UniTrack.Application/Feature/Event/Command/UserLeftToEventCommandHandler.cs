@@ -75,7 +75,6 @@ namespace UniTrack.Application.Feature.Event.Command
                 }
                 catch
                 {
-                    // loglanır, user etkilenmez
                 }
             }
 

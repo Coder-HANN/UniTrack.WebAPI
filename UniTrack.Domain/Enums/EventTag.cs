@@ -17,6 +17,7 @@
         Theatre = 12,
         Hackathon = 13,
         TechTalk = 14,
-        Online = 15
+        Online = 15,
+        Voluntering = 16
     }
 }

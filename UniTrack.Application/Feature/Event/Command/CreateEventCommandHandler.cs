@@ -117,8 +117,6 @@ namespace UniTrack.Application.Feature.Event.Command
                 }
                 catch (Exception ex)
                 {
-
-                    throw new Exception($"Google Sheets oluşturulamadı: {ex.Message} - Detay: {ex.InnerException?.Message}");
                 }
 
                 // 6. DB GÜNCELLEMESİ (QR URL ve Sheets ID'yi kaydetme)

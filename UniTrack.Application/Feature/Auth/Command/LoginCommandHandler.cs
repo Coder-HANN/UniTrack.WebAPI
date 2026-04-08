@@ -102,7 +102,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ServiceResponse
                     IsSuccess = true,
                     Data = new LoginResponseDTO
                     {
-                        Expiration = DateTime.UtcNow.AddHours(5),
+                        Expiration = DateTime.UtcNow.AddDays(30),
                         Role = Role.Club.ToString().ToLower(),
                         ClubId = club.Id.ToString(),
                         FullName = club.Name,
@@ -188,7 +188,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ServiceResponse
             issuer: jwtSettings["Issuer"],
             audience: jwtSettings["Audience"],
             claims: claims,
-            expires: DateTime.UtcNow.AddHours(5),
+            expires: DateTime.UtcNow.AddDays(30),
             signingCredentials: creds
         );
 

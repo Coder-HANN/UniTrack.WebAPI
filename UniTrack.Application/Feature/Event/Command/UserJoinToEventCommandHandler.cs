@@ -115,7 +115,6 @@ namespace UniTrack.Application.Feature.Event.Command
                 }
                 catch (Exception ex)
                 {
-                    // sadece loglanır
                 }
             }
 
