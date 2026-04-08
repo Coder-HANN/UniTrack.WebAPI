@@ -27,7 +27,6 @@ namespace UniTrack.WebAPI.Middleware
             }
             else // Diğer yollar
             {
-                Console.WriteLine("🔵 UserMiddleware çalıştı.");
 
                 if (context.User.Identity?.IsAuthenticated == true)
                 {
@@ -39,7 +38,6 @@ namespace UniTrack.WebAPI.Middleware
                     {
                         // Artık Guid tipinde ekleniyor
                         context.Items["userId"] = userId;
-                        Console.WriteLine($"🟢 UserId context'e eklendi: {userId}");
                     }
                     else
                     {
@@ -54,7 +52,6 @@ namespace UniTrack.WebAPI.Middleware
                     {
                         // Artık Guid tipinde ekleniyor
                         context.Items["clubId"] = clubId;
-                        Console.WriteLine($"🟢 ClubId context'e eklendi: {clubId}");
                     }
 
                     var roleClaim = context.User.Claims.FirstOrDefault(c =>
@@ -65,16 +62,7 @@ namespace UniTrack.WebAPI.Middleware
                         if (Enum.TryParse<Role>(roleClaim.Value, true, out var role))
                         {
                             context.Items["role"] = role;
-                            Console.WriteLine($"🟢 Role context'e eklendi: {role}");
                         }
-                        else
-                        {
-                            Console.WriteLine($"🟠 Hata: Role claim değeri ({roleClaim.Value}) Domain.Enums.Role tipine dönüştürülemedi.");
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("🟠 Role claim bulunamadı.");
                     }
                 }
                 else
