@@ -6,6 +6,11 @@ using UniTrack.Application.Common.Constants;
 using UniTrack.Application.Feature.ClubTeam.Query;
 using UniTrack.Domain.Entities;
 using Xunit;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using UniTrack.Application.DTOs.ClubTeam;
 
 public class ClubTeamQueryHandlerTests
 {
@@ -20,28 +25,41 @@ public class ClubTeamQueryHandlerTests
     {
         // Arrange
         var clubId = Guid.NewGuid();
+        var mockImageUrl = "https://unitrack.com/ali.jpg";
 
+        // Handler ct.User.UserDetail üzerinden veriye eriştiği için 
+        // mock datayı bu hiyerarşiye uygun kurmalıyız.
         var clubTeams = new List<ClubTeam>
         {
             new ClubTeam
             {
+                Id = Guid.NewGuid(),
                 ClubId = clubId,
-                UserDetail = new UserDetail
+                Title = "Takım Lideri",
+                User = new User
                 {
-                    Name = "Ali",
-                    Surname = "Yılmaz"
-                },
-                Title = "Takım Lideri"
+                    UserDetail = new UserDetail
+                    {
+                        Name = "Ali",
+                        Surname = "Yılmaz",
+                        ProfileImageUrl = mockImageUrl
+                    }
+                }
             },
             new ClubTeam
             {
+                Id = Guid.NewGuid(),
                 ClubId = clubId,
-                UserDetail = new UserDetail
+                Title = "Üye",
+                User = new User
                 {
-                    Name = "Ayşe",
-                    Surname = "Demir"
-                },
-                Title = "Üye"
+                    UserDetail = new UserDetail
+                    {
+                        Name = "Ayşe",
+                        Surname = "Demir",
+                        ProfileImageUrl = null
+                    }
+                }
             }
         };
 
@@ -57,11 +75,14 @@ public class ClubTeamQueryHandlerTests
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Data.Should().HaveCount(2);
+
+        // İlk eleman kontrolü
         result.Data[0].PersonName.Should().Be("Ali");
-        result.Data[0].PersonSurname.Should().Be("Yılmaz");
         result.Data[0].Title.Should().Be("Takım Lideri");
+        result.Data[0].ProfileImageUrl.Should().Be(mockImageUrl);
+
+        // İkinci eleman kontrolü
         result.Data[1].PersonName.Should().Be("Ayşe");
-        result.Data[1].PersonSurname.Should().Be("Demir");
         result.Data[1].Title.Should().Be("Üye");
     }
 
@@ -70,14 +91,15 @@ public class ClubTeamQueryHandlerTests
     {
         // Arrange
         var clubId = Guid.NewGuid();
+        string expectedError = "Takım bulunamadı";
 
         _clubTeamRepository
             .Setup(x => x.GetClubTeamsByClubIdAsync(clubId))
             .ReturnsAsync((List<ClubTeam>)null);
 
         _localizationService
-            .Setup(x => x.Get(It.IsAny<string>()))
-            .ReturnsAsync((string key) => key);
+            .Setup(x => x.Get(ValidationKeys.ClubTeamNotFound))
+            .ReturnsAsync(expectedError);
 
         var handler = CreateHandler();
 
@@ -86,7 +108,7 @@ public class ClubTeamQueryHandlerTests
 
         // Assert
         result.IsSuccess.Should().BeFalse();
+        result.Message.Should().Be(expectedError);
         result.Data.Should().BeNull();
-        result.Message.Should().Be(ValidationKeys.ClubTeamNotFound);
     }
 }

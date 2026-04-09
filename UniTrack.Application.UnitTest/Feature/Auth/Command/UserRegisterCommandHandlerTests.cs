@@ -1,16 +1,19 @@
-﻿using System;
+﻿using Moq;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Moq;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.Localization;
+using UniTrack.Application.Abstraction.Services.Transaction;
 using UniTrack.Application.Abstraction.Services.UserHub;
+using UniTrack.Application.Abstraction.Services.VerificationCode;
 using UniTrack.Application.Common.Constants;
 using UniTrack.Application.Feature.Auth.Command;
 using UniTrack.Domain.Entities;
 using UniTrack.Domain.Enums;
 using Xunit;
+using FluentAssertions;
 
 public class UserRegisterCommandHandlerTests
 {
@@ -19,7 +22,8 @@ public class UserRegisterCommandHandlerTests
     private readonly Mock<IPasswordHasher<User>> _passwordHasher;
     private readonly Mock<IUserRegisterCountService> _countService;
     private readonly Mock<ILocalizationService> _localizationService;
-
+    private readonly Mock<ITransactionService> _transactionService;
+    private readonly Mock<IVerificationCodeService> _verificationCodeService;
     private readonly UserRegisterCommandHandler _handler;
 
     public UserRegisterCommandHandlerTests()
@@ -29,110 +33,111 @@ public class UserRegisterCommandHandlerTests
         _passwordHasher = new Mock<IPasswordHasher<User>>();
         _countService = new Mock<IUserRegisterCountService>();
         _localizationService = new Mock<ILocalizationService>();
+        _transactionService = new Mock<ITransactionService>();
+        _verificationCodeService = new Mock<IVerificationCodeService>();
 
         _handler = new UserRegisterCommandHandler(
             _userRepository.Object,
             _passwordHasher.Object,
             _userDetailRepository.Object,
             _countService.Object,
-            _localizationService.Object);
+            _transactionService.Object,
+            _localizationService.Object,
+            _verificationCodeService.Object);
     }
 
-    private UserRegisterCommand CreateValidCommand()
+    private UserRegisterCommand CreateValidCommand() => new()
     {
-        return new UserRegisterCommand
-        {
-            Name = "Ali",
-            Surname = "Veli",
-            Email = "user@test.com",
-            Password = "123456",
-            DepartmentId = 1,
-            UniversityId = Guid.NewGuid(),
-            CityId = 34,
-            Gender = Gender.Male,
-            BirthDate = new DateOnly(2002, 5, 10),
-            Graduaiton_Date = DateTime.UtcNow.AddYears(2)
-        };
-    }
+        Name = "Bedirhan",
+        Surname = "Korkmaz",
+        Email = "test@uni.com",
+        Password = "securePassword123",
+        UniversityId = Guid.NewGuid(),
+        DepartmentId = 1,
+        CityId = 34,
+        Gender = Gender.Male,
+        BirthDate = new DateOnly(2002, 1, 1),
+        Graduaiton_Date = DateTime.UtcNow.AddYears(1)
+    };
 
-    // --------------------------------------------------
-    // ❌ EMAIL ZATEN VAR
-    // --------------------------------------------------
     [Fact]
-    public async Task Handle_Should_Fail_When_Email_Already_Exists()
+    public async Task Handle_UserExistsAndVerified_ReturnsFail()
     {
         // Arrange
         var command = CreateValidCommand();
+        var existingUser = new User { Email = command.Email, IsVerified = true };
 
-        _userRepository
-            .Setup(x => x.GetByEmailAsync(command.Email))
-            .ReturnsAsync(new User());
-
-        _localizationService
-            .Setup(x => x.Get(ValidationKeys.UserEmailAlreadyExists))
-            .ReturnsAsync("User email already exists");
+        _userRepository.Setup(x => x.GetByEmailAsync(command.Email)).ReturnsAsync(existingUser);
+        _localizationService.Setup(x => x.Get(ValidationKeys.UserEmailAlreadyExists)).ReturnsAsync("Email zaten var");
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        Assert.False(result.IsSuccess);
-        Assert.Equal("User email already exists", result.Message);
-
-        _userRepository.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Never);
-        _userDetailRepository.Verify(x => x.AddAsync(It.IsAny<UserDetail>()), Times.Never);
-        _countService.Verify(x => x.NotifyUserCountUpdatedAsync(), Times.Never);
+        result.IsSuccess.Should().BeFalse();
+        result.Message.Should().Be("Email zaten var");
+        _transactionService.Verify(x => x.Rollback(), Times.Once);
     }
 
-    // --------------------------------------------------
-    // ✅ BAŞARILI REGISTER
-    // --------------------------------------------------
     [Fact]
-    public async Task Handle_Should_Register_User_Successfully()
+    public async Task Handle_UserExistsButNotVerified_UpdatesAndSendsNewCode()
     {
         // Arrange
         var command = CreateValidCommand();
+        var existingUser = new User { Id = Guid.NewGuid(), Email = command.Email, IsVerified = false };
+        var existingDetail = new UserDetail { UserId = existingUser.Id };
 
-        _userRepository
-            .Setup(x => x.GetByEmailAsync(command.Email))
-            .ReturnsAsync((User)null);
-
-        _passwordHasher
-            .Setup(x => x.HashPassword(null, command.Password))
-            .Returns("hashed_password");
-
-        _localizationService
-            .Setup(x => x.Get(ValidationKeys.UserRegisterSuccess))
-            .ReturnsAsync("User registered successfully");
-
-        _countService
-            .Setup(x => x.NotifyUserCountUpdatedAsync())
-            .Returns(Task.CompletedTask);
+        _userRepository.Setup(x => x.GetByEmailAsync(command.Email)).ReturnsAsync(existingUser);
+        _userDetailRepository.Setup(x => x.GetByUserIdAsync(existingUser.Id)).ReturnsAsync(existingDetail);
+        _passwordHasher.Setup(x => x.HashPassword(null, command.Password)).Returns("new_hashed_password");
+        _localizationService.Setup(x => x.Get(ValidationKeys.UserRegisterSuccess)).ReturnsAsync("Başarılı");
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        Assert.True(result.IsSuccess);
-        Assert.Equal("User registered successfully", result.Message);
+        result.IsSuccess.Should().BeTrue();
+        _userRepository.Verify(x => x.UpdateAsync(It.Is<User>(u => u.Password == "new_hashed_password")), Times.Once);
+        _userDetailRepository.Verify(x => x.UpdateAsync(It.IsAny<UserDetail>()), Times.Once);
+        _verificationCodeService.Verify(x => x.GenerateAndSendCodeAsync(command.Email, VerificationType.UserRegistration), Times.Once);
+        _transactionService.Verify(x => x.Commit(), Times.Once);
+    }
 
-        _userRepository.Verify(x => x.AddAsync(It.Is<User>(u =>
-            u.Email == command.Email &&
-            u.Password == "hashed_password" &&
-            u.Role == Role.User
-        )), Times.Once);
+    [Fact]
+    public async Task Handle_NewUserRegistration_Success()
+    {
+        // Arrange
+        var command = CreateValidCommand();
+        _userRepository.Setup(x => x.GetByEmailAsync(command.Email)).ReturnsAsync((User)null);
+        _passwordHasher.Setup(x => x.HashPassword(null, command.Password)).Returns("hashed_password");
+        _localizationService.Setup(x => x.Get(ValidationKeys.UserRegisterSuccess)).ReturnsAsync("Kayıt Başarılı");
 
-        _userDetailRepository.Verify(x => x.AddAsync(It.Is<UserDetail>(d =>
-            d.Name == command.Name &&
-            d.Surname == command.Surname &&
-            d.UniverstiyId == command.UniversityId &&
-            d.DepartmentId == command.DepartmentId &&
-            d.CityId == command.CityId &&
-            d.Gender == command.Gender &&
-            d.BirthDate == command.BirthDate &&
-            d.Graduaiton_Date == command.Graduaiton_Date
-        )), Times.Once);
+        // Act
+        var result = await _handler.Handle(command, CancellationToken.None);
 
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        _userRepository.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Once);
+        _userDetailRepository.Verify(x => x.AddAsync(It.IsAny<UserDetail>()), Times.Once);
         _countService.Verify(x => x.NotifyUserCountUpdatedAsync(), Times.Once);
+        _verificationCodeService.Verify(x => x.GenerateAndSendCodeAsync(command.Email, VerificationType.UserRegistration), Times.Once);
+        _transactionService.Verify(x => x.Commit(), Times.Once);
+    }
+
+    [Fact]
+    public async Task Handle_GeneralException_RollbacksAndReturnsFail()
+    {
+        // Arrange
+        var command = CreateValidCommand();
+        _userRepository.Setup(x => x.GetByEmailAsync(command.Email)).ThrowsAsync(new Exception("DB Error"));
+        _localizationService.Setup(x => x.Get("İşlem başarısız")).ReturnsAsync("Hata oluştu");
+
+        // Act
+        var result = await _handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.Message.Should().Be("Hata oluştu");
+        _transactionService.Verify(x => x.Rollback(), Times.Once);
     }
 }

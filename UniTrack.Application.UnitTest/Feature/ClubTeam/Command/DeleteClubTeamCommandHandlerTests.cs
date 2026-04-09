@@ -32,7 +32,7 @@ public class DeleteClubTeamCommandHandlerTests
         {
             Id = clubTeamId,
             ClubId = clubId,
-            UserDetailId = Guid.NewGuid(),
+            UserId = Guid.NewGuid(),
             Title = "Takım Lideri"
         };
 
@@ -110,7 +110,7 @@ public class DeleteClubTeamCommandHandlerTests
         {
             Id = clubTeamId,
             ClubId = wrongClubId, // Farklı club
-            UserDetailId = Guid.NewGuid(),
+            UserId = Guid.NewGuid(),
             Title = "Takım Lideri"
         };
 

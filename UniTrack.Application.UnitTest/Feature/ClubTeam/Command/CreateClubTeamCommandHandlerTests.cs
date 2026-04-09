@@ -31,7 +31,7 @@ public class CreateClubTeamCommandHandlerTests
     public async Task Handle_Should_Fail_When_User_Not_Authorized()
     {
         // Arrange
-        var command = new CreateClubTeamCommand { ClubId = Guid.NewGuid(), UserDetailId = Guid.NewGuid(), Title = "Team A" };
+        var command = new CreateClubTeamCommand { ClubId = Guid.NewGuid(), UserId = Guid.NewGuid(), Title = "Team A" };
         _currentUserServices.Setup(x => x.CurrentClub()).Returns((Guid?)null);
         _currentUserServices.Setup(x => x.Role()).Returns(Role.User);
         _localizationService.Setup(x => x.Get(ValidationKeys.NotAuthorized)).ReturnsAsync("Unauthorized");
@@ -64,7 +64,7 @@ public class CreateClubTeamCommandHandlerTests
         _localizationService.Setup(x => x.Get(ValidationKeys.UserMustFollowClub))
             .ReturnsAsync("User must follow the club");
 
-        var command = new CreateClubTeamCommand { ClubId = clubId, UserDetailId = userDetailId, Title = "Team A" };
+        var command = new CreateClubTeamCommand { ClubId = clubId, UserId = userDetailId, Title = "Team A" };
         var handler = CreateHandler();
 
         // Act
@@ -93,7 +93,7 @@ public class CreateClubTeamCommandHandlerTests
         _localizationService.Setup(x => x.Get(ValidationKeys.ClubTeamCreatedSuccess))
             .ReturnsAsync("Club team created successfully");
 
-        var command = new CreateClubTeamCommand { ClubId = clubId, UserDetailId = userDetailId, Title = "Team A" };
+        var command = new CreateClubTeamCommand { ClubId = clubId, UserId = userDetailId, Title = "Team A" };
         var handler = CreateHandler();
 
         // Act
@@ -104,7 +104,7 @@ public class CreateClubTeamCommandHandlerTests
         result.Message.Should().Be("Club team created successfully");
 
         _clubTeamRepository.Verify(x => x.AddAsync(It.Is<ClubTeam>(
-            ct => ct.ClubId == clubId && ct.UserDetailId == userDetailId && ct.Title == "Team A"
+            ct => ct.ClubId == clubId && ct.UserId == userDetailId && ct.Title == "Team A"
         )), Times.Once);
     }
 }

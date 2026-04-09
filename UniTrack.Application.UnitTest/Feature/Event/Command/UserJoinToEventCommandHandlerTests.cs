@@ -76,7 +76,6 @@ public class UserJoinToEventCommandHandlerTests
             UserId = userId,
             Name = "Ali",
             Surname = "Veli",
-            PhoneNumber = 05555555,
             UniverstiyId = eventEntity.Club.UniversityId,
             User = new User { Email = "ali@unitrack.com" },
             University = new University { Name = "Uni" },

@@ -12,45 +12,49 @@ using Xunit;
 
 public class GetClubAllEventJoinerCountQueryHandlerTests
 {
-    private readonly Mock<IEventUserRepository> _eventUserRepository;
-    private readonly Mock<ICurrentUserServices> _currentUserServices;
-    private readonly Mock<ILocalizationService> _localizationService;
-
+    private readonly Mock<IEventUserRepository> _eventUserRepositoryMock;
+    private readonly Mock<ICurrentUserServices> _currentUserServicesMock;
+    private readonly Mock<ILocalizationService> _localizationServiceMock;
     private readonly GetClubAllEventJoinerCountQueryHandler _handler;
 
     public GetClubAllEventJoinerCountQueryHandlerTests()
     {
-        _eventUserRepository = new Mock<IEventUserRepository>();
-        _currentUserServices = new Mock<ICurrentUserServices>();
-        _localizationService = new Mock<ILocalizationService>();
+        _eventUserRepositoryMock = new Mock<IEventUserRepository>();
+        _currentUserServicesMock = new Mock<ICurrentUserServices>();
+        _localizationServiceMock = new Mock<ILocalizationService>();
 
         _handler = new GetClubAllEventJoinerCountQueryHandler(
-            _eventUserRepository.Object,
-            _currentUserServices.Object,
-            _localizationService.Object);
+            _eventUserRepositoryMock.Object,
+            _currentUserServicesMock.Object,
+            _localizationServiceMock.Object);
     }
 
-    // ----------------------------------------------------
-    // ❌ Unauthorized (club null or mismatch)
-    // ----------------------------------------------------
     [Fact]
-    public async Task Handle_ClubIdMismatch_ReturnsUnauthorized()
+    public async Task Handle_WhenNotLoggedIn_ReturnsUnauthorized()
+    {
+        // Arrange
+        _currentUserServicesMock.Setup(x => x.CurrentClub()).Returns((Guid?)null);
+        _localizationServiceMock.Setup(x => x.Get(ValidationKeys.NotAuthorized)).ReturnsAsync("Unauthorized");
+
+        var query = new GetClubAllEventJoinerCountQuery(); // Parametresiz oluşturuldu
+
+        // Act
+        var result = await _handler.Handle(query, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.Message.Should().Be("Unauthorized");
+    }
+
+    [Fact]
+    public async Task Handle_WhenJoinerCountIsZero_ReturnsFail()
     {
         // Arrange
         var clubId = Guid.NewGuid();
+        _currentUserServicesMock.Setup(x => x.CurrentClub()).Returns(clubId);
+        _eventUserRepositoryMock.Setup(x => x.GetTotalJoinerCountByClubIdAsync(clubId)).ReturnsAsync(0);
 
-        _currentUserServices
-            .Setup(x => x.CurrentClub())
-            .Returns(Guid.NewGuid()); // farklı club
-
-        _localizationService
-            .Setup(x => x.Get(ValidationKeys.NotAuthorized))
-            .ReturnsAsync("Not Authorized");
-
-        var query = new GetClubAllEventJoinerCountQuery
-        {
-            ClubId = clubId
-        };
+        var query = new GetClubAllEventJoinerCountQuery();
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -58,68 +62,23 @@ public class GetClubAllEventJoinerCountQueryHandlerTests
         // Assert
         result.IsSuccess.Should().BeFalse();
         result.Data.Should().Be(0);
-        result.Message.Should().Be("Not Authorized");
     }
 
-    // ----------------------------------------------------
-    // ❌ Joiner count = 0
-    // ----------------------------------------------------
     [Fact]
-    public async Task Handle_JoinerCountZero_ReturnsFail()
+    public async Task Handle_WhenSuccess_ReturnsCount()
     {
         // Arrange
         var clubId = Guid.NewGuid();
+        _currentUserServicesMock.Setup(x => x.CurrentClub()).Returns(clubId);
+        _eventUserRepositoryMock.Setup(x => x.GetTotalJoinerCountByClubIdAsync(clubId)).ReturnsAsync(15);
 
-        _currentUserServices
-            .Setup(x => x.CurrentClub())
-            .Returns(clubId);
-
-        _eventUserRepository
-            .Setup(x => x.GetTotalJoinerCountByClubIdAsync(clubId))
-            .ReturnsAsync(0);
-
-        var query = new GetClubAllEventJoinerCountQuery
-        {
-            ClubId = clubId
-        };
-
-        // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
-
-        // Assert
-        result.IsSuccess.Should().BeFalse();
-        result.Data.Should().Be(0);
-        result.Message.Should().BeNull();
-    }
-
-    // ----------------------------------------------------
-    // ✅ Success
-    // ----------------------------------------------------
-    [Fact]
-    public async Task Handle_JoinerCountGreaterThanZero_ReturnsSuccess()
-    {
-        // Arrange
-        var clubId = Guid.NewGuid();
-
-        _currentUserServices
-            .Setup(x => x.CurrentClub())
-            .Returns(clubId);
-
-        _eventUserRepository
-            .Setup(x => x.GetTotalJoinerCountByClubIdAsync(clubId))
-            .ReturnsAsync(25);
-
-        var query = new GetClubAllEventJoinerCountQuery
-        {
-            ClubId = clubId
-        };
+        var query = new GetClubAllEventJoinerCountQuery();
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        result.Data.Should().Be(25);
-        result.Message.Should().BeNull();
+        result.Data.Should().Be(15);
     }
 }

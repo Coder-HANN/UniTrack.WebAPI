@@ -1,101 +1,127 @@
-﻿using Moq;
+﻿using FluentAssertions;
+using Moq;
 using UniTrack.Application.Abstraction.Repositories;
-using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
+using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
+using UniTrack.Application.DTOs.Event;
 using UniTrack.Application.Feature.Event.Query;
 using UniTrack.Domain.Entities;
 using Xunit;
 
 public class GetClubFavoriteThreeEventsQueryHandlerTests
 {
-    private readonly Mock<ICurrentUserServices> _currentUserMock;
-    private readonly Mock<IEventRepository> _eventRepositoryMock;
-    private readonly Mock<ICommentRepository> _commentRepositoryMock;
-    private readonly GetClubFavoriteThreeEventsQueryHandler _handler;
+    private readonly Mock<IEventRepository> _eventRepositoryMock = new();
+    private readonly Mock<ICommentRepository> _commentRepositoryMock = new();
+    private readonly Mock<ILocalizationService> _localizationMock = new();
 
-    public GetClubFavoriteThreeEventsQueryHandlerTests()
-    {
-        _currentUserMock = new Mock<ICurrentUserServices>();
-        _eventRepositoryMock = new Mock<IEventRepository>();
-        _commentRepositoryMock = new Mock<ICommentRepository>();
-
-        _handler = new GetClubFavoriteThreeEventsQueryHandler(
-            _currentUserMock.Object,
+    private GetClubFavoriteThreeEventsQueryHandler CreateHandler()
+        => new(
             _eventRepositoryMock.Object,
-            _commentRepositoryMock.Object
+            _commentRepositoryMock.Object,
+            _localizationMock.Object
         );
-    }
 
     [Fact]
-    public async Task Handle_ShouldFail_WhenUnauthorized()
+    public async Task Handle_ShouldReturnSuccessWithEmptyData_WhenNoEventsFound()
     {
-        _currentUserMock.Setup(x => x.CurrentClub()).Returns((Guid?)null);
-        _currentUserMock.Setup(x => x.CurrentUser()).Returns((Guid?)null);
-
-        var result = await _handler.Handle(
-            new GetClubFavoriteThreeEventsQuery { ClubId = Guid.NewGuid() },
-            CancellationToken.None);
-
-        Assert.False(result.IsSuccess);
-        Assert.Null(result.Data);
-    }
-
-    [Fact]
-    public async Task Handle_ShouldFail_WhenNoFavoriteEvents()
-    {
+        // Arrange
         var clubId = Guid.NewGuid();
-        var userId = Guid.NewGuid();
+        _eventRepositoryMock
+            .Setup(x => x.GetTopThreeFavoriteEventsByClubIdAsync(clubId))
+            .ReturnsAsync(new List<Event>()); // Boş liste dönüyor
 
-        _currentUserMock.Setup(x => x.CurrentClub()).Returns(clubId);
-        _currentUserMock.Setup(x => x.CurrentUser()).Returns(userId);
+        _localizationMock.Setup(x => x.Get(ValidationKeys.EventNotFound))
+            .ReturnsAsync("Etkinlik bulunamadı");
+
+        var handler = CreateHandler();
+
+        // Act
+        var result = await handler.Handle(new GetClubFavoriteThreeEventsQuery { ClubId = clubId }, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue(); // Handler kodunda boş listede IsSuccess = true dönüyor
+        result.Data.Should().BeNull();
+        result.Message.Should().Be("Etkinlik bulunamadı");
+    }
+
+    [Fact]
+    public async Task Handle_ShouldReturnFavoriteEvents_WithCorrectMapping()
+    {
+        // Arrange
+        var clubId = Guid.NewGuid();
+        var eventId = Guid.NewGuid();
+
+        var favoriteEvents = new List<Event>
+        {
+            new Event
+            {
+                Id = eventId,
+                Title = "Yazılım Kampı",
+                Joiner = 50,
+                Quota = 100,
+                StartDate = DateTime.Now.AddDays(1),
+                Location = "İstanbul",
+                Images = new List<EventImage>
+                {
+                    new EventImage { ImageUrl = "cover.jpg", IsCover = true, Order = 1 }
+                }
+            }
+        };
+
+        // Tuple (AverageRating, PointsCount)
+        var ratingsDict = new Dictionary<Guid, (float, int)>
+        {
+            { eventId, (4.8f, 25) }
+        };
 
         _eventRepositoryMock
             .Setup(x => x.GetTopThreeFavoriteEventsByClubIdAsync(clubId))
-            .ReturnsAsync(new List<Event>());
-
-        var result = await _handler.Handle(
-            new GetClubFavoriteThreeEventsQuery { ClubId = clubId },
-            CancellationToken.None);
-
-        Assert.False(result.IsSuccess);
-        Assert.Null(result.Data);
-    }
-
-    [Fact]
-    public async Task Handle_ShouldReturnFavoriteEventsSuccessfully()
-    {
-        var clubId = Guid.NewGuid();
-        var userId = Guid.NewGuid();
-
-        var events = new List<Event>
-        {
-            new Event { Id = Guid.NewGuid(), Title = "Event 1", Joiner = 10, Quota = 100 },
-            new Event { Id = Guid.NewGuid(), Title = "Event 2", Joiner = 8, Quota = 80 },
-            new Event { Id = Guid.NewGuid(), Title = "Event 3", Joiner = 6, Quota = 60 }
-        };
-
-        var ratings = new Dictionary<Guid, (float, int)>
-        {
-            { events[0].Id, (4.5f, 10) },
-            { events[1].Id, (4.2f, 8) },
-            { events[2].Id, (3.9f, 6) }
-        };
-
-        _currentUserMock.Setup(x => x.CurrentClub()).Returns(clubId);
-        _currentUserMock.Setup(x => x.CurrentUser()).Returns(userId);
-
-        _eventRepositoryMock
-            .Setup(x => x.GetTopThreeFavoriteEventsByClubIdAsync(clubId))
-            .ReturnsAsync(events);
+            .ReturnsAsync(favoriteEvents);
 
         _commentRepositoryMock
             .Setup(x => x.GetEventsRatingsSummaryAsync(It.IsAny<List<Guid>>()))
-            .ReturnsAsync(ratings);
+            .ReturnsAsync(ratingsDict);
 
-        var result = await _handler.Handle(
-            new GetClubFavoriteThreeEventsQuery { ClubId = clubId },
-            CancellationToken.None);
+        var handler = CreateHandler();
 
-        Assert.True(result.IsSuccess);
-        Assert.Equal(3, result.Data.Count);
+        // Act
+        var result = await handler.Handle(new GetClubFavoriteThreeEventsQuery { ClubId = clubId }, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Data.Should().NotBeNull();
+        result.Data.Should().HaveCount(1);
+
+        var dto = result.Data.First();
+        dto.EventName.Should().Be("Yazılım Kampı");
+        dto.Points.Should().Be(4.8f);
+        dto.PointsCount.Should().Be(25);
+        dto.CoverImageUrl.Should().Be("cover.jpg");
+    }
+
+    [Fact]
+    public async Task Handle_ShouldUseDefaultRatings_WhenNoRatingsExistInDictionary()
+    {
+        // Arrange
+        var clubId = Guid.NewGuid();
+        var eventId = Guid.NewGuid();
+        var favoriteEvents = new List<Event> { new Event { Id = eventId, Title = "No Rating Event" } };
+
+        _eventRepositoryMock.Setup(x => x.GetTopThreeFavoriteEventsByClubIdAsync(clubId)).ReturnsAsync(favoriteEvents);
+
+        // Dictionary'de bu event id yok
+        _commentRepositoryMock.Setup(x => x.GetEventsRatingsSummaryAsync(It.IsAny<List<Guid>>()))
+            .ReturnsAsync(new Dictionary<Guid, (float, int)>());
+
+        var handler = CreateHandler();
+
+        // Act
+        var result = await handler.Handle(new GetClubFavoriteThreeEventsQuery { ClubId = clubId }, CancellationToken.None);
+
+        // Assert
+        var dto = result.Data.First();
+        dto.Points.Should().Be(0f); // Handler: GetValueOrDefault(e.Id, (0f, 0))
+        dto.PointsCount.Should().Be(0);
     }
 }

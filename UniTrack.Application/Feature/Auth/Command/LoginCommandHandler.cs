@@ -67,7 +67,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ServiceResponse
                     Data = new LoginResponseDTO
                     {
 
-                        Expiration = DateTime.UtcNow.AddHours(5),
+                        Expiration = DateTime.UtcNow.AddDays(30),
                         Role = Role.User.ToString().ToLower(),
                         UserId = user.Id.ToString(),
                         FullName = $"{name} {surname}".Trim(),

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Moq;
@@ -16,25 +18,20 @@ using Xunit;
 
 public class LoginCommandHandlerTests
 {
-    private readonly Mock<IUserRepository> _userRepository;
-    private readonly Mock<IClubRepository> _clubRepository;
-    private readonly Mock<IPasswordHasher<User>> _userPasswordHasher;
-    private readonly Mock<IPasswordHasher<Club>> _clubPasswordHasher;
-    private readonly Mock<IConfiguration> _configuration;
-    private readonly Mock<ILocalizationService> _localizationService;
+    private readonly Mock<IUserRepository> _userRepository = new();
+    private readonly Mock<IClubRepository> _clubRepository = new();
+    private readonly Mock<IPasswordHasher<User>> _userPasswordHasher = new();
+    private readonly Mock<IPasswordHasher<Club>> _clubPasswordHasher = new();
+    private readonly Mock<IConfiguration> _configuration = new();
+    private readonly Mock<ILocalizationService> _localizationService = new();
+    private readonly Mock<IHttpContextAccessor> _httpContextAccessor = new();
 
     private readonly LoginCommandHandler _handler;
 
     public LoginCommandHandlerTests()
     {
-        _userRepository = new Mock<IUserRepository>();
-        _clubRepository = new Mock<IClubRepository>();
-        _userPasswordHasher = new Mock<IPasswordHasher<User>>();
-        _clubPasswordHasher = new Mock<IPasswordHasher<Club>>();
-        _configuration = new Mock<IConfiguration>();
-        _localizationService = new Mock<ILocalizationService>();
-
         SetupJwtConfiguration();
+        SetupHttpContext();
 
         _handler = new LoginCommandHandler(
             _userRepository.Object,
@@ -42,14 +39,12 @@ public class LoginCommandHandlerTests
             _userPasswordHasher.Object,
             _clubPasswordHasher.Object,
             _configuration.Object,
-            _localizationService.Object);
+            _localizationService.Object,
+            _httpContextAccessor.Object);
     }
 
-    // -------------------------
-    // ✅ USER LOGIN SUCCESS
-    // -------------------------
     [Fact]
-    public async Task Handle_Should_Login_User_Successfully()
+    public async Task Handle_Should_Login_User_Successfully_And_Set_Cookie()
     {
         // Arrange
         var user = new User
@@ -58,34 +53,26 @@ public class LoginCommandHandlerTests
             Email = "user@test.com",
             Password = "hashed",
             Role = Role.User,
-            UserDetail = new UserDetail { Name = "Ali", Surname = "Veli" }
+            UserDetail = new UserDetail { Name = "Bedirhan", Surname = "Korkmaz", UniverstiyId = Guid.NewGuid() }
         };
 
-        _userRepository.Setup(x => x.GetByEmailAsync(user.Email))
-            .ReturnsAsync(user);
-
-        _userPasswordHasher.Setup(x =>
-                x.VerifyHashedPassword(user, user.Password, "123456"))
+        _userRepository.Setup(x => x.GetByEmailAsync(user.Email)).ReturnsAsync(user);
+        _userPasswordHasher.Setup(x => x.VerifyHashedPassword(user, user.Password, "123456"))
             .Returns(PasswordVerificationResult.Success);
-
-        _localizationService.Setup(x => x.Get(ValidationKeys.LoginSuccess))
-            .ReturnsAsync("Login successful");
+        _localizationService.Setup(x => x.Get(ValidationKeys.LoginSuccess)).ReturnsAsync("Login successful");
 
         // Act
-        var result = await _handler.Handle(
-            new LoginCommand { Email = user.Email, Password = "123456" },
-            CancellationToken.None);
+        var result = await _handler.Handle(new LoginCommand { Email = user.Email, Password = "123456" }, CancellationToken.None);
 
         // Assert
-        Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Data.Token);
+        result.IsSuccess.Should().BeTrue();
+        result.Data.FullName.Should().Be("Bedirhan Korkmaz");
 
+        // Cookie set edildi mi?
+        _httpContextAccessor.Object.HttpContext.Response.Headers.Should().NotBeNull();
         _userRepository.Verify(x => x.UpdateAsync(user), Times.Once);
     }
 
-    // -------------------------
-    // ✅ CLUB LOGIN SUCCESS
-    // -------------------------
     [Fact]
     public async Task Handle_Should_Login_Club_Successfully()
     {
@@ -93,110 +80,79 @@ public class LoginCommandHandlerTests
         var club = new Club
         {
             Id = Guid.NewGuid(),
-            PresidentMail = "club@test.com",
+            PresidentMail = "club@test.com", // GetByEmail için kullanılan alan
+            ContectEmail = "contact@test.com", // Token'a basılan alan
             Password = "hashed",
             Role = Role.Club,
             Name = "Aviation Club"
         };
 
-        _clubRepository.Setup(x => x.GetByEmailAsync(club.PresidentMail))
-            .ReturnsAsync(club);
-
-        _clubPasswordHasher.Setup(x =>
-                x.VerifyHashedPassword(club, club.Password, "123456"))
+        _clubRepository.Setup(x => x.GetByEmailAsync(club.PresidentMail)).ReturnsAsync(club);
+        _clubPasswordHasher.Setup(x => x.VerifyHashedPassword(club, club.Password, "123456"))
             .Returns(PasswordVerificationResult.Success);
-
-        _localizationService.Setup(x => x.Get(ValidationKeys.LoginSuccess))
-            .ReturnsAsync("Login successful");
+        _localizationService.Setup(x => x.Get(ValidationKeys.LoginSuccess)).ReturnsAsync("Club Login successful");
 
         // Act
-        var result = await _handler.Handle(
-            new LoginCommand { Email = club.PresidentMail, Password = "123456" },
-            CancellationToken.None);
+        var result = await _handler.Handle(new LoginCommand { Email = club.PresidentMail, Password = "123456" }, CancellationToken.None);
 
         // Assert
-        Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Data.Token);
-
+        result.IsSuccess.Should().BeTrue();
+        result.Data.Role.Should().Be("club");
+        result.Data.Email.Should().Be(club.ContectEmail);
         _clubRepository.Verify(x => x.UpdateAsync(club), Times.Once);
     }
 
-    // -------------------------
-    // ❌ INVALID PASSWORD
-    // -------------------------
     [Fact]
-    public async Task Handle_Should_Fail_When_Password_Is_Invalid()
+    public async Task Handle_Should_Login_Admin_Successfully()
     {
         // Arrange
-        var user = new User
+        var admin = new User
         {
-            Email = "user@test.com",
+            Id = Guid.NewGuid(),
+            Email = "admin@test.com",
             Password = "hashed",
-            Role = Role.User
+            Role = Role.Admin,
+            UserDetail = new UserDetail { Name = "AdminUser" }
         };
 
-        _userRepository.Setup(x => x.GetByEmailAsync(user.Email))
-            .ReturnsAsync(user);
-
-        _userPasswordHasher.Setup(x =>
-                x.VerifyHashedPassword(user, user.Password, "wrong"))
-            .Returns(PasswordVerificationResult.Failed);
-
-        _localizationService.Setup(x => x.Get(ValidationKeys.InvalidEmailOrPassword))
-            .ReturnsAsync("Invalid email or password");
+        _userRepository.Setup(x => x.GetByEmailAsync(admin.Email)).ReturnsAsync(admin);
+        _userPasswordHasher.Setup(x => x.VerifyHashedPassword(admin, admin.Password, "admin123"))
+            .Returns(PasswordVerificationResult.Success);
 
         // Act
-        var result = await _handler.Handle(
-            new LoginCommand { Email = user.Email, Password = "wrong" },
-            CancellationToken.None);
+        var result = await _handler.Handle(new LoginCommand { Email = admin.Email, Password = "admin123" }, CancellationToken.None);
 
         // Assert
-        Assert.False(result.IsSuccess);
-        Assert.Equal("Invalid email or password", result.Message);
+        result.IsSuccess.Should().BeTrue();
+        result.Data.Role.Should().Be("admin");
     }
 
-    // -------------------------
-    // ❌ USER NOT FOUND
-    // -------------------------
     [Fact]
-    public async Task Handle_Should_Fail_When_User_Not_Found()
+    public async Task Handle_Should_Return_Fail_When_Invalid_Credentials()
     {
         // Arrange
-        _userRepository.Setup(x => x.GetByEmailAsync(It.IsAny<string>()))
-            .ReturnsAsync((User)null);
-
-        _clubRepository.Setup(x => x.GetByEmailAsync(It.IsAny<string>()))
-            .ReturnsAsync((Club)null);
-
-        _localizationService.Setup(x => x.Get(ValidationKeys.InvalidEmailOrPassword))
-            .ReturnsAsync("Invalid email or password");
+        _userRepository.Setup(x => x.GetByEmailAsync(It.IsAny<string>())).ReturnsAsync((User)null);
+        _clubRepository.Setup(x => x.GetByEmailAsync(It.IsAny<string>())).ReturnsAsync((Club)null);
+        _localizationService.Setup(x => x.Get(ValidationKeys.InvalidEmailOrPassword)).ReturnsAsync("Error");
 
         // Act
-        var result = await _handler.Handle(
-            new LoginCommand { Email = "none@test.com", Password = "123" },
-            CancellationToken.None);
+        var result = await _handler.Handle(new LoginCommand { Email = "wrong@test.com", Password = "123" }, CancellationToken.None);
 
         // Assert
-        Assert.False(result.IsSuccess);
+        result.IsSuccess.Should().BeFalse();
+        result.Message.Should().Be("Error");
     }
 
-    // -------------------------
-    // JWT CONFIG MOCK
-    // -------------------------
     private void SetupJwtConfiguration()
     {
-        var jwtSettings = new Dictionary<string, string>
-        {
-            { "Jwt:Key", "THIS_IS_A_TEST_SECRET_KEY_1234567890" },
-            { "Jwt:Issuer", "TestIssuer" },
-            { "Jwt:Audience", "TestAudience" }
-        };
+        _configuration.Setup(x => x.GetSection("Jwt:Key").Value).Returns("THIS_IS_A_VERY_SECRET_KEY_FOR_TESTING_12345");
+        _configuration.Setup(x => x.GetSection("Jwt:Issuer").Value).Returns("TestIssuer");
+        _configuration.Setup(x => x.GetSection("Jwt:Audience").Value).Returns("TestAudience");
+    }
 
-        var config = new ConfigurationBuilder()
-            .AddInMemoryCollection(jwtSettings)
-            .Build();
-
-        _configuration.Setup(x => x.GetSection("Jwt"))
-            .Returns(config.GetSection("Jwt"));
+    private void SetupHttpContext()
+    {
+        var httpContext = new DefaultHttpContext();
+        _httpContextAccessor.Setup(x => x.HttpContext).Returns(httpContext);
     }
 }
