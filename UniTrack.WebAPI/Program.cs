@@ -213,8 +213,6 @@ builder.Services.AddSwaggerDocumentation();
 var app = builder.Build();
 
 
-
-// Seed Data
 await using (var scope = app.Services.CreateAsyncScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<UniTrackDbContext>();

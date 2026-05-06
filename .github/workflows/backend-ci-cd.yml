@@ -21,10 +21,12 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
-          context: . # En dış dizinden (UniTrack-Backend) başla
-          file: ./Dockerfile # Kök dizindeki Dockerfile'ı kullan
+          context: . 
+          file: ./Dockerfile
           push: true
-          # İmajı hem versiyonlu (prod) hem de en güncel (latest) olarak işaretle
+  
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/unitrack-backend:prod
             ${{ secrets.DOCKERHUB_USERNAME }}/unitrack-backend:latest
+
+            

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UniTrack.Application.Common;
 using UniTrack.Application.DTOs.Auth;
@@ -27,6 +28,13 @@ namespace UniTrack.WebAPI.Controllers.Public
         public IActionResult Logout()
         {
             Response.Cookies.Delete("auth_token");
+            return Ok();
+        }
+
+        [HttpGet("verify")]
+        [Authorize]
+        public IActionResult Verify()
+        {
             return Ok();
         }
     }
