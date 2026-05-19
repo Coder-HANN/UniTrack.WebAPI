@@ -19,5 +19,6 @@ namespace UniTrack.Domain.Entities
         public ICollection<Report> Reports { get; set; }
         public ICollection<EventQuestion> EventQuestions { get; set; }
         public ClubTeam ClubTeam { get; set; }
+        public ICollection<OpportunityUser> OpportunityUsers { get; set; }
     }
 }

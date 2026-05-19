@@ -405,8 +405,14 @@
   <data name="NotJoinedEvent" xml:space="preserve">
     <value>Bu etkinliğe katılımınız bulunmamaktadır</value>
   </data>
+  <data name="OperationFailed" xml:space="preserve">
+    <value>İşlem başarısız.</value>
+  </data>
   <data name="OperationSuccessful" xml:space="preserve">
     <value>İşlem başarılı.</value>
+  </data>
+  <data name="OpportunityNotFound" xml:space="preserve">
+    <value>Fırsat bulunamadı</value>
   </data>
   <data name="PasswordChangedSuccess" xml:space="preserve">
     <value>Şifreniz başarıyla değiştirildi.</value>

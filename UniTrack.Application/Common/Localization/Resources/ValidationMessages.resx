@@ -405,8 +405,14 @@
   <data name="NotJoinedEvent" xml:space="preserve">
     <value>You are not joined to this event</value>
   </data>
+  <data name="OperationFailed" xml:space="preserve">
+    <value>OperationFailed</value>
+  </data>
   <data name="OperationSuccessful" xml:space="preserve">
     <value>Operation successful.</value>
+  </data>
+  <data name="OpportunityNotFound" xml:space="preserve">
+    <value>OpportunityNotFound</value>
   </data>
   <data name="PasswordChangedSuccess" xml:space="preserve">
     <value>Your password has been changed successfully.</value>

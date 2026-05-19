@@ -19,6 +19,7 @@
     <Folder Include="Feature\Event\Models\" />
     <Folder Include="Feature\Like\Validator\" />
     <Folder Include="Feature\Like\Query\" />
+    <Folder Include="Feature\Opportunity\Validator\" />
     <Folder Include="Feature\Report\Validation\" />
     <Folder Include="Feature\University\Validator\" />
     <Folder Include="Feature\University\Query\" />

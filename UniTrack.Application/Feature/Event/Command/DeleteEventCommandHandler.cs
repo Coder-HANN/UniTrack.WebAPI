@@ -53,6 +53,7 @@ namespace UniTrack.Application.Feature.Event.Command
 
             existingEvent.IsDeleted = true;
             existingEvent.IsActived = false;
+            existingEvent.DeletedDate = DateTimeOffset.UtcNow;
 
             await eventRepository.UpdateAsync(existingEvent);
 

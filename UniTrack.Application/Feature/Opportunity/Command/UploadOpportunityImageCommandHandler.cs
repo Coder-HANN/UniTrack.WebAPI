@@ -7,15 +7,16 @@ using UniTrack.Application.Common.Constants;
 using UniTrack.Application.DTOs.Profile;
 using UniTrack.Domain.Enums;
 
-namespace UniTrack.Application.Feature.EventImage.Command
+namespace UniTrack.Application.Feature.OpportunityImage.Command
 {
-    public class UploadEventImageCommandHandler : IRequestHandler<UploadEventImageCommand, ServiceResponse<UploadProfileImageResponseDTO>>
+    public class UploadOpportunityImageCommandHandler
+        : IRequestHandler<UploadOpportunityImageCommand, ServiceResponse<UploadProfileImageResponseDTO>>
     {
         private readonly ICurrentUserServices _currentUserServices;
         private readonly IStorageService _storageService;
         private readonly ILocalizationService _localizationService;
 
-        public UploadEventImageCommandHandler(
+        public UploadOpportunityImageCommandHandler(
             ICurrentUserServices currentUserServices,
             IStorageService storageService,
             ILocalizationService localizationService)
@@ -25,15 +26,12 @@ namespace UniTrack.Application.Feature.EventImage.Command
             _localizationService = localizationService;
         }
 
-        public async Task<ServiceResponse<UploadProfileImageResponseDTO>> Handle(UploadEventImageCommand request, CancellationToken cancellationToken)
+        public async Task<ServiceResponse<UploadProfileImageResponseDTO>> Handle(UploadOpportunityImageCommand request, CancellationToken cancellationToken)
         {
-            var clubId = _currentUserServices.CurrentClub();
-            if (clubId == null)
-                return ServiceResponse<UploadProfileImageResponseDTO>.Fail(
-                    await _localizationService.Get(ValidationKeys.NotAuthorized));
-
-            if (request.File == null || request.File.Length == 0)
-                return ServiceResponse<UploadProfileImageResponseDTO>.Fail("Görsel verisi boş.");
+            // Admin rol kontrolü
+            var isAdmin = _currentUserServices.Role();
+            if (isAdmin != Role.Admin)
+                return ServiceResponse<UploadProfileImageResponseDTO>.Fail(await _localizationService.Get(ValidationKeys.NotAuthorized));
 
             try
             {
@@ -41,22 +39,23 @@ namespace UniTrack.Application.Feature.EventImage.Command
                 await request.File.CopyToAsync(stream);
                 var bytes = stream.ToArray();
 
-                var fileName = $"event-{clubId}-{Guid.NewGuid()}.png";
+                var fileName = $"opportunity-{Guid.NewGuid()}.png";
                 var contentType = request.File.ContentType ?? "image/png";
 
                 var url = await _storageService.UploadFileAsync(
                     bytes,
                     fileName,
-                    StorageFileType.EventImage,
+                    StorageFileType.OpportunityImage,
                     contentType);
 
                 return ServiceResponse<UploadProfileImageResponseDTO>.Success(
-                    "Görsel başarıyla yüklendi.",
+                    await _localizationService.Get(ValidationKeys.OperationSuccessful),
                     new UploadProfileImageResponseDTO { Url = url });
             }
             catch (Exception)
             {
-                return ServiceResponse<UploadProfileImageResponseDTO>.Fail("Görsel yüklenemedi.");
+                return ServiceResponse<UploadProfileImageResponseDTO>.Fail(
+                    await _localizationService.Get("Görsel yüklenemedi."));
             }
         }
     }

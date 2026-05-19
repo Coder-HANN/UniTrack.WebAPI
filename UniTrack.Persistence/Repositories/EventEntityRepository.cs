@@ -206,7 +206,7 @@ namespace UniTrack.Persistence.Repositories
         public async Task<int> GetCompletedEventCountByClubIdAsync(Guid clubId)
         {
             return await context.Events
-                .Where(e => e.ClubId == clubId)
+                .Where(e => e.ClubId == clubId && e.IsDeleted == false)
                 .CountAsync();
         }
         public async Task<List<Event>> GetCompletedEventsByClubIdAndDateRangeAsync(Guid clubId, DateTimeOffset startDate, DateTimeOffset endDate)

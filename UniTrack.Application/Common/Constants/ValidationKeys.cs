@@ -182,15 +182,19 @@
         public static string NewPasswordCannotBeSameAsOld = "NewPasswordCannotBeSameAsOld";
         public static string NewPasswordRequired = "NewPasswordRequired";
         public static string CurrentPasswordRequired = "CurrentPasswordRequired";
-        internal static string GoogleSheetCreationFailed = "GoogleSheetCreationFailed";
-        internal static string EventCreationFailed = "EventCreationFailed";
-        internal static string EventTimeInvalied = "EventTimeInvalied";
+        public static string GoogleSheetCreationFailed = "GoogleSheetCreationFailed";
+        public static string EventCreationFailed = "EventCreationFailed";
+        public static string EventTimeInvalied = "EventTimeInvalied";
 
         public static string UserAlreadyVerified = "UserAlreadyVerified";
 
         public static string InvalidRequest = "InvalidRequest";
-        internal static string UserVerifiedSuccess = "UserVerifiedSuccess";
+        public static string UserVerifiedSuccess = "UserVerifiedSuccess";
 
         public static string EventAlreadyEnded = "EventAlreadyEndend";
+
+        public static string OpportunityNotFound = "OpportunityNotFound";
+
+        public static string OperationFailed = "OperationFailed";
     }
 }

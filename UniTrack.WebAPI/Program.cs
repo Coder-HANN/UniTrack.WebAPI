@@ -117,6 +117,7 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IAdminNotificationRepository, AdminNotificationRepository>();
 builder.Services.AddScoped<IEventImageRepository, EventImageRepository>();
+builder.Services.AddScoped<IOpportunityRepository, OpportunityRepository>();
 builder.Services.AddScoped<INotificationDispatcher, NotificationDispatcher>();
 builder.Services.AddSingleton<IBackgroundMailQueue, BackgroundMailQueue>();
 builder.Services.AddScoped<IMailNotificationService, MailNotificationService>();

@@ -6,6 +6,7 @@
         User = 2,
         EventImage = 3,
         ClubImage = 4,
-        ESheets = 5
+        ESheets = 5,
+        OpportunityImage = 6
     }
 }

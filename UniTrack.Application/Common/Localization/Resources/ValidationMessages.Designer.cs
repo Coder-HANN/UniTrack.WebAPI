@@ -925,11 +925,29 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to OperationFailed.
+        /// </summary>
+        internal static string OperationFailed {
+            get {
+                return ResourceManager.GetString("OperationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Operation successful..
         /// </summary>
         internal static string OperationSuccessful {
             get {
                 return ResourceManager.GetString("OperationSuccessful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OpportunityNotFound.
+        /// </summary>
+        internal static string OpportunityNotFound {
+            get {
+                return ResourceManager.GetString("OpportunityNotFound", resourceCulture);
             }
         }
         

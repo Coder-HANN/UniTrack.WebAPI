@@ -41,6 +41,8 @@ namespace UniTrack.Persistence.Context
         public DbSet<NotificationChannelType> NotificationChannels { get; set; }
         public DbSet<EventQuestion> EventQuestions { get; set; }
         public DbSet<EventQuestionAnswer> EventQuestionAnswers { get; set; }
+        public DbSet<Opportunity> Opportunitys { get; set; }
+        public DbSet<OpportunityUser> OpportunityUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -530,6 +532,26 @@ namespace UniTrack.Persistence.Context
                     .WithMany(c => c.EventQuestionAnswers)
                     .HasForeignKey(a => a.ClubId)
                     .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<Opportunity>(builder =>
+            {
+                // Primary Key
+                builder.HasKey(o => o.Id);
+
+                builder.Property(o => o.CompanyName);
+                builder.Property(o => o.Title);
+                builder.Property(o => o.Description);
+                builder.Property(o => o.ImageUrl);
+                builder.Property(o => o.Link);
+                builder.Property(o => o.Code);
+                builder.Property(o => o.LastDate);
+                builder.Property(o => o.Category);
+
+                builder.HasMany(o => o.OpportunityUsers)
+                    .WithOne(ou => ou.Opportunity)
+                    .HasForeignKey(ou => ou.OpportunityId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
 

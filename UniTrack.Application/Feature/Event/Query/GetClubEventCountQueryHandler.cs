@@ -23,9 +23,7 @@ namespace UniTrack.Application.Feature.Event.Query
             this.localizationService = localizationService;
         }
 
-        public async Task<ServiceResponse<int>> Handle(
-            GetClubEventCountQuery request,
-            CancellationToken cancellationToken)
+        public async Task<ServiceResponse<int>> Handle(GetClubEventCountQuery request,CancellationToken cancellationToken)
         {
             var clubId = currentUserServices.CurrentClub();
             if (clubId == null)

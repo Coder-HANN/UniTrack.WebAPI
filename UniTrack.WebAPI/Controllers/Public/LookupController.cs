@@ -63,6 +63,12 @@ namespace UniTrack.WebAPI.Controllers.Public
         {
             return await mediator.Send(query);
         }
+
+        [HttpGet("Category")]
+        public async Task<ServiceResponse<IEnumerable<LookupServiceResponseDTO>>> Category([FromQuery] GetCagetoryQuery query)
+        {
+            return await mediator.Send(query);
+        }
     }
 }
 
