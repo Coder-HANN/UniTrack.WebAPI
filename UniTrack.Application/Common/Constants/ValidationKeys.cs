@@ -196,5 +196,7 @@
         public static string OpportunityNotFound = "OpportunityNotFound";
 
         public static string OperationFailed = "OperationFailed";
+
+        public static string ClubNotVerified = "ClubNotVerified";
     }
 }

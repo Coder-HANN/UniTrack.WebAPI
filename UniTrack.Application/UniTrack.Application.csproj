@@ -80,7 +80,7 @@
       <LastGenOutput>ValidationMessages.tr.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Common\Localization\Resources\ValidationMessages.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ValidationMessages.Designer.cs</LastGenOutput>
       <CustomToolNamespace>UniTrack.Application.Common.Localization.Resources</CustomToolNamespace>
     </EmbeddedResource>

@@ -159,6 +159,9 @@
   <data name="ClubNotFoundByEmail" xml:space="preserve">
     <value>No club found with this email address.</value>
   </data>
+  <data name="ClubNotVerified" xml:space="preserve">
+    <value>Your club account has not been verified yet. Please verify your account.</value>
+  </data>
   <data name="ClubPasswordResetSuccess" xml:space="preserve">
     <value>Club password has been updated successfully.</value>
   </data>

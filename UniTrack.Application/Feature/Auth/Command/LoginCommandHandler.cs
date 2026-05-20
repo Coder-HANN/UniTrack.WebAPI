@@ -85,11 +85,22 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ServiceResponse
 
         // 2. CLUB
         var club = await clubRepository.GetByEmailAsync(request.Email);
+
         if (club != null && club.Role == Role.Club)
         {
             var result = clubPasswordHasher.VerifyHashedPassword(club, club.Password, request.Password);
             if (result == PasswordVerificationResult.Success)
             {
+
+                if (!club.IsVerified)
+                {
+                    return new ServiceResponse<LoginResponseDTO>
+                    {
+                        IsSuccess = false,
+                        Message = await localizationService.Get(ValidationKeys.ClubNotVerified)
+                    };
+                }
+
                 var token = GenerateJwtToken(club.Id, Role.Club, club.ContectEmail, name: club.Name);
 
                 SetTokenCookie(token, 5);

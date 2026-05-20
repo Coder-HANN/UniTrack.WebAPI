@@ -66,10 +66,7 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(Pro
 builder.Services.AddAutoMapper(cfg => cfg.AddMaps(applicationAssembly));
 
 
-builder.Services.AddLocalization(options =>
-{
-    options.ResourcesPath = "Common/Localization/Resources";
-});
+builder.Services.AddLocalization();
 
 builder.Services.AddScoped<ICurrentLanguageService, CurrentLanguageService>();
 builder.Services.AddScoped<ILocalizationService, LocalizationService>();

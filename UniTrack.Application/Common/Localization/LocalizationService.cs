@@ -5,36 +5,36 @@ using UniTrack.Application.Common.Localization.Resources;
 
 public class LocalizationService : ILocalizationService
 {
-    private readonly IStringLocalizerFactory factory;
-    private readonly ICurrentLanguageService currentLanguageService;
+    // factory yerine artık doğrudan strongly-typed localizer kullanıyoruz
+    private readonly IStringLocalizer<ValidationMessages> _localizer;
+    private readonly ICurrentLanguageService _currentLanguageService;
 
     public LocalizationService(
-        IStringLocalizerFactory factory,
+        IStringLocalizer<ValidationMessages> localizer,
         ICurrentLanguageService currentLanguageService)
     {
-        this.factory = factory;
-        this.currentLanguageService = currentLanguageService;
+        _localizer = localizer;
+        _currentLanguageService = currentLanguageService;
     }
 
     public async Task<string> Get(string key)
     {
-        var culture = await currentLanguageService.GetCultureAsync();
+        var culture = await _currentLanguageService.GetCultureAsync();
 
         using (new CultureScope(culture))
         {
-            var localizer = factory.Create(typeof(ValidationMessages));
-            return localizer[key];
+            // .Value ekleyerek kesin string karşılığını alıyoruz
+            return _localizer[key].Value;
         }
     }
 
     public async Task<string> Get(string key, params object[] args)
     {
-        var culture = await currentLanguageService.GetCultureAsync();
+        var culture = await _currentLanguageService.GetCultureAsync();
 
         using (new CultureScope(culture))
         {
-            var localizer = factory.Create(typeof(ValidationMessages));
-            return localizer[key, args];
+            return _localizer[key, args].Value;
         }
     }
 }

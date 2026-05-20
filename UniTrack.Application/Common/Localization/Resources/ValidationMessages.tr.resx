@@ -159,6 +159,9 @@
   <data name="ClubNotFoundByEmail" xml:space="preserve">
     <value>Bu e-posta adresine ait bir kulüp bulunamadı.</value>
   </data>
+  <data name="ClubNotVerified" xml:space="preserve">
+    <value>Kulüp hesabınız henüz doğrulanmamış. Lütfen hesabınızı doğrulayın.</value>
+  </data>
   <data name="ClubPasswordResetSuccess" xml:space="preserve">
     <value>Kulüp şifresi başarıyla güncellendi.</value>
   </data>
