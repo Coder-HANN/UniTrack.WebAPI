@@ -90,7 +90,6 @@ namespace UniTrack.Application.Feature.Opportunity.Query
                 Message = await localizationService.Get(ValidationKeys.OperationSuccessful)
             };
 
-            // TO DO:düzenleme servisi eklenecek. Migrationlamayı unutma.
         }
     }
 }

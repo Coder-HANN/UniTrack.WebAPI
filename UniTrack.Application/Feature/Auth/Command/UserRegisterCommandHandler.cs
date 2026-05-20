@@ -22,6 +22,7 @@ namespace UniTrack.Application.Feature.Auth.Command
         private readonly ILocalizationService localizationService;
         private readonly ITransactionService transactionService;
         private readonly IVerificationCodeService _verificationCodeService;
+        private readonly IClubRepository clubRepository;
 
         public UserRegisterCommandHandler(
             IUserRepository userRepository,
@@ -30,7 +31,8 @@ namespace UniTrack.Application.Feature.Auth.Command
             IUserRegisterCountService countService,
             ITransactionService transactionService,
             ILocalizationService localizationService,
-            IVerificationCodeService verificationCodeService)
+            IVerificationCodeService verificationCodeService,
+            IClubRepository clubRepository)
         {
             this.userRepository = userRepository;
             this.passwordHash = passwordHash;
@@ -39,6 +41,7 @@ namespace UniTrack.Application.Feature.Auth.Command
             this.localizationService = localizationService;
             this.transactionService = transactionService;
             this._verificationCodeService = verificationCodeService;
+            this.clubRepository = clubRepository;
         }
 
         public async Task<ServiceResponse<UserRegisterResponseDTO>> Handle(UserRegisterCommand request, CancellationToken cancellationToken)
@@ -47,6 +50,14 @@ namespace UniTrack.Application.Feature.Auth.Command
 
             try
             {
+                var existingClub = await clubRepository.GetByEmailAsync(request.Email);
+                if (existingClub != null)
+                {
+                    transactionService.Rollback();
+                    return ServiceResponse<UserRegisterResponseDTO>.Fail(
+                        await localizationService.Get(ValidationKeys.EmailAlreadyUsed));
+                }
+
                 var existingUser = await userRepository.GetByEmailAsync(request.Email);
 
                 if (existingUser != null)
