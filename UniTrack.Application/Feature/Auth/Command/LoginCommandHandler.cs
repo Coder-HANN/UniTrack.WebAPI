@@ -54,7 +54,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ServiceResponse
             {
                 string name = user.UserDetail?.Name ?? "";
                 string surname = user.UserDetail?.Surname ?? "";
-                var token = GenerateJwtToken(user.Id, Role.User, user.Email, name, surname);
+                var token = GenerateJwtToken(user.Id, Role.User, user.Email, name, surname, universityId: user.UserDetail.UniverstiyId);
 
                 SetTokenCookie(token, 5);
 
@@ -169,7 +169,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ServiceResponse
         });
     }
 
-    private string GenerateJwtToken(Guid id, Role role, string email, string name = "", string surname = "")
+    private string GenerateJwtToken(Guid id, Role role, string email, string name = "", string surname = "", Guid? universityId = null)
     {
         var jwtSettings = configuration.GetSection("Jwt");
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]));
@@ -180,6 +180,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ServiceResponse
             new Claim(JwtRegisteredClaimNames.Sub, email),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(ClaimTypes.Role, role.ToString())
+
         };
 
         if (role == Role.User || role == Role.Admin)
@@ -188,6 +189,8 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ServiceResponse
             claims.Add(new Claim(ClaimTypes.NameIdentifier, id.ToString()));
             if (!string.IsNullOrEmpty(name)) claims.Add(new Claim(ClaimTypes.Name, name));
             if (!string.IsNullOrEmpty(surname)) claims.Add(new Claim(ClaimTypes.Surname, surname));
+            if (universityId.HasValue) claims.Add(new Claim("universityId", universityId.Value.ToString()));
+
         }
         else if (role == Role.Club)
         {

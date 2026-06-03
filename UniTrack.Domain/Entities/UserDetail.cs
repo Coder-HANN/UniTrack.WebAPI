@@ -21,6 +21,9 @@ namespace UniTrack.Domain.Entities
         public City City { get; set; }
         public bool IsNotified { get; set; } = true;
         public string? Language { get; set; }
+        public long TcNo { get; set; }
+        public string Faculty { get; set; }
+        public string Address { get; set; }
     }
 }
             

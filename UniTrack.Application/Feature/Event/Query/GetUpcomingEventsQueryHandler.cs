@@ -72,7 +72,8 @@ namespace UniTrack.Application.Feature.Event.Query
                 Title = e.Title,
                 StartDate = e.StartDate,
                 ClubName = e.Club?.Name ?? "-",
-                IsDoping = e.IsDoping
+                IsDoping = e.IsDoping,
+                ClubLogoUrl = e.Club?.LogoUrl
             };
     }
 }

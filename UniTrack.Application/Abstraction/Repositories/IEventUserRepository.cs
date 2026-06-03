@@ -15,5 +15,9 @@ namespace UniTrack.Application.Abstraction.Repositories
         //  Etkinliğe katılan kullanıcıları çeker 
         Task<List<Guid>> GetUsersJoinedToEventAsync(Guid eventId);
         Task<EventUser> GetUserForLeftEventAsync(Expression<Func<EventUser, bool>> predicate);
+
+        Task<EventUser?> GetByEventAndUserAsync(Guid eventId, Guid userId);
+        Task AddAsync(EventUser eventUser);
+        Task UpdateAsync(EventUser eventUser);
     }
 }

@@ -10,5 +10,6 @@
         public bool IsCheckedIn { get; set; }
         public DateTimeOffset CheckedInAt { get; set; }
         public bool? IsJoinedForSponsor { get; set; } = false;
+        public bool IsLiked { get; set; } = false;
     }
 }

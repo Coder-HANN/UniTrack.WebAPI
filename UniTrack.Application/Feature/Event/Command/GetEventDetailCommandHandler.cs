@@ -63,7 +63,9 @@ namespace UniTrack.Application.Feature.Event.Command
                 Rate = rate,
                 CityId = eventDetails.CityId,
                 UniversityId = eventDetails.UniversityId,
-                GoogleSheetsUrl = eventDetails.SheetsId
+                GoogleSheetsUrl = eventDetails.SheetsId,
+                IsLiked = eventDetails.EventUsers.Any(eu => eu.UserId == userId && eu.IsLiked),
+                LikeCount = eventDetails.EventUsers.Count(eu => eu.IsLiked)
             };
 
             return ServiceResponse<GetEventDetailResponseDTO>.Success(null,response);

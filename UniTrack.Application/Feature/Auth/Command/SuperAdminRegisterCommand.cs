@@ -4,7 +4,7 @@ using UniTrack.Application.DTOs.Auth;
 
 namespace UniTrack.Application.Feature.Auth.Command
 {
-    public class CompanyRegisterCommand : IRequest<ServiceResponse<CompanyRegisterResponseDTO>>
+    public class SuperAdminRegisterCommand : IRequest<ServiceResponse<SuperAdminRegisterResponseDTO>>
     {
     }
 }

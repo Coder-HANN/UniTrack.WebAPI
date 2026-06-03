@@ -240,5 +240,17 @@ namespace UniTrack.Persistence.Repositories
                 .Where(x => x.Event.ClubId == clubId && x.IsCheckedIn)
                 .LongCountAsync();
         }
+
+        public async Task<List<Event>> GetCalendarEventsByUserUniversityAsync(Guid universityId)
+        {
+            return await context.Events
+                .Include(e => e.Club)
+                .Where(e =>
+                    e.Club != null &&
+                    e.Club.UniversityId == universityId &&
+                    !e.IsDeleted)
+                .OrderBy(e => e.StartDate)
+                .ToListAsync();
+        }
     }
 }

@@ -298,6 +298,7 @@ namespace UniTrack.Persistence.Context
                 builder.Property(eu => eu.IsCheckedIn);
                 builder.Property(eu => eu.CheckedInAt);
                 builder.Property(eu => eu.IsJoinedForSponsor);
+                builder.Property(eu => eu.IsLiked);
 
 
                 builder.HasOne(eu => eu.Event)
@@ -358,6 +359,9 @@ namespace UniTrack.Persistence.Context
                 builder.Property(ud => ud.Graduaiton_Date).IsRequired();
                 builder.Property(ud => ud.IsNotified).IsRequired();
                 builder.Property(ud => ud.Language);
+                builder.Property(ud => ud.TcNo);
+                builder.Property(ud => ud.Faculty);
+                builder.Property(ud => ud.Address);
 
                 builder.HasOne(ud => ud.City)
                        .WithMany(c => c.UserDetails)
@@ -403,7 +407,8 @@ namespace UniTrack.Persistence.Context
                 builder.Property(c => c.Role);
                 builder.Property(c => c.ClubCreatedDate);
                 builder.Property(c => c.IsDoping);
-               
+                builder.Property(c => c.AdvisorName);
+
 
                 builder.HasOne(c => c.City)
                        .WithMany(u => u.Clubs)

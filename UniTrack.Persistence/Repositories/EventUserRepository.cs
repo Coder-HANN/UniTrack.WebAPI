@@ -23,6 +23,11 @@ namespace UniTrack.Persistence.Repositories
                 .ToListAsync();
         }
 
+        public async Task<EventUser?> GetByEventAndUserAsync(Guid eventId, Guid userId)
+        {
+           return await dbSet.FirstOrDefaultAsync(eu => eu.EventId == eventId && eu.UserId == userId);
+        }
+
         public async Task<List<EventUser>> GetClubEventJoinsByClubIdAsync(Guid eventId)
         {
             return await dbSet.Where(eu => eu.EventId == eventId && eu.IsJoined == true)
@@ -79,5 +84,9 @@ namespace UniTrack.Persistence.Repositories
                 .ToListAsync();
         }
 
+        Task IEventUserRepository.AddAsync(EventUser eventUser)
+        {
+            return AddAsync(eventUser);
+        }
     }
 }

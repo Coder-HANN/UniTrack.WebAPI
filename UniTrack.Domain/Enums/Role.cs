@@ -4,7 +4,7 @@
     {
         User = 0,
         Club = 1,
-        Company = 2,
+        SuperAdmin = 2,
         Admin = 3
     }
 }

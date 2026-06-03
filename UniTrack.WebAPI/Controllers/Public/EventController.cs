@@ -108,5 +108,11 @@ namespace UniTrack.WebAPI.Controllers.Public
         {
             return await mediator.Send(query);
         }
+
+        [HttpGet("GetCalendarEvents")]
+        public async Task<ServiceResponse<List<CalendarEventResponseDTO>>> GetCalendarEvents([FromQuery] GetCalendarEventsQuery query)
+        {
+            return await mediator.Send(query);
+        }
     }
 }

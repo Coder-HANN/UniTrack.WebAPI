@@ -39,5 +39,6 @@ namespace UniTrack.Domain.Entities
         public ICollection<Report> Reports { get; set; }
         public ICollection<EventQuestionAnswer> EventQuestionAnswers { get; set; }
         public bool IsDoping { get; set; } = false;
+        public string? AdvisorName { get; set; }
     }
 }

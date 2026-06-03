@@ -7,5 +7,6 @@
         public DateTimeOffset StartDate { get; set; }
         public string ClubName { get; set; }
         public bool IsDoping { get; set; }
+        public string? ClubLogoUrl { get; set; }
     }
 }

@@ -25,5 +25,7 @@ namespace UniTrack.Application.DTOs.Event
         public int CityId { get; set; }
         public Guid UniversityId { get; set; }
         public string GoogleSheetsUrl { get; set; }
+        public bool IsLiked { get; set; }
+        public int LikeCount { get; set; }
     }
 }
