@@ -20,7 +20,7 @@ jobs:
         run: dotnet restore
 
       - name: Run Tests
-        run: dotnet test test/UniTrack.Application.UnitTest --no-restore --verbosity normal
+        run: dotnet test UniTrack.Application.UnitTest --no-restore --verbosity normal
 
   build-and-push:
     runs-on: ubuntu-latest
