@@ -17,7 +17,7 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore UniTrack.WebAPI.sln
 
       - name: Run Tests
         run: dotnet test UniTrack.Application.UnitTest --no-restore --verbosity normal
