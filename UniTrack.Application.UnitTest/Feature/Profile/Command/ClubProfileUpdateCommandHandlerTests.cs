@@ -1,188 +1,238 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FluentAssertions;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Moq;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
 using UniTrack.Application.Abstraction.Services.Localization;
+using UniTrack.Application.Common;
 using UniTrack.Application.Common.Constants;
 using UniTrack.Application.DTOs.Profile;
-using UniTrack.Application.Feature.Profile.Command;
 using UniTrack.Domain.Entities;
 using UniTrack.Domain.Enums;
-using Xunit;
 
-public class ClubProfileUpdateCommandHandlerTests
+namespace UniTrack.Application.Feature.Profile.Command
 {
-    private readonly Mock<ICurrentUserServices> _currentUserMock = new();
-    private readonly Mock<IClubRepository> _clubRepoMock = new();
-    private readonly Mock<IUserRepository> _userRepoMock = new();
-    private readonly Mock<ILocalizationService> _localizationMock = new();
-    private readonly Mock<IPasswordHasher<Club>> _passwordHasherMock = new();
-
-    private readonly ClubProfileUpdateCommandHandler _handler;
-
-    public ClubProfileUpdateCommandHandlerTests()
+    public class ClubProfileUpdateCommandHandler : IRequestHandler<ClubProfileUpdateCommand, ServiceResponse<ClubProfileUpdateResponseDTO>>
     {
-        _handler = new ClubProfileUpdateCommandHandler(
-            _currentUserMock.Object,
-            _clubRepoMock.Object,
-            _userRepoMock.Object,
-            _localizationMock.Object,
-            _passwordHasherMock.Object);
-    }
+        private readonly ICurrentUserServices _currentUserServices;
+        private readonly IClubRepository _clubRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly ILocalizationService _localizationService;
+        private readonly IPasswordHasher<Domain.Entities.Club> _passwordHasher;
 
-    [Fact]
-    public async Task Handle_UnauthorizedRole_ReturnsError()
-    {
-        // Arrange
-        _currentUserMock.Setup(x => x.CurrentClub()).Returns(Guid.NewGuid());
-        _currentUserMock.Setup(x => x.Role()).Returns(Role.User); // User rolü yetkisiz
-        _localizationMock.Setup(x => x.Get(ValidationKeys.NotAuthorized)).ReturnsAsync("Unauthorized");
-
-        // Act
-        var result = await _handler.Handle(new ClubProfileUpdateCommand(), CancellationToken.None);
-
-        // Assert
-        result.IsSuccess.Should().BeFalse();
-        result.Message.Should().Be("Unauthorized");
-    }
-
-    [Fact]
-    public async Task Handle_EmailAlreadyUsed_ByOtherClub_ReturnsError()
-    {
-        // Arrange
-        var clubId = Guid.NewGuid();
-        var existingClub = new Club { Id = clubId, PresidentMail = "old@mail.com" };
-
-        _currentUserMock.Setup(x => x.CurrentClub()).Returns(clubId);
-        _currentUserMock.Setup(x => x.Role()).Returns(Role.Club);
-        _clubRepoMock.Setup(x => x.GetAsync(It.IsAny<Expression<Func<Club, bool>>>())).ReturnsAsync(existingClub);
-
-        // Başka bir kulüp bu maili kullanıyor
-        _clubRepoMock.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<Club>
+        public ClubProfileUpdateCommandHandler(
+            ICurrentUserServices currentUserServices,
+            IClubRepository clubRepository,
+            IUserRepository userRepository,
+            ILocalizationService localizationService,
+            IPasswordHasher<Domain.Entities.Club> passwordHasher)
         {
-            new Club { Id = Guid.NewGuid(), PresidentMail = "taken@mail.com" }
-        });
-        _userRepoMock.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<User>());
-        _localizationMock.Setup(x => x.Get(ValidationKeys.EmailAlreadyUsed)).ReturnsAsync("Mail Taken");
+            _currentUserServices = currentUserServices;
+            _clubRepository = clubRepository;
+            _userRepository = userRepository;
+            _localizationService = localizationService;
+            _passwordHasher = passwordHasher;
+        }
 
-        var command = new ClubProfileUpdateCommand { PresidentMail = "taken@mail.com" };
-
-        // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
-
-        // Assert
-        result.IsSuccess.Should().BeFalse();
-        result.Message.Should().Be("Mail Taken");
-    }
-
-    [Fact]
-    public async Task Handle_PasswordChange_ShouldFail_WhenCurrentPasswordIncorrect()
-    {
-        // Arrange
-        var clubId = Guid.NewGuid();
-        var club = new Club { Id = clubId, Password = "hashed_old_password" };
-
-        _currentUserMock.Setup(x => x.CurrentClub()).Returns(clubId);
-        _currentUserMock.Setup(x => x.Role()).Returns(Role.Club);
-        _clubRepoMock.Setup(x => x.GetAsync(It.IsAny<Expression<Func<Club, bool>>>())).ReturnsAsync(club);
-        _clubRepoMock.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<Club>());
-        _userRepoMock.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<User>());
-
-        // Şifre doğrulama başarısız
-        _passwordHasherMock.Setup(x => x.VerifyHashedPassword(club, club.Password, "wrong_password"))
-            .Returns(PasswordVerificationResult.Failed);
-
-        _localizationMock.Setup(x => x.Get(ValidationKeys.CurrentPasswordIncorrect)).ReturnsAsync("Incorrect Password");
-
-        var command = new ClubProfileUpdateCommand
+        public async Task<ServiceResponse<ClubProfileUpdateResponseDTO>> Handle(ClubProfileUpdateCommand request, CancellationToken cancellationToken)
         {
-            NowPassword = "wrong_password",
-            Password = "new_password_123"
-        };
+            var clubId = _currentUserServices.CurrentClub();
+            if (clubId == null)
+            {
+                return ServiceResponse<ClubProfileUpdateResponseDTO>.Fail(
+                    await _localizationService.Get(ValidationKeys.NotAuthorized)
+                );
+            }
 
-        // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+            var role = _currentUserServices.Role();
+            if (role == null || role == Role.User)
+            {
+                return ServiceResponse<ClubProfileUpdateResponseDTO>.Fail(
+                    await _localizationService.Get(ValidationKeys.NotAuthorized)
+                );
+            }
 
-        // Assert
-        result.IsSuccess.Should().BeFalse();
-        result.Message.Should().Be("Incorrect Password");
-    }
+            var existingClub = await _clubRepository.GetAsync(c => c.Id == clubId);
+            if (existingClub == null)
+            {
+                return ServiceResponse<ClubProfileUpdateResponseDTO>.Fail(
+                    await _localizationService.Get(ValidationKeys.ClubNotFound)
+                );
+            }
 
-    [Fact]
-    public async Task Handle_PasswordChange_ShouldFail_WhenNewPasswordIsSameAsOld()
-    {
-        // Arrange
-        var clubId = Guid.NewGuid();
-        var club = new Club { Id = clubId, Password = "hashed_password" };
+            // Şifre Değişikliği Alanlarının Kontrolü (Erken Hata Dönüşleri)
+            var hasNowPassword = !string.IsNullOrWhiteSpace(request.NowPassword);
+            var hasNewPassword = !string.IsNullOrWhiteSpace(request.Password);
 
-        _currentUserMock.Setup(x => x.CurrentClub()).Returns(clubId);
-        _currentUserMock.Setup(x => x.Role()).Returns(Role.Club);
-        _clubRepoMock.Setup(x => x.GetAsync(It.IsAny<Expression<Func<Club, bool>>>())).ReturnsAsync(club);
-        _clubRepoMock.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<Club>());
-        _userRepoMock.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<User>());
+            if (!hasNowPassword && hasNewPassword)
+                return ServiceResponse<ClubProfileUpdateResponseDTO>.Fail(await _localizationService.Get(ValidationKeys.CurrentPasswordRequired));
 
-        // Mevcut şifre doğru ama yeni şifre de eskisiyle aynı
-        _passwordHasherMock.Setup(x => x.VerifyHashedPassword(club, club.Password, "same_pass"))
-            .Returns(PasswordVerificationResult.Success);
+            if (hasNowPassword && !hasNewPassword)
+                return ServiceResponse<ClubProfileUpdateResponseDTO>.Fail(await _localizationService.Get(ValidationKeys.NewPasswordRequired));
 
-        _localizationMock.Setup(x => x.Get(ValidationKeys.NewPasswordCannotBeSameAsOld)).ReturnsAsync("Same Password Error");
+            if (hasNowPassword && hasNewPassword)
+            {
+                var verification = _passwordHasher.VerifyHashedPassword(existingClub, existingClub.Password, request.NowPassword!);
+                if (verification == PasswordVerificationResult.Failed)
+                    return ServiceResponse<ClubProfileUpdateResponseDTO>.Fail(await _localizationService.Get(ValidationKeys.CurrentPasswordIncorrect));
 
-        var command = new ClubProfileUpdateCommand { NowPassword = "same_pass", Password = "same_pass" };
+                var isSame = _passwordHasher.VerifyHashedPassword(existingClub, existingClub.Password, request.Password!);
+                if (isSame == PasswordVerificationResult.Success)
+                    return ServiceResponse<ClubProfileUpdateResponseDTO>.Fail(await _localizationService.Get(ValidationKeys.NewPasswordCannotBeSameAsOld));
+            }
 
-        // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+            var allClubs = await _clubRepository.GetAllAsync();
+            var allUsers = await _userRepository.GetAllAsync();
 
-        // Assert
-        result.IsSuccess.Should().BeFalse();
-        result.Message.Should().Be("Same Password Error");
-    }
+            bool isUpdated = false;
 
-    [Fact]
-    public async Task Handle_SuccessfulUpdate_IncludingPassword_UpdatesClub()
-    {
-        // Arrange
-        var clubId = Guid.NewGuid();
-        var club = new Club { Id = clubId, Name = "Old Name", Password = "old_hash" };
+            // Temel alanlar
+            if (!string.IsNullOrEmpty(request.Name) && existingClub.Name != request.Name)
+            {
+                existingClub.Name = request.Name;
+                isUpdated = true;
+            }
+            if (!string.IsNullOrEmpty(request.Description) && existingClub.Description != request.Description)
+            {
+                existingClub.Description = request.Description;
+                isUpdated = true;
+            }
+            if (!string.IsNullOrEmpty(request.LongDescription) && existingClub.LongDescription != request.LongDescription)
+            {
+                existingClub.LongDescription = request.LongDescription;
+                isUpdated = true;
+            }
+            if (!string.IsNullOrEmpty(request.President) && existingClub.President != request.President)
+            {
+                existingClub.President = request.President;
+                isUpdated = true;
+            }
+            if (!string.IsNullOrEmpty(request.PresidentMail) && existingClub.PresidentMail != request.PresidentMail)
+            {
+                bool mailExists = allClubs.Any(c => c.Id != existingClub.Id &&
+                                                   (c.PresidentMail == request.PresidentMail || c.ContectEmail == request.PresidentMail)) ||
+                                  allUsers.Any(u => u.Email == request.PresidentMail);
 
-        _currentUserMock.Setup(x => x.CurrentClub()).Returns(clubId);
-        _currentUserMock.Setup(x => x.Role()).Returns(Role.Club);
-        _clubRepoMock.Setup(x => x.GetAsync(It.IsAny<Expression<Func<Club, bool>>>())).ReturnsAsync(club);
-        _clubRepoMock.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<Club>());
-        _userRepoMock.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<User>());
+                if (mailExists)
+                {
+                    return ServiceResponse<ClubProfileUpdateResponseDTO>.Fail(await _localizationService.Get(ValidationKeys.EmailAlreadyUsed));
+                }
 
-        // Şifre doğrulama başarılı (mevcut şifre için)
-        _passwordHasherMock.Setup(x => x.VerifyHashedPassword(club, "old_hash", "current_pass"))
-            .Returns(PasswordVerificationResult.Success);
+                existingClub.PresidentMail = request.PresidentMail;
+                isUpdated = true;
+            }
+            if (!string.IsNullOrEmpty(request.ContectEmail) && existingClub.ContectEmail != request.ContectEmail)
+            {
+                bool mailExists = allClubs.Any(c => c.Id != existingClub.Id &&
+                                                   (c.ContectEmail == request.ContectEmail || c.PresidentMail == request.ContectEmail)) ||
+                                  allUsers.Any(u => u.Email == request.ContectEmail);
 
-        // Yeni şifre kontrolü (farklı olduğu için failed dönerse logic ilerler)
-        _passwordHasherMock.Setup(x => x.VerifyHashedPassword(club, "old_hash", "new_pass"))
-            .Returns(PasswordVerificationResult.Failed);
+                if (mailExists)
+                {
+                    return ServiceResponse<ClubProfileUpdateResponseDTO>.Fail(await _localizationService.Get(ValidationKeys.EmailAlreadyUsed));
+                }
 
-        _passwordHasherMock.Setup(x => x.HashPassword(club, "new_pass")).Returns("new_hashed_pass");
+                existingClub.ContectEmail = request.ContectEmail;
+                isUpdated = true;
+            }
 
-        _localizationMock.Setup(x => x.Get(ValidationKeys.ProfileUpdatedSuccessfully, It.IsAny<object>()))
-            .ReturnsAsync("Success");
+            // Sosyal ve web linkleri
+            if (request.LinkedlnLink != null && existingClub.LinkedlnLink != request.LinkedlnLink)
+            {
+                existingClub.LinkedlnLink = string.IsNullOrEmpty(request.LinkedlnLink) ? null : request.LinkedlnLink;
+                isUpdated = true;
+            }
+            if (request.InstagramLink != null && existingClub.InstagramLink != request.InstagramLink)
+            {
+                existingClub.InstagramLink = string.IsNullOrEmpty(request.InstagramLink) ? null : request.InstagramLink;
+                isUpdated = true;
+            }
+            if (request.TwitterLink != null && existingClub.TwitterLink != request.TwitterLink)
+            {
+                existingClub.TwitterLink = string.IsNullOrEmpty(request.TwitterLink) ? null : request.TwitterLink;
+                isUpdated = true;
+            }
+            if (request.WebsiteLink != null && existingClub.WebsiteLink != request.WebsiteLink)
+            {
+                existingClub.WebsiteLink = string.IsNullOrEmpty(request.WebsiteLink) ? null : request.WebsiteLink;
+                isUpdated = true;
+            }
+            if (request.TikTokLink != null && existingClub.TikTokLink != request.TikTokLink)
+            {
+                existingClub.TikTokLink = string.IsNullOrEmpty(request.TikTokLink) ? null : request.TikTokLink;
+                isUpdated = true;
+            }
 
-        var command = new ClubProfileUpdateCommand
-        {
-            Name = "New Name",
-            NowPassword = "current_pass",
-            Password = "new_pass"
-        };
+            // Tag
+            if (request.Tag.HasValue && existingClub.Tag != request.Tag.Value)
+            {
+                existingClub.Tag = request.Tag.Value;
+                isUpdated = true;
+            }
 
-        // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+            // Logo ve kapak
+            if (request.LogoUrl != null && existingClub.LogoUrl != request.LogoUrl)
+            {
+                existingClub.LogoUrl = string.IsNullOrEmpty(request.LogoUrl) ? null : request.LogoUrl;
+                isUpdated = true;
+            }
+            if (request.CoverImageUrl != null && existingClub.CoverImageUrl != request.CoverImageUrl)
+            {
+                existingClub.CoverImageUrl = string.IsNullOrEmpty(request.CoverImageUrl) ? null : request.CoverImageUrl;
+                isUpdated = true;
+            }
 
-        // Assert
-        result.IsSuccess.Should().BeTrue();
-        club.Name.Should().Be("New Name");
-        club.Password.Should().Be("new_hashed_pass");
-        _clubRepoMock.Verify(x => x.UpdateAsync(club), Times.Once);
+            // University & ClubCreatedDate
+            if (request.UniversityId.HasValue && existingClub.UniversityId != request.UniversityId.Value)
+            {
+                existingClub.UniversityId = request.UniversityId.Value;
+                isUpdated = true;
+            }
+            if (request.ClubCreatedDate.HasValue && existingClub.ClubCreatedDate != request.ClubCreatedDate.Value)
+            {
+                existingClub.ClubCreatedDate = request.ClubCreatedDate.Value;
+                isUpdated = true;
+            }
+
+            // Şifre Değişikliği Uygulama Adımı
+            if (hasNowPassword && hasNewPassword)
+            {
+                existingClub.Password = _passwordHasher.HashPassword(existingClub, request.Password!);
+                isUpdated = true;
+            }
+
+            if (!isUpdated)
+            {
+                return ServiceResponse<ClubProfileUpdateResponseDTO>.Success(await _localizationService.Get(ValidationKeys.OperationSuccessful), null);
+            }
+
+            existingClub.UpdatedDate = DateTime.UtcNow;
+            await _clubRepository.UpdateAsync(existingClub);
+
+            var responseDto = new ClubProfileUpdateResponseDTO
+            {
+                Name = existingClub.Name,
+                Description = existingClub.Description,
+                LongDescription = existingClub.LongDescription,
+                LinkedlnLink = existingClub.LinkedlnLink,
+                InstagramLink = existingClub.InstagramLink,
+                WebsiteLink = existingClub.WebsiteLink,
+                TwitterLink = existingClub.TwitterLink,
+                TikTokLink = existingClub.TikTokLink,
+                Tag = existingClub.Tag,
+                LogoUrl = existingClub.LogoUrl,
+                CoverImageUrl = existingClub.CoverImageUrl,
+                President = existingClub.President,
+                PresidentMail = existingClub.PresidentMail,
+                UniversityId = existingClub.UniversityId,
+                ContectEmail = existingClub.ContectEmail
+            };
+
+            return ServiceResponse<ClubProfileUpdateResponseDTO>.Success(await _localizationService.Get(ValidationKeys.ProfileUpdatedSuccessfully, responseDto));
+        }
     }
 }

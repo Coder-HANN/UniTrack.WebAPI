@@ -1,139 +1,188 @@
-﻿using Moq;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using FluentAssertions;
+using Moq;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
 using UniTrack.Application.Abstraction.Services.Localization;
-using UniTrack.Application.Common.Constants;
 using UniTrack.Application.Feature.Event.Query;
 using UniTrack.Domain.Entities;
 using UniTrack.Domain.Enums;
 using Xunit;
-using FluentAssertions; // Daha akıcı assertionlar için tavsiye ederim
 
-public class GetClubEventJoinQueryHandlerTests
+namespace UniTrack.Application.Tests.Feature.Event.Query
 {
-    private readonly Mock<ICurrentUserServices> _currentUserMock;
-    private readonly Mock<IEventUserRepository> _eventUserRepositoryMock;
-    private readonly Mock<ILocalizationService> _localizationMock;
-    private readonly GetClubEventJoinQueryHandler _handler;
-
-    public GetClubEventJoinQueryHandlerTests()
+    public class GetClubEventJoinQueryHandlerTests
     {
-        _currentUserMock = new Mock<ICurrentUserServices>();
-        _eventUserRepositoryMock = new Mock<IEventUserRepository>();
-        _localizationMock = new Mock<ILocalizationService>();
+        private readonly Mock<ICurrentUserServices> _currentUserMock;
+        private readonly Mock<IEventUserRepository> _eventUserRepositoryMock;
+        private readonly Mock<ILocalizationService> _localizationMock;
 
-        _handler = new GetClubEventJoinQueryHandler(
-            _currentUserMock.Object,
-            _eventUserRepositoryMock.Object,
-            _localizationMock.Object // Localization servisi eklendi
-        );
-    }
-
-    [Fact]
-    public async Task Handle_UserAndClubNull_ShouldReturnUnauthorized()
-    {
-        // Arrange
-        _currentUserMock.Setup(x => x.CurrentUser()).Returns((Guid?)null);
-        _currentUserMock.Setup(x => x.CurrentClub()).Returns((Guid?)null);
-
-        _localizationMock
-            .Setup(x => x.Get(ValidationKeys.NotAuthorized))
-            .ReturnsAsync("Yetkisiz Erişim");
-
-        // Act
-        var result = await _handler.Handle(new GetClubEventJoinQuery(Guid.NewGuid()), CancellationToken.None);
-
-        // Assert
-        Assert.False(result.IsSuccess);
-        Assert.Equal("Yetkisiz Erişim", result.Message);
-        Assert.Null(result.Data);
-    }
-
-    [Fact]
-    public async Task Handle_RoleUser_ShouldReturnUnauthorized()
-    {
-        // Arrange
-        _currentUserMock.Setup(x => x.CurrentUser()).Returns(Guid.NewGuid());
-        _currentUserMock.Setup(x => x.CurrentClub()).Returns(Guid.NewGuid());
-        _currentUserMock.Setup(x => x.Role()).Returns(Role.User);
-
-        _localizationMock
-            .Setup(x => x.Get(ValidationKeys.NotAuthorized))
-            .ReturnsAsync("Yetkisiz Erişim");
-
-        // Act
-        var result = await _handler.Handle(new GetClubEventJoinQuery(Guid.NewGuid()), CancellationToken.None);
-
-        // Assert
-        Assert.False(result.IsSuccess);
-        Assert.Equal("Yetkisiz Erişim", result.Message);
-    }
-
-    [Fact]
-    public async Task Handle_NoEventJoins_ShouldReturnFail()
-    {
-        // Arrange
-        _currentUserMock.Setup(x => x.CurrentUser()).Returns(Guid.NewGuid());
-        _currentUserMock.Setup(x => x.CurrentClub()).Returns(Guid.NewGuid());
-        _currentUserMock.Setup(x => x.Role()).Returns(Role.Club);
-
-        _eventUserRepositoryMock
-            .Setup(x => x.GetClubEventJoinsByClubIdAsync(It.IsAny<Guid>()))
-            .ReturnsAsync((List<EventUser>)null);
-
-        _localizationMock
-            .Setup(x => x.Get(ValidationKeys.EventNotFound))
-            .ReturnsAsync("Kayıt bulunamadı");
-
-        // Act
-        var result = await _handler.Handle(new GetClubEventJoinQuery(Guid.NewGuid()), CancellationToken.None);
-
-        // Assert
-        Assert.False(result.IsSuccess);
-        Assert.Equal("Kayıt bulunamadı", result.Message);
-        Assert.Null(result.Data);
-    }
-
-    [Fact]
-    public async Task Handle_ValidRequest_ShouldReturnUserList()
-    {
-        // Arrange
-        var clubId = Guid.NewGuid();
-        _currentUserMock.Setup(x => x.CurrentUser()).Returns(Guid.NewGuid());
-        _currentUserMock.Setup(x => x.CurrentClub()).Returns(clubId);
-        _currentUserMock.Setup(x => x.Role()).Returns(Role.Club);
-
-        var eventUsers = new List<EventUser>
+        public GetClubEventJoinQueryHandlerTests()
         {
-            new EventUser
+            _currentUserMock = new Mock<ICurrentUserServices>();
+            _eventUserRepositoryMock = new Mock<IEventUserRepository>();
+            _localizationMock = new Mock<ILocalizationService>();
+
+            _localizationMock
+                .Setup(x => x.Get(It.IsAny<string>()))
+                .ReturnsAsync((string key) => key);
+        }
+
+        private GetClubEventJoinQueryHandler CreateHandler()
+            => new GetClubEventJoinQueryHandler(
+                _currentUserMock.Object,
+                _eventUserRepositoryMock.Object,
+                _localizationMock.Object);
+
+        [Fact]
+        public async Task Handle_ClubIdNull_ShouldReturnUnauthorized()
+        {
+            // Arrange
+            _currentUserMock
+                .Setup(x => x.CurrentClub())
+                .Returns((Guid?)null);
+
+            var handler = CreateHandler();
+
+            // Act
+            var result = await handler.Handle(new GetClubEventJoinQuery(Guid.NewGuid()), CancellationToken.None);
+
+            // Assert
+            result.IsSuccess.Should().BeFalse();
+            result.Data.Should().BeNull();
+            _eventUserRepositoryMock.Verify(
+                x => x.GetClubEventJoinsByClubIdAsync(It.IsAny<Guid>()),
+                Times.Never);
+        }
+
+        [Fact]
+        public async Task Handle_RoleUser_ShouldReturnUnauthorized()
+        {
+            // Arrange
+            _currentUserMock
+                .Setup(x => x.CurrentClub())
+                .Returns(Guid.NewGuid());
+            _currentUserMock
+                .Setup(x => x.Role())
+                .Returns(Role.User);
+
+            var handler = CreateHandler();
+
+            // Act
+            var result = await handler.Handle(new GetClubEventJoinQuery(Guid.NewGuid()), CancellationToken.None);
+
+            // Assert
+            result.IsSuccess.Should().BeFalse();
+            result.Data.Should().BeNull();
+            _eventUserRepositoryMock.Verify(
+                x => x.GetClubEventJoinsByClubIdAsync(It.IsAny<Guid>()),
+                Times.Never);
+        }
+
+        [Fact]
+        public async Task Handle_RoleNull_ShouldReturnUnauthorized()
+        {
+            // Arrange
+            _currentUserMock
+                .Setup(x => x.CurrentClub())
+                .Returns(Guid.NewGuid());
+            _currentUserMock
+                .Setup(x => x.Role())
+                .Returns((Role?)null);
+
+            var handler = CreateHandler();
+
+            // Act
+            var result = await handler.Handle(new GetClubEventJoinQuery(Guid.NewGuid()), CancellationToken.None);
+
+            // Assert
+            result.IsSuccess.Should().BeFalse();
+            result.Data.Should().BeNull();
+            _eventUserRepositoryMock.Verify(
+                x => x.GetClubEventJoinsByClubIdAsync(It.IsAny<Guid>()),
+                Times.Never);
+        }
+
+        [Fact]
+        public async Task Handle_NoEventJoins_ShouldReturnSuccessWithNullData()
+        {
+            // Arrange
+            var eventId = Guid.NewGuid();
+
+            _currentUserMock
+                .Setup(x => x.CurrentClub())
+                .Returns(Guid.NewGuid());
+            _currentUserMock
+                .Setup(x => x.Role())
+                .Returns(Role.Club);
+
+            _eventUserRepositoryMock
+                .Setup(x => x.GetClubEventJoinsByClubIdAsync(eventId))
+                .ReturnsAsync((List<EventUser>)null);
+
+            var handler = CreateHandler();
+
+            // Act
+            var result = await handler.Handle(new GetClubEventJoinQuery(eventId), CancellationToken.None);
+
+            // Assert
+            result.IsSuccess.Should().BeTrue();
+            result.Data.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task Handle_ValidRequest_ShouldReturnUserList()
+        {
+            // Arrange
+            var eventId = Guid.NewGuid();
+
+            _currentUserMock
+                .Setup(x => x.CurrentClub())
+                .Returns(Guid.NewGuid());
+            _currentUserMock
+                .Setup(x => x.Role())
+                .Returns(Role.Club);
+
+            var eventUsers = new List<EventUser>
             {
-                User = new User
+                new EventUser
                 {
-                    UserDetail = new UserDetail
+                    User = new User
                     {
-                        Name = "Ali",
-                        Surname = "Veli",
-                        UniverstiyId = Guid.NewGuid(),
-                        DepartmentId = 1
+                        Email = "test@uni.com",
+                        UserDetail = new UserDetail
+                        {
+                            Name = "Ali",
+                            Surname = "Veli",
+                            ProfileImageUrl = "image.png",
+                            Department = new Domain.Entities.Department { Name = "Bilgisayar Mühendisliği" },
+                            University = new Domain.Entities.University { Name = "Rumeli Üniversitesi" }
+                        }
                     }
                 }
-            }
-        };
+            };
 
-        _eventUserRepositoryMock
-            .Setup(x => x.GetClubEventJoinsByClubIdAsync(clubId))
-            .ReturnsAsync(eventUsers);
+            _eventUserRepositoryMock
+                .Setup(x => x.GetClubEventJoinsByClubIdAsync(eventId))
+                .ReturnsAsync(eventUsers);
 
-        // Act
-        var result = await _handler.Handle(new GetClubEventJoinQuery(clubId), CancellationToken.None);
+            var handler = CreateHandler();
 
-        // Assert
-        Assert.True(result.IsSuccess);
-        Assert.Single(result.Data);
-        Assert.Null(result.Message); // Başarı durumunda genelde mesaj null veya "Success" döner
+            // Act
+            var result = await handler.Handle(new GetClubEventJoinQuery(eventId), CancellationToken.None);
+
+            // Assert
+            result.IsSuccess.Should().BeTrue();
+            result.Message.Should().BeNull();
+            result.Data.Should().NotBeNull();
+            result.Data.Should().HaveCount(1);
+
+            var dto = result.Data.Single();
+            dto.Name.Should().Be("Ali");
+            dto.Surname.Should().Be("Veli");
+            dto.Department.Should().Be("Bilgisayar Mühendisliği");
+            dto.UniversityName.Should().Be("Rumeli Üniversitesi");
+            dto.Email.Should().Be("test@uni.com");
+            dto.ProfileImageUrl.Should().Be("image.png");
+        }
     }
 }

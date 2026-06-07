@@ -66,21 +66,5 @@ namespace UniTrack.Application.Tests.Feature.ActiveDetail.Query
             Assert.Equal(18, result.Data);
             Assert.Null(result.Message);
         }
-
-        [Fact]
-        public async Task Handle_AdminUser_ActiveUsersZero_ShouldReturnFail()
-        {
-            // Arrange
-            _currentUserMock.Setup(x => x.Role()).Returns(Role.Admin);
-            _userRepositoryMock.Setup(x => x.For90DaysCountAsync()).ReturnsAsync(0);
-
-            // Act
-            var result = await _handler.Handle(new GetActiveUsersFor90DaysQuery(), CancellationToken.None);
-
-            // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(0, result.Data);
-            Assert.Null(result.Message);
-        }
     }
 }

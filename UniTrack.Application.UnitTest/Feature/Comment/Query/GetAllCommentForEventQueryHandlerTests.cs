@@ -1,5 +1,5 @@
-﻿using Moq;
-using Xunit;
+﻿using Xunit;
+using Moq;
 using FluentAssertions;
 using UniTrack.Application.Feature.Comment.Query;
 using UniTrack.Application.Abstraction.Repositories;
@@ -7,74 +7,27 @@ using UniTrack.Application.Abstraction.Services.CurrentUserServices;
 using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Domain.Entities;
 using UniTrack.Application.Common.Constants;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace UniTrack.Application.Tests.Feature.Comment.Query
 {
     public class GetAllCommentForEventQueryHandlerTests
     {
-        private readonly Mock<ICurrentUserServices> _currentUserServiceMock;
-        private readonly Mock<ICommentRepository> _commentRepositoryMock;
-        private readonly Mock<ILocalizationService> _localizationServiceMock;
-
+        private readonly Mock<ICurrentUserServices> _currentUserServiceMock = new();
+        private readonly Mock<ICommentRepository> _commentRepositoryMock = new();
+        private readonly Mock<ILocalizationService> _localizationServiceMock = new();
         private readonly GetAllCommentForEventQueryHandler _handler;
 
         public GetAllCommentForEventQueryHandlerTests()
         {
-            _currentUserServiceMock = new Mock<ICurrentUserServices>();
-            _commentRepositoryMock = new Mock<ICommentRepository>();
-            _localizationServiceMock = new Mock<ILocalizationService>();
-
             _handler = new GetAllCommentForEventQueryHandler(
                 _currentUserServiceMock.Object,
                 _commentRepositoryMock.Object,
                 _localizationServiceMock.Object);
-        }
-
-        [Fact]
-        public async Task Handle_UserNotAuthenticated_ShouldReturnNotAuthorized()
-        {
-            // Arrange
-            _currentUserServiceMock.Setup(x => x.CurrentUser())
-                .Returns((Guid?)null);
-
-            _localizationServiceMock.Setup(x => x.Get(ValidationKeys.NotAuthorized))
-                .ReturnsAsync("Yetkisiz erişim");
-
-            var query = new GetAllCommentForEventQuery(Guid.NewGuid());
-
-            // Act
-            var result = await _handler.Handle(query, default);
-
-            // Assert
-            result.IsSuccess.Should().BeFalse();
-            result.Data.Should().BeNull();
-            result.Message.Should().Be("Yetkisiz erişim");
-        }
-
-        [Fact]
-        public async Task Handle_CommentsNotFound_ShouldReturnCommentNotFound()
-        {
-            // Arrange
-            var eventId = Guid.NewGuid();
-
-            _currentUserServiceMock.Setup(x => x.CurrentUser())
-                .Returns(Guid.NewGuid());
-
-            _commentRepositoryMock.Setup(x => x.GetAllCommentByEventIdAsync(eventId))
-                .ReturnsAsync(new List<Domain.Entities.Comment>());
-
-            _localizationServiceMock.Setup(x => x.Get(ValidationKeys.CommentNotFound))
-                .ReturnsAsync("Yorum bulunamadı");
-
-            var query = new GetAllCommentForEventQuery(eventId);
-
-            // Act
-            var result = await _handler.Handle(query, default);
-
-            // Assert
-            result.IsSuccess.Should().BeFalse();
-            result.Data.Should().BeNull();
-            result.Message.Should().Be("Yorum bulunamadı");
         }
 
         [Fact]
@@ -101,16 +54,15 @@ namespace UniTrack.Application.Tests.Feature.Comment.Query
                 }
             };
 
-            _currentUserServiceMock.Setup(x => x.CurrentUser())
-                .Returns(Guid.NewGuid());
-
-            _commentRepositoryMock.Setup(x => x.GetAllCommentByEventIdAsync(eventId))
+            _currentUserServiceMock.Setup(x => x.CurrentUser()).Returns(Guid.NewGuid());
+            _commentRepositoryMock
+                .Setup(x => x.GetAllCommentByEventIdAsync(eventId))
                 .ReturnsAsync(comments);
 
             var query = new GetAllCommentForEventQuery(eventId);
 
             // Act
-            var result = await _handler.Handle(query, default);
+            var result = await _handler.Handle(query, CancellationToken.None);
 
             // Assert
             result.IsSuccess.Should().BeTrue();

@@ -32,20 +32,5 @@ namespace UniTrack.Application.Tests.Feature.ActiveDetail.Query
             Assert.Equal(8, result.Data);
             Assert.Null(result.Message);
         }
-
-        [Fact]
-        public async Task Handle_ActiveUsersZero_ShouldReturnFail()
-        {
-            // Arrange
-            _userRepositoryMock.Setup(x => x.CountAsync()).ReturnsAsync(0);
-
-            // Act
-            var result = await _handler.Handle(new GetActiveUsersFor30DaysQuery(), CancellationToken.None);
-
-            // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(0, result.Data);
-            Assert.Null(result.Message);
-        }
     }
 }

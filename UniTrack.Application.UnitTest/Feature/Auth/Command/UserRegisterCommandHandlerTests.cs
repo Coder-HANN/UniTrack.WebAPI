@@ -1,8 +1,6 @@
-﻿using Moq;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
+using Moq;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Abstraction.Services.Transaction;
@@ -13,7 +11,6 @@ using UniTrack.Application.Feature.Auth.Command;
 using UniTrack.Domain.Entities;
 using UniTrack.Domain.Enums;
 using Xunit;
-using FluentAssertions;
 
 public class UserRegisterCommandHandlerTests
 {

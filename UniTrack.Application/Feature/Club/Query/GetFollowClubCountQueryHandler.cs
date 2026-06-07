@@ -12,6 +12,7 @@ namespace UniTrack.Application.Feature.Club.Query
         private readonly ICurrentUserServices currentUserServices;
         private readonly IUserClubRepository userClubRepository;
         private readonly ILocalizationService localizationService;
+
         public GetFollowClubCountQueryHandler(
             ICurrentUserServices currentUserServices,
             IUserClubRepository userClubRepository,
@@ -21,6 +22,7 @@ namespace UniTrack.Application.Feature.Club.Query
             this.userClubRepository = userClubRepository;
             this.localizationService = localizationService;
         }
+
         public async Task<ServiceResponse<int>> Handle(GetFollowClubCountQuery request, CancellationToken cancellationToken)
         {
             var userId = currentUserServices.CurrentUser();
@@ -34,15 +36,13 @@ namespace UniTrack.Application.Feature.Club.Query
                 };
             }
 
-            var followClubCount = await userClubRepository.GetFollowedClubCountAsync(userId);
-
+            var followClubCount = await userClubRepository.GetFollowedClubCountAsync(userId.Value);
             return new ServiceResponse<int>
             {
                 IsSuccess = true,
-                Data =  followClubCount,
+                Data = followClubCount,
                 Message = null
             };
-
         }
     }
 }

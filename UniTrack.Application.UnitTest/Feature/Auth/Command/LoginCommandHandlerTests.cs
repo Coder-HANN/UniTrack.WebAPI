@@ -1,158 +1,164 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Moq;
 using UniTrack.Application.Abstraction.Repositories;
+using UniTrack.Application.Abstraction.Services.CurrentUserServices;
 using UniTrack.Application.Abstraction.Services.Localization;
+using UniTrack.Application.Common;
 using UniTrack.Application.Common.Constants;
-using UniTrack.Application.DTOs.Auth;
-using UniTrack.Application.Feature.Auth.Command;
+using UniTrack.Application.DTOs.Profile;
+using UniTrack.Application.Feature.Profile.Command;
 using UniTrack.Domain.Entities;
 using UniTrack.Domain.Enums;
 using Xunit;
 
-public class LoginCommandHandlerTests
+public class ClubProfileUpdateCommandHandlerTests
 {
-    private readonly Mock<IUserRepository> _userRepository = new();
-    private readonly Mock<IClubRepository> _clubRepository = new();
-    private readonly Mock<IPasswordHasher<User>> _userPasswordHasher = new();
-    private readonly Mock<IPasswordHasher<Club>> _clubPasswordHasher = new();
-    private readonly Mock<IConfiguration> _configuration = new();
-    private readonly Mock<ILocalizationService> _localizationService = new();
-    private readonly Mock<IHttpContextAccessor> _httpContextAccessor = new();
+    private readonly Mock<ICurrentUserServices> _currentUserMock = new();
+    private readonly Mock<IClubRepository> _clubRepoMock = new();
+    private readonly Mock<IUserRepository> _userRepoMock = new();
+    private readonly Mock<ILocalizationService> _localizationMock = new();
+    private readonly Mock<IPasswordHasher<Club>> _passwordHasherMock = new();
 
-    private readonly LoginCommandHandler _handler;
+    private readonly ClubProfileUpdateCommandHandler _handler;
 
-    public LoginCommandHandlerTests()
+    public ClubProfileUpdateCommandHandlerTests()
     {
-        SetupJwtConfiguration();
-        SetupHttpContext();
-
-        _handler = new LoginCommandHandler(
-            _userRepository.Object,
-            _clubRepository.Object,
-            _userPasswordHasher.Object,
-            _clubPasswordHasher.Object,
-            _configuration.Object,
-            _localizationService.Object,
-            _httpContextAccessor.Object);
+        _handler = new ClubProfileUpdateCommandHandler(
+            _currentUserMock.Object,
+            _clubRepoMock.Object,
+            _userRepoMock.Object,
+            _localizationMock.Object,
+            _passwordHasherMock.Object);
     }
 
     [Fact]
-    public async Task Handle_Should_Login_User_Successfully_And_Set_Cookie()
+    public async Task Handle_UnauthorizedRole_ReturnsError()
+    {
+        _currentUserMock.Setup(x => x.CurrentClub()).Returns(Guid.NewGuid());
+        _currentUserMock.Setup(x => x.Role()).Returns(Role.User);
+        _localizationMock.Setup(x => x.Get(ValidationKeys.NotAuthorized)).ReturnsAsync("Unauthorized");
+
+        var result = await _handler.Handle(new ClubProfileUpdateCommand(), CancellationToken.None);
+
+        result.IsSuccess.Should().BeFalse();
+        result.Message.Should().Be("Unauthorized");
+    }
+
+    [Fact]
+    public async Task Handle_EmailAlreadyUsed_ByOtherClub_ReturnsError()
+    {
+        var clubId = Guid.NewGuid();
+        var existingClub = new Club { Id = clubId, PresidentMail = "old@mail.com", Name = "Old Name" };
+
+        _currentUserMock.Setup(x => x.CurrentClub()).Returns(clubId);
+        _currentUserMock.Setup(x => x.Role()).Returns(Role.Club);
+        _clubRepoMock.Setup(x => x.GetAsync(It.IsAny<Expression<Func<Club, bool>>>())).ReturnsAsync(existingClub);
+        _clubRepoMock.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<Club> { new Club { Id = Guid.NewGuid(), PresidentMail = "taken@mail.com" } });
+        _userRepoMock.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<User>());
+        _localizationMock.Setup(x => x.Get(ValidationKeys.EmailAlreadyUsed)).ReturnsAsync("Mail Taken");
+
+        var command = new ClubProfileUpdateCommand { Name = "Old Name", PresidentMail = "taken@mail.com" };
+
+        var result = await _handler.Handle(command, CancellationToken.None);
+
+        result.IsSuccess.Should().BeFalse();
+        result.Message.Should().Be("Mail Taken");
+    }
+
+    [Fact]
+    public async Task Handle_PasswordChange_ShouldFail_WhenCurrentPasswordIncorrect()
     {
         // Arrange
-        var user = new User
+        var clubId = Guid.NewGuid();
+        var club = new Club { Id = clubId, Name = "Old Name", Password = "hashed_old_password" };
+
+        _currentUserMock.Setup(x => x.CurrentClub()).Returns(clubId);
+        _currentUserMock.Setup(x => x.Role()).Returns(Role.Club);
+        _clubRepoMock.Setup(x => x.GetAsync(It.IsAny<Expression<Func<Club, bool>>>())).ReturnsAsync(club);
+
+        _passwordHasherMock.Setup(x => x.VerifyHashedPassword(club, club.Password, "wrong_password"))
+            .Returns(PasswordVerificationResult.Failed);
+
+        _localizationMock.Setup(x => x.Get(ValidationKeys.CurrentPasswordIncorrect)).ReturnsAsync("Incorrect Password");
+
+        // Temel alan değiştirilmiyor (Name atlanıyor veya null bırakılıyor), böylece isUpdated false kalıyor ve üstteki şifre kontrol bloğu hata fırlatıyor.
+        var command = new ClubProfileUpdateCommand
         {
-            Id = Guid.NewGuid(),
-            Email = "user@test.com",
-            Password = "hashed",
-            Role = Role.User,
-            UserDetail = new UserDetail { Name = "Bedirhan", Surname = "Korkmaz", UniverstiyId = Guid.NewGuid() }
+            NowPassword = "wrong_password",
+            Password = "new_password_123"
         };
 
-        _userRepository.Setup(x => x.GetByEmailAsync(user.Email)).ReturnsAsync(user);
-        _userPasswordHasher.Setup(x => x.VerifyHashedPassword(user, user.Password, "123456"))
-            .Returns(PasswordVerificationResult.Success);
-        _localizationService.Setup(x => x.Get(ValidationKeys.LoginSuccess)).ReturnsAsync("Login successful");
-
         // Act
-        var result = await _handler.Handle(new LoginCommand { Email = user.Email, Password = "123456" }, CancellationToken.None);
-
-        // Assert
-        result.IsSuccess.Should().BeTrue();
-        result.Data.FullName.Should().Be("Bedirhan Korkmaz");
-
-        // Cookie set edildi mi?
-        _httpContextAccessor.Object.HttpContext.Response.Headers.Should().NotBeNull();
-        _userRepository.Verify(x => x.UpdateAsync(user), Times.Once);
-    }
-
-    [Fact]
-    public async Task Handle_Should_Login_Club_Successfully()
-    {
-        // Arrange
-        var club = new Club
-        {
-            Id = Guid.NewGuid(),
-            PresidentMail = "club@test.com", // GetByEmail için kullanılan alan
-            ContectEmail = "contact@test.com", // Token'a basılan alan
-            Password = "hashed",
-            Role = Role.Club,
-            Name = "Aviation Club"
-        };
-
-        _clubRepository.Setup(x => x.GetByEmailAsync(club.PresidentMail)).ReturnsAsync(club);
-        _clubPasswordHasher.Setup(x => x.VerifyHashedPassword(club, club.Password, "123456"))
-            .Returns(PasswordVerificationResult.Success);
-        _localizationService.Setup(x => x.Get(ValidationKeys.LoginSuccess)).ReturnsAsync("Club Login successful");
-
-        // Act
-        var result = await _handler.Handle(new LoginCommand { Email = club.PresidentMail, Password = "123456" }, CancellationToken.None);
-
-        // Assert
-        result.IsSuccess.Should().BeTrue();
-        result.Data.Role.Should().Be("club");
-        result.Data.Email.Should().Be(club.ContectEmail);
-        _clubRepository.Verify(x => x.UpdateAsync(club), Times.Once);
-    }
-
-    [Fact]
-    public async Task Handle_Should_Login_Admin_Successfully()
-    {
-        // Arrange
-        var admin = new User
-        {
-            Id = Guid.NewGuid(),
-            Email = "admin@test.com",
-            Password = "hashed",
-            Role = Role.Admin,
-            UserDetail = new UserDetail { Name = "AdminUser" }
-        };
-
-        _userRepository.Setup(x => x.GetByEmailAsync(admin.Email)).ReturnsAsync(admin);
-        _userPasswordHasher.Setup(x => x.VerifyHashedPassword(admin, admin.Password, "admin123"))
-            .Returns(PasswordVerificationResult.Success);
-
-        // Act
-        var result = await _handler.Handle(new LoginCommand { Email = admin.Email, Password = "admin123" }, CancellationToken.None);
-
-        // Assert
-        result.IsSuccess.Should().BeTrue();
-        result.Data.Role.Should().Be("admin");
-    }
-
-    [Fact]
-    public async Task Handle_Should_Return_Fail_When_Invalid_Credentials()
-    {
-        // Arrange
-        _userRepository.Setup(x => x.GetByEmailAsync(It.IsAny<string>())).ReturnsAsync((User)null);
-        _clubRepository.Setup(x => x.GetByEmailAsync(It.IsAny<string>())).ReturnsAsync((Club)null);
-        _localizationService.Setup(x => x.Get(ValidationKeys.InvalidEmailOrPassword)).ReturnsAsync("Error");
-
-        // Act
-        var result = await _handler.Handle(new LoginCommand { Email = "wrong@test.com", Password = "123" }, CancellationToken.None);
+        var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
-        result.Message.Should().Be("Error");
+        result.Message.Should().Be("Incorrect Password");
     }
 
-    private void SetupJwtConfiguration()
+    [Fact]
+    public async Task Handle_PasswordChange_ShouldFail_WhenNewPasswordIsSameAsOld()
     {
-        _configuration.Setup(x => x.GetSection("Jwt:Key").Value).Returns("THIS_IS_A_VERY_SECRET_KEY_FOR_TESTING_12345");
-        _configuration.Setup(x => x.GetSection("Jwt:Issuer").Value).Returns("TestIssuer");
-        _configuration.Setup(x => x.GetSection("Jwt:Audience").Value).Returns("TestAudience");
+        // Arrange
+        var clubId = Guid.NewGuid();
+        var club = new Club { Id = clubId, Name = "Old Name", Password = "hashed_password" };
+
+        _currentUserMock.Setup(x => x.CurrentClub()).Returns(clubId);
+        _currentUserMock.Setup(x => x.Role()).Returns(Role.Club);
+        _clubRepoMock.Setup(x => x.GetAsync(It.IsAny<Expression<Func<Club, bool>>>())).ReturnsAsync(club);
+
+        _passwordHasherMock.Setup(x => x.VerifyHashedPassword(club, club.Password, "same_pass"))
+            .Returns(PasswordVerificationResult.Success);
+
+        _localizationMock.Setup(x => x.Get(ValidationKeys.NewPasswordCannotBeSameAsOld)).ReturnsAsync("Same Password Error");
+
+        var command = new ClubProfileUpdateCommand
+        {
+            NowPassword = "same_pass",
+            Password = "same_pass"
+        };
+
+        // Act
+        var result = await _handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.Message.Should().Be("Same Password Error");
     }
 
-    private void SetupHttpContext()
+    [Fact]
+    public async Task Handle_SuccessfulUpdate_IncludingPassword_UpdatesClub()
     {
-        var httpContext = new DefaultHttpContext();
-        _httpContextAccessor.Setup(x => x.HttpContext).Returns(httpContext);
+        var clubId = Guid.NewGuid();
+        var club = new Club { Id = clubId, Name = "Old Name", Password = "old_hash" };
+
+        _currentUserMock.Setup(x => x.CurrentClub()).Returns(clubId);
+        _currentUserMock.Setup(x => x.Role()).Returns(Role.Club);
+        _clubRepoMock.Setup(x => x.GetAsync(It.IsAny<Expression<Func<Club, bool>>>())).ReturnsAsync(club);
+        _clubRepoMock.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<Club>());
+        _userRepoMock.Setup(x => x.GetAllAsync()).ReturnsAsync(new List<User>());
+
+        _passwordHasherMock.Setup(x => x.VerifyHashedPassword(club, "old_hash", "current_pass")).Returns(PasswordVerificationResult.Success);
+        _passwordHasherMock.Setup(x => x.VerifyHashedPassword(club, "old_hash", "new_pass")).Returns(PasswordVerificationResult.Failed);
+        _passwordHasherMock.Setup(x => x.HashPassword(club, "new_pass")).Returns("new_hashed_pass");
+        _localizationMock.Setup(x => x.Get(ValidationKeys.ProfileUpdatedSuccessfully, It.IsAny<object>())).ReturnsAsync("Success");
+
+        var command = new ClubProfileUpdateCommand
+        {
+            Name = "New Name",
+            NowPassword = "current_pass",
+            Password = "new_pass"
+        };
+
+        var result = await _handler.Handle(command, CancellationToken.None);
+
+        result.IsSuccess.Should().BeTrue();
+        _clubRepoMock.Verify(x => x.UpdateAsync(club), Times.Once);
     }
 }

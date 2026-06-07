@@ -10,7 +10,9 @@
 	<ItemGroup>
 		<ProjectReference Include="..\UniTrack.Application\UniTrack.Application.csproj" />
 		<ProjectReference Include="..\UniTrack.Domain\UniTrack.Domain.csproj" />
+		<ProjectReference Include="..\UniTrack.Infrastructer\UniTrack.Infrastructure.csproj" />
 		<ProjectReference Include="..\UniTrack.Persistence\UniTrack.Persistence.csproj" />
+		<ProjectReference Include="..\UniTrack.WebAPI\UniTrack.WebAPI.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -56,10 +56,10 @@ public class CreateClubTeamCommandHandlerTests
         _currentUserServices.Setup(x => x.CurrentClub()).Returns(clubId);
         _currentUserServices.Setup(x => x.Role()).Returns(Role.Club);
 
-
+        // ✅ DÜZELTİLDİ: Takip etmeme senaryosu için null dönmesini sağlıyoruz.
         _userClubRepository
-        .Setup(x => x.GetClubFollowersByUserIdAsync(clubId, userDetailId))
-        .ReturnsAsync(new UserClub { ClubId = clubId, UserId = userDetailId });
+            .Setup(x => x.GetClubFollowersByUserIdAsync(clubId, userDetailId))
+            .ReturnsAsync((UserClub)null);
 
         _localizationService.Setup(x => x.Get(ValidationKeys.UserMustFollowClub))
             .ReturnsAsync("User must follow the club");
@@ -85,10 +85,10 @@ public class CreateClubTeamCommandHandlerTests
         _currentUserServices.Setup(x => x.CurrentClub()).Returns(clubId);
         _currentUserServices.Setup(x => x.Role()).Returns(Role.Club);
 
+        // ✅ Başarılı senaryo için takipçi nesnesi dönüyoruz.
         _userClubRepository
-        .Setup(x => x.GetClubFollowersByUserIdAsync(clubId, userDetailId))
-        .ReturnsAsync(new UserClub { ClubId = clubId, UserId = userDetailId });
-
+            .Setup(x => x.GetClubFollowersByUserIdAsync(clubId, userDetailId))
+            .ReturnsAsync(new UserClub { ClubId = clubId, UserId = userDetailId });
 
         _localizationService.Setup(x => x.Get(ValidationKeys.ClubTeamCreatedSuccess))
             .ReturnsAsync("Club team created successfully");

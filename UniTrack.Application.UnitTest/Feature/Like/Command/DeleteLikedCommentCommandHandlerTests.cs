@@ -1,12 +1,16 @@
 ﻿using Xunit;
 using Moq;
 using FluentAssertions;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Linq.Expressions;
 using UniTrack.Application.Feature.Like.Command;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
 using UniTrack.Application.Abstraction.Services.Localization;
+using UniTrack.Application.Common; // 💡 ServiceResponse sınıfını tanımak için kritik using
 using UniTrack.Application.Common.Constants;
-using System.Linq.Expressions;
 
 namespace UniTrack.Application.Tests.Feature.Like.Command
 {
@@ -37,58 +41,78 @@ namespace UniTrack.Application.Tests.Feature.Like.Command
         [Fact]
         public async Task Handle_NotAuthorized_ShouldReturnError()
         {
+            // Arrange
             _currentUser.Setup(x => x.CurrentUser()).Returns((Guid?)null);
             _currentUser.Setup(x => x.CurrentClub()).Returns((Guid?)null);
 
             _localization.Setup(x => x.Get(ValidationKeys.NotAuthorized))
                 .ReturnsAsync("Not authorized");
 
+            // Act
             var result = await _handler.Handle(
                 new DeleteLikedCommentCommand(),
                 CancellationToken.None);
 
-            result.Should().Be("Not authorized");
+            // Assert
+            result.IsSuccess.Should().BeFalse();
+            result.Data.Should().BeNull();
+            result.Message.Should().Be("Not authorized");
         }
 
         [Fact]
         public async Task Handle_LikeNotFound_ShouldReturnError()
         {
+            // Arrange
             var userId = Guid.NewGuid();
 
             _currentUser.Setup(x => x.CurrentUser()).Returns(userId);
             _currentUser.Setup(x => x.CurrentClub()).Returns(Guid.NewGuid());
 
-            _likeRepo.Setup(x => x.GetAsync(It.IsAny<Expression<Func<Domain.Entities.Like, bool>>>()))
-                .ReturnsAsync((Domain.Entities.Like)null);
+            _likeRepo.Setup(x => x.GetAsync(It.IsAny<Expression<Func<UniTrack.Domain.Entities.Like, bool>>>()))
+                .ReturnsAsync((UniTrack.Domain.Entities.Like)null);
 
             _localization.Setup(x => x.Get(ValidationKeys.CommentNotFound))
                 .ReturnsAsync("Comment not found");
 
+            // Act
             var result = await _handler.Handle(
                 new DeleteLikedCommentCommand { CommentId = Guid.NewGuid() },
                 CancellationToken.None);
 
-            result.Should().Be("Comment not found");
+            // Assert
+            result.IsSuccess.Should().BeFalse();
+            result.Data.Should().BeNull();
+            result.Message.Should().Be("Comment not found");
         }
 
         [Fact]
         public async Task Handle_Success_ShouldDeleteLike()
         {
+            // Arrange
+            var commentId = Guid.NewGuid();
             _currentUser.Setup(x => x.CurrentUser()).Returns(Guid.NewGuid());
             _currentUser.Setup(x => x.CurrentClub()).Returns(Guid.NewGuid());
 
-            _likeRepo.Setup(x => x.GetAsync(It.IsAny<Expression<Func<Domain.Entities.Like, bool>>>()))
-                .ReturnsAsync(new Domain.Entities.Like());
+            _likeRepo.Setup(x => x.GetAsync(It.IsAny<Expression<Func<UniTrack.Domain.Entities.Like, bool>>>()))
+                .ReturnsAsync(new UniTrack.Domain.Entities.Like());
 
-            _localization.Setup(x => x.Get(It.IsAny<string>()))
-                .ReturnsAsync("Deleted");
+            _localization.Setup(x => x.Get("Beğeni silindi"))
+                .ReturnsAsync("Beğeni silindi");
 
+            // Act
             var result = await _handler.Handle(
-                new DeleteLikedCommentCommand { CommentId = Guid.NewGuid() },
+                new DeleteLikedCommentCommand { CommentId = commentId },
                 CancellationToken.None);
 
-            _likeRepo.Verify(x => x.DeleteAsync(It.IsAny<Domain.Entities.Like>()), Times.Once);
-            result.Should().Be("Deleted");
+            // Assert
+            result.IsSuccess.Should().BeTrue();
+            result.Message.Should().Be("Beğeni silindi");
+
+            // Veritabanından beğeninin kaldırıldığını doğrula
+            _likeRepo.Verify(x => x.DeleteAsync(It.IsAny<UniTrack.Domain.Entities.Like>()), Times.Once);
+
+            // Yorumun beğeni sayısının 1 azaltıldığını doğrula (Decrement)
+            _commentRepo.Verify(x => x.DecrementLikeCountAsync(commentId), Times.Once);
         }
     }
 }

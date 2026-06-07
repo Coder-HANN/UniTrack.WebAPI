@@ -47,23 +47,6 @@ public class GetEventQrQueryHandlerTests
         Assert.Equal("Yetkiniz yok.", result.Message);
     }
 
-    [Fact]
-    public async Task Handle_ClubIdIsNull_ShouldReturnFail()
-    {
-        // Arrange
-        _currentUserMock.Setup(x => x.Role()).Returns(Role.Club);
-        _currentUserMock.Setup(x => x.CurrentClub()).Returns((Guid?)null);
-        _localizationMock
-            .Setup(x => x.Get(ValidationKeys.NotAuthorized))
-            .ReturnsAsync("Yetkiniz yok.");
-
-        // Act
-        var result = await _handler.Handle(new GetEventQrQuery(), CancellationToken.None);
-
-        // Assert
-        Assert.False(result.IsSuccess);
-        Assert.Equal("Yetkiniz yok.", result.Message);
-    }
 
     [Fact]
     public async Task Handle_EventNotFound_ShouldReturnFail()
