@@ -1,40 +1,32 @@
 name: Backend CI-CD
-
 on:
   push:
     branches: [ "master" ]
-
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-
       - name: Restore dependencies
-        run: dotnet restore UniTrack.WebAPI.sln
-
+        run: dotnet restore UniTrack.WebAPI/UniTrack.WebAPI.sln
       - name: Run Tests
         run: dotnet test UniTrack.Application.UnitTest --no-restore --verbosity normal
-
   build-and-push:
     runs-on: ubuntu-latest
     needs: test
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
