@@ -19,7 +19,7 @@ public class DeleteCommentForEventCommandHandlerTests
     private readonly Mock<ICommentRepository> _commentRepository = new();
     private readonly Mock<ILocalizationService> _localizationService = new();
 
-    private DeleteCommentForEventCommandHandler CreateHandler()
+    private DeleteCommentCommandHandler CreateHandler()
         => new(_currentUserServices.Object,
                _commentRepository.Object,
                _localizationService.Object);
@@ -31,7 +31,7 @@ public class DeleteCommentForEventCommandHandlerTests
         _localizationService.Setup(x => x.Get(It.IsAny<string>())).ReturnsAsync((string key) => key);
 
         var handler = CreateHandler();
-        var command = new DeleteCommentForEventCommand { CommentId = Guid.NewGuid() };
+        var command = new DeleteCommentCommand { CommentId = Guid.NewGuid() };
 
         var result = await handler.Handle(command, CancellationToken.None);
 
@@ -47,7 +47,7 @@ public class DeleteCommentForEventCommandHandlerTests
         _localizationService.Setup(x => x.Get(It.IsAny<string>())).ReturnsAsync((string key) => key);
 
         var handler = CreateHandler();
-        var command = new DeleteCommentForEventCommand { CommentId = Guid.NewGuid() };
+        var command = new DeleteCommentCommand { CommentId = Guid.NewGuid() };
 
         var result = await handler.Handle(command, CancellationToken.None);
 
@@ -68,7 +68,7 @@ public class DeleteCommentForEventCommandHandlerTests
         _localizationService.Setup(x => x.Get(It.IsAny<string>())).ReturnsAsync((string key) => key);
 
         var handler = CreateHandler();
-        var command = new DeleteCommentForEventCommand { CommentId = commentId };
+        var command = new DeleteCommentCommand { CommentId = commentId };
 
         var result = await handler.Handle(command, CancellationToken.None);
 
@@ -91,7 +91,7 @@ public class DeleteCommentForEventCommandHandlerTests
         _localizationService.Setup(x => x.Get(It.IsAny<string>())).ReturnsAsync((string key) => key);
 
         var handler = CreateHandler();
-        var command = new DeleteCommentForEventCommand { CommentId = commentId };
+        var command = new DeleteCommentCommand { CommentId = commentId };
 
         var result = await handler.Handle(command, CancellationToken.None);
 
