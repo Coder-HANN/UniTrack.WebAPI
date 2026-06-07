@@ -5,7 +5,7 @@ namespace UniTrack.Application.Abstraction.Repositories
     public interface ICommentRepository : IBaseEntityRepository<Comment>
     {
         public Task<Comment> GetCommentIdAsync(Guid commentId);
-        public Task<Comment> GetCommentByEventAndUserIdAsync(Guid commentId, Guid userId);
+        public Task<Comment> GetCommentByEventAndUserIdAsync(Guid EventId, Guid userId);
         public Task<Comment> GetCommentByClubAndUserIdAsync(Guid commentId, Guid userId);
         public Task<List<Comment>> GetAllCommentsByClubIdAsync(Guid clubId);
         public Task<List<Comment>> GetAllCommentByEventIdAsync(Guid eventId);

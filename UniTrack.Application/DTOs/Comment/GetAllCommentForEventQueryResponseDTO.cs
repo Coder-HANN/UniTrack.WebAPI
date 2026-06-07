@@ -10,5 +10,6 @@
         public Guid CommentId { get; set; }
         public int HelpfulCount { get; set; }  // ✅ ekle
         public bool IsLiked { get; set; }
+        public string ProfileImageUrl { get; set; }
     }
 }

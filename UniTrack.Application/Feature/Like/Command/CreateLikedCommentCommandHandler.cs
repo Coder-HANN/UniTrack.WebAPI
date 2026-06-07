@@ -52,12 +52,8 @@ namespace UniTrack.Application.Feature.Like.Command
                 };
             }
 
-            var isAgain = await likeRepository.GetAsync(l =>
-                l.CommentId == request.CommentId &&
-                (
-                    (userId != null && l.UserId == userId) ||
-                    (clubId != null && l.ClubId == clubId)
-                )
+            var isAgain = await likeRepository.GetAsync(l =>l.CommentId == request.CommentId &&
+            ((userId != null && l.UserId == userId) || (clubId != null && l.ClubId == clubId))
             );
 
             if (isAgain != null)
@@ -71,6 +67,11 @@ namespace UniTrack.Application.Feature.Like.Command
                 };
             }
 
+
+            comment.LikeCount += 1;
+
+            await commentRepository.UpdateAsync(comment);
+
             await likeRepository.AddAsync(new Domain.Entities.Like
             {
                 CommentId = request.CommentId,
@@ -78,7 +79,6 @@ namespace UniTrack.Application.Feature.Like.Command
                 ClubId = clubId
             });
 
-            await commentRepository.IncrementLikeCountAsync(request.CommentId);
 
             return new ServiceResponse<string>
             {

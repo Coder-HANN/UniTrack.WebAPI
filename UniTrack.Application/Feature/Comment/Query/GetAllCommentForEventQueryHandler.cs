@@ -25,16 +25,27 @@ namespace UniTrack.Application.Feature.Comment.Query
         public async Task<ServiceResponse<List<GetAllCommentForEventQueryResponseDTO>>> Handle(GetAllCommentForEventQuery request, CancellationToken cancellationToken)
         {
             var userId = currentUserServices.CurrentUser();
-            if (userId == null)
-            {
-                return new ServiceResponse<List<GetAllCommentForEventQueryResponseDTO>> {
-                    
-                        IsSuccess = false,
-                        Data = null,
-                        Message = await localizationService.Get(ValidationKeys.NotAuthorized)
+            var clubId = currentUserServices.CurrentClub();
 
+            bool authorized = false;
+
+             if (userId != null)
+            {
+                authorized = true;
+            }
+            else if (clubId != null)
+            {
+                authorized = true;
+            }else 
+            {
+                return new ServiceResponse<List<GetAllCommentForEventQueryResponseDTO>>
+                {
+                    IsSuccess = false,
+                    Data = null,
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized)
                 };
             }
+
             var comments = await commentRepository.GetAllCommentByEventIdAsync(request.EventId);
             if (comments == null || comments.Count == 0)
             {
@@ -55,8 +66,9 @@ namespace UniTrack.Application.Feature.Comment.Query
                     Point = c.Point,
                     Description = c.Description,
                     CommentId = c.Id,
-                    HelpfulCount = c.LikeCount ?? 0,  
-                    IsLiked = c.Likes != null && c.Likes.Any(l => l.UserId == userId) 
+                    HelpfulCount = c.LikeCount,  
+                    IsLiked = c.Likes != null && c.Likes.Any(l => l.UserId == userId),
+                    ProfileImageUrl = c.User.UserDetail.ProfileImageUrl,
 
             }).ToList();
             return new ServiceResponse<List<GetAllCommentForEventQueryResponseDTO>> {

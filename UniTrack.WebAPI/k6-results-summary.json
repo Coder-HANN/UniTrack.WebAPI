@@ -1,0 +1,378 @@
+{
+  "state": {
+    "isStdOutTTY": true,
+    "isStdErrTTY": true,
+    "testRunDurationMs": 577363.8259
+  },
+  "metrics": {
+    "group_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 392.27827038776803,
+        "min": 5.9074,
+        "med": 167.20765,
+        "max": 59553.703,
+        "p(90)": 583.9459000000002,
+        "p(95)": 749.0747600000001
+      }
+    },
+    "total_requests": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 25015,
+        "rate": 43.326233611893485
+      }
+    },
+    "checks": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 0.5,
+        "passes": 20012,
+        "fails": 20012
+      }
+    },
+    "http_req_tls_handshaking": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 0,
+        "min": 0,
+        "med": 0,
+        "max": 0,
+        "p(90)": 0,
+        "p(95)": 0
+      }
+    },
+    "data_received": {
+      "contains": "data",
+      "values": {
+        "rate": 16029.70360253046,
+        "count": 9254971
+      },
+      "type": "counter"
+    },
+    "http_reqs": {
+      "contains": "default",
+      "values": {
+        "count": 25015,
+        "rate": 43.326233611893485
+      },
+      "type": "counter"
+    },
+    "http_req_duration{expected_response:true}": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 450.6299570057964,
+        "min": 50.7163,
+        "med": 260.4106,
+        "max": 59553.703,
+        "p(90)": 484.94344000000007,
+        "p(95)": 613.0413599999998
+      }
+    },
+    "http_req_waiting": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "min": 5.5057,
+        "med": 75.9385,
+        "max": 59553.3964,
+        "p(90)": 354.9445800000001,
+        "p(95)": 469.24819999999977,
+        "avg": 253.2823399280429
+      }
+    },
+    "data_sent": {
+      "type": "counter",
+      "contains": "data",
+      "values": {
+        "count": 37902728,
+        "rate": 65647.90916874101
+      }
+    },
+    "http_req_connecting": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 0.0022406076354187492,
+        "min": 0,
+        "med": 0,
+        "max": 2.0316,
+        "p(90)": 0,
+        "p(95)": 0
+      }
+    },
+    "http_req_receiving": {
+      "contains": "time",
+      "values": {
+        "min": 0,
+        "med": 0.3768,
+        "max": 130.4862,
+        "p(90)": 0.9269600000000002,
+        "p(95)": 1.0017,
+        "avg": 0.40910049170497653
+      },
+      "type": "trend"
+    },
+    "clubs_duration": {
+      "type": "trend",
+      "contains": "default",
+      "values": {
+        "avg": 211.407355586648,
+        "min": 6,
+        "med": 38,
+        "max": 59425,
+        "p(90)": 233,
+        "p(95)": 353.7999999999993
+      }
+    },
+    "iteration_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 3670.6423963421953,
+        "min": 2487.5137,
+        "med": 2825.8702,
+        "max": 83545.7471,
+        "p(90)": 4083.0534200000006,
+        "p(95)": 4884.271489999998
+      }
+    },
+    "http_req_blocked": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "max": 10.234,
+        "p(90)": 0,
+        "p(95)": 0,
+        "avg": 0.004063082150709572,
+        "min": 0,
+        "med": 0
+      }
+    },
+    "http_req_failed": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 0.8,
+        "passes": 20012,
+        "fails": 5003
+      }
+    },
+    "login_duration": {
+      "contains": "default",
+      "values": {
+        "avg": 450.71317209674197,
+        "min": 51,
+        "med": 261,
+        "max": 59553,
+        "p(90)": 485,
+        "p(95)": 613
+      },
+      "thresholds": {
+        "p(95)<300": {
+          "ok": false
+        }
+      },
+      "type": "trend"
+    },
+    "iterations": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 5003,
+        "rate": 8.665246722378697
+      }
+    },
+    "http_req_duration": {
+      "values": {
+        "avg": 253.6947662002802,
+        "min": 5.5117,
+        "med": 76.2827,
+        "max": 59553.703,
+        "p(90)": 355.89358,
+        "p(95)": 470.33612999999997
+      },
+      "thresholds": {
+        "p(95)<500": {
+          "ok": true
+        }
+      },
+      "type": "trend",
+      "contains": "time"
+    },
+    "vus": {
+      "type": "gauge",
+      "contains": "default",
+      "values": {
+        "value": 1,
+        "min": 0,
+        "max": 100
+      }
+    },
+    "error_rate": {
+      "values": {
+        "rate": 0.6666666666666666,
+        "passes": 10006,
+        "fails": 5003
+      },
+      "thresholds": {
+        "rate<0.05": {
+          "ok": false
+        }
+      },
+      "type": "rate",
+      "contains": "default"
+    },
+    "events_duration": {
+      "thresholds": {
+        "p(95)<400": {
+          "ok": true
+        }
+      },
+      "type": "trend",
+      "contains": "default",
+      "values": {
+        "med": 41,
+        "max": 56532,
+        "p(90)": 237,
+        "p(95)": 353.75,
+        "avg": 200.03727763341996,
+        "min": 6
+      }
+    },
+    "vus_max": {
+      "contains": "default",
+      "values": {
+        "value": 100,
+        "min": 100,
+        "max": 100
+      },
+      "type": "gauge"
+    },
+    "http_req_sending": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "max": 1.0229,
+        "p(90)": 0,
+        "p(95)": 0,
+        "avg": 0.003325780531680993,
+        "min": 0,
+        "med": 0
+      }
+    }
+  },
+  "root_group": {
+    "name": "",
+    "path": "",
+    "id": "d41d8cd98f00b204e9800998ecf8427e",
+    "groups": [
+      {
+        "groups": [],
+        "checks": [
+            {
+              "name": "login status 200",
+              "path": "::Authentication::login status 200",
+              "id": "d30e65b373d2107f6d1404d144d042d5",
+              "passes": 5003,
+              "fails": 0
+            },
+            {
+              "name": "login isSuccess true",
+              "path": "::Authentication::login isSuccess true",
+              "id": "9e622289bcca0c2b671b2a7ea602822b",
+              "passes": 5003,
+              "fails": 0
+            },
+            {
+              "name": "auth_token cookie set",
+              "path": "::Authentication::auth_token cookie set",
+              "id": "062152f8bd44ce809d18890e26d9f1a0",
+              "passes": 5003,
+              "fails": 0
+            }
+          ],
+        "name": "Authentication",
+        "path": "::Authentication",
+        "id": "e27c07c74d84fc697478e1503d425296"
+      },
+      {
+        "name": "Events Endpoints",
+        "path": "::Events Endpoints",
+        "id": "8817bdfce25a3530a9ef68d9784c0d28",
+        "groups": [],
+        "checks": [
+            {
+              "name": "events status 200",
+              "path": "::Events Endpoints::events status 200",
+              "id": "fc1db90e695b77008c180da67d45912f",
+              "passes": 0,
+              "fails": 5003
+            },
+            {
+              "name": "events has data",
+              "path": "::Events Endpoints::events has data",
+              "id": "78eb40977414099c26122acfa21cac4b",
+              "passes": 0,
+              "fails": 5003
+            },
+            {
+              "name": "single event status 200 or 404",
+              "path": "::Events Endpoints::single event status 200 or 404",
+              "id": "72ee01692d2f7ac38f1d8f2d9fcc74a2",
+              "passes": 5003,
+              "fails": 0
+            }
+          ]
+      },
+      {
+        "id": "069e60bf163d70dbb7f11cc1094ad739",
+        "groups": [],
+        "checks": [
+            {
+              "name": "clubs status 200",
+              "path": "::Clubs Endpoints::clubs status 200",
+              "id": "a8b190efc39af5efcd37853d6b85c3b6",
+              "passes": 0,
+              "fails": 5003
+            }
+          ],
+        "name": "Clubs Endpoints",
+        "path": "::Clubs Endpoints"
+      },
+      {
+        "name": "Notifications",
+        "path": "::Notifications",
+        "id": "a25540a4e2179643c6f461f20b6a572b",
+        "groups": [],
+        "checks": [
+            {
+              "passes": 0,
+              "fails": 5003,
+              "name": "notifications status 200 or 401",
+              "path": "::Notifications::notifications status 200 or 401",
+              "id": "a83dc5920b4228e246fdfead8226993e"
+            }
+          ]
+      }
+    ],
+    "checks": []
+  },
+  "options": {
+    "summaryTrendStats": [
+      "avg",
+      "min",
+      "med",
+      "max",
+      "p(90)",
+      "p(95)"
+    ],
+    "summaryTimeUnit": "",
+    "noColor": false
+  }
+}

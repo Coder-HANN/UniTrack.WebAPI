@@ -70,8 +70,8 @@ namespace UniTrack.Application.Feature.Event.Query
                 Surname = eu.User.UserDetail.Surname,
                 Department = eu.User.UserDetail.Department.Name,
                 UniversityName = eu.User.UserDetail.University.Name,
-                Email = eu.User.Email
-
+                Email = eu.User.Email,
+                ProfileImageUrl = eu.User.UserDetail?.ProfileImageUrl
             }).ToList();
 
             return new ServiceResponse<List<GetClubEventJoinQueryResponseDTO>> {

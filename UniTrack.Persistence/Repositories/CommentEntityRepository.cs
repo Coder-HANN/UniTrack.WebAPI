@@ -65,9 +65,9 @@ namespace UniTrack.Persistence.Repositories
             return dbSet.FirstOrDefaultAsync(c => c.Id == commentId && c.UserId== userId);
         }
 
-        public Task<Comment> GetCommentByEventAndUserIdAsync(Guid commentId, Guid userId)
+        public Task<Comment> GetCommentByEventAndUserIdAsync(Guid EventId,Guid userId)
         {
-            return  dbSet.FirstOrDefaultAsync(c => c.Id == commentId && c.UserId == userId);
+            return  dbSet.FirstOrDefaultAsync(c => c.UserId == userId && c.EventId == EventId);
         }
 
         public Task<Comment> GetCommentIdAsync(Guid commentId)
@@ -98,13 +98,11 @@ namespace UniTrack.Persistence.Repositories
 
         public async Task<bool> IncrementLikeCountAsync(Guid commentId)
         {
-            var affected = await context.Comments
+             return await context.Comments
                 .Where(c => c.Id == commentId)
                 .ExecuteUpdateAsync(s =>
                     s.SetProperty(c => c.LikeCount, c => c.LikeCount + 1)
-                );
-
-            return affected > 0;
+                ) > 0;
         }
 
         public async Task<int> CountAsync(Guid eventId)

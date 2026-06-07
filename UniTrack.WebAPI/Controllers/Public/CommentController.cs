@@ -24,12 +24,6 @@ namespace UniTrack.WebAPI.Controllers.Public
             return await mediator.Send(command);
         }
 
-        [HttpDelete("DeleteCommentForEvent")]
-        public async Task<ServiceResponse<string>> DeleteCommentForEvent([FromBody] DeleteCommentForEventCommand command)
-        {
-            return await mediator.Send(command);
-        }
-
         [HttpPost("ShowCommentForClub")]
         public async Task<ServiceResponse<ShowCommentForClubResponseDTO>> ShowCommentForClub([FromBody] ShowCommentForClubCommand command)
         {
@@ -60,6 +54,12 @@ namespace UniTrack.WebAPI.Controllers.Public
         public async Task<ServiceResponse<ShowCommentForClubResponseDTO>> GetClubRatingById([FromQuery] GetClubRatingByIdQuery query)
         {
             return await mediator.Send(query);
+        }
+
+        [HttpDelete("DeleteComment")]
+        public async Task<ServiceResponse<string>> DeleteComment([FromBody] DeleteCommentCommand command)
+        {
+            return await mediator.Send(command);
         }
     }
 }

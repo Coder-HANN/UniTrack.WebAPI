@@ -59,10 +59,12 @@ namespace UniTrack.Application.Feature.Comment.Command
                 return ServiceResponse<string>.Fail(await localizationService.Get(ValidationKeys.AlreadyCommented));
 
             var eventUser = await eventUserRepository.GetAsync(
+
                 eu => eu.EventId == request.EventId
                    && eu.UserId == userId.Value
-                   && eu.IsJoined == true
-                   && eu.IsCheckedIn == true);
+                   && eu.IsJoined == true);
+                  // && eu.IsCheckedIn == true);
+                // TO DO: Null geliyo bakılacak.
 
             if (eventUser == null)
                 return ServiceResponse<string>.Fail(await localizationService.Get(ValidationKeys.UserNotJoinedEvent));

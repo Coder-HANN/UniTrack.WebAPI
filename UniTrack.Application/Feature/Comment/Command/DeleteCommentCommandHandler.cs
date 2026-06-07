@@ -13,6 +13,7 @@ namespace UniTrack.Application.Feature.Comment.Command
         private readonly ICurrentUserServices currentUserServices;
         private readonly ICommentRepository commentRepository;
         private readonly ILocalizationService localizationService;
+
         public DeleteCommentCommandHandler(ICurrentUserServices currentUserServices,
             ICommentRepository commentRepository,
             ILocalizationService localizationService)
@@ -24,9 +25,42 @@ namespace UniTrack.Application.Feature.Comment.Command
 
         public async Task<ServiceResponse<string>> Handle(DeleteCommentCommand request, CancellationToken cancellationToken)
         {
-            
-            var role = currentUserServices.Role();
-            if (role != Role.Admin)
+            // 1. Veritabanından silinmek istenen yorumu çekiyoruz
+            var comment = await commentRepository.GetCommentIdAsync(request.CommentId);
+
+            if (comment == null)
+            {
+                return new ServiceResponse<string>
+                {
+                    IsSuccess = false,
+                    Data = null,
+                    Message = await localizationService.Get(ValidationKeys.CommentNotFound) // Eğer tanım yoksa uygun bir key yazabilirsin
+                };
+            }
+
+            // 2. Mevcut kullanıcının Rolünü ve ID'sini alıyoruz
+            var currentRole = currentUserServices.Role();
+            var currentUserId = currentUserServices.CurrentUser();
+            var clubId = currentUserServices.CurrentClub();
+
+            // 3. Yetki Kontrolü (Admin her şeyi silebilir, User ve Club sadece kendi yorumunu silebilir)
+            bool isAuthorized = false;
+
+            if (currentRole == Role.Admin)
+            {
+                isAuthorized = true;
+            }
+            else if (currentRole == Role.User && comment.UserId == currentUserId)
+            {
+                isAuthorized = true;
+            }
+            else if (currentRole == Role.Club && comment.ClubId == clubId)
+            {
+                isAuthorized = true;
+            }
+
+            // Yetkisiz erişim durumu
+            if (!isAuthorized)
             {
                 return new ServiceResponse<string>
                 {
@@ -36,8 +70,7 @@ namespace UniTrack.Application.Feature.Comment.Command
                 };
             }
 
-            var comment = await commentRepository.GetCommentIdAsync(request.CommentId);
-
+            // 4. Silme İşlemi
             await commentRepository.DeleteAsync(comment);
 
             return new ServiceResponse<string>

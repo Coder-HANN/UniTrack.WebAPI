@@ -35,11 +35,6 @@ namespace UniTrack.WebAPI.Controllers.Admin
             return await mediator.Send(query); 
         }
 
-        [HttpDelete("DeleteComment")]
-        public async Task<ServiceResponse<string>> DeleteComment([FromBody] DeleteCommentCommand command)
-        {
-            return await mediator.Send(command);
-        }
 
     }
 }
