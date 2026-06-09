@@ -70,9 +70,11 @@ namespace UniTrack.Persistence.Repositories
             return  dbSet.FirstOrDefaultAsync(c => c.UserId == userId && c.EventId == EventId);
         }
 
-        public Task<Comment> GetCommentIdAsync(Guid commentId)
+        public Task<Comment?> GetCommentIdAsync(Guid commentId)
         {
-            return dbSet.FirstOrDefaultAsync(c => c.Id == commentId);
+            return dbSet
+                .Include(c=>c.Likes)
+                .FirstOrDefaultAsync(c => c.Id == commentId);
         }
 
         public async Task<Dictionary<Guid, (float AverageRating, int Count)>> GetEventsRatingsSummaryAsync(List<Guid> eventIds)
@@ -119,6 +121,16 @@ namespace UniTrack.Persistence.Repositories
                 );
 
             return affected > 0;
+        }
+
+        public async Task DeleteCommentWithLikesAsync(Comment comment)
+        {
+            if (comment.Likes != null && comment.Likes.Any())
+            {
+                context.Set<Like>().RemoveRange(comment.Likes.ToList()); // ✅ context.Set<Like>()
+            }
+            dbSet.Remove(comment);
+            await context.SaveChangesAsync(); // ✅ context.SaveChangesAsync()
         }
     }
 }

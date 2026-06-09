@@ -62,8 +62,8 @@ namespace UniTrack.Application.Feature.Comment.Command
 
                 eu => eu.EventId == request.EventId
                    && eu.UserId == userId.Value
-                   && eu.IsJoined == true);
-                  // && eu.IsCheckedIn == true);
+                   && eu.IsJoined == true
+                   && eu.IsCheckedIn == true);
                 // TO DO: Null geliyo bakılacak.
 
             if (eventUser == null)

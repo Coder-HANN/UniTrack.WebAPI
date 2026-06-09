@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using Castle.Components.DictionaryAdapter;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
 using UniTrack.Application.Abstraction.Services.Localization;
@@ -34,7 +36,7 @@ namespace UniTrack.Application.Feature.Comment.Command
                 {
                     IsSuccess = false,
                     Data = null,
-                    Message = await localizationService.Get(ValidationKeys.CommentNotFound) // Eğer tanım yoksa uygun bir key yazabilirsin
+                    Message = await localizationService.Get(ValidationKeys.CommentNotFound)
                 };
             }
 
@@ -71,7 +73,7 @@ namespace UniTrack.Application.Feature.Comment.Command
             }
 
             // 4. Silme İşlemi
-            await commentRepository.DeleteAsync(comment);
+            await commentRepository.DeleteCommentWithLikesAsync(comment);
 
             return new ServiceResponse<string>
             {

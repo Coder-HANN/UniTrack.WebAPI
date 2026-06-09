@@ -60,15 +60,16 @@ namespace UniTrack.Application.Feature.Comment.Query
 
             var responses = comments.Select(c => new GetAllCommentForEventQueryResponseDTO
             {
-                    Name = c.User.UserDetail.Name,
-                    Surname = c.User.UserDetail.Surname,
-                    CreatedDate = c.CreatedDate,
-                    Point = c.Point,
-                    Description = c.Description,
-                    CommentId = c.Id,
-                    HelpfulCount = c.LikeCount,  
-                    IsLiked = c.Likes != null && c.Likes.Any(l => l.UserId == userId),
-                    ProfileImageUrl = c.User.UserDetail.ProfileImageUrl,
+                UserId = c.UserId,
+                Name = c.User.UserDetail.Name,
+                Surname = c.User.UserDetail.Surname,
+                CreatedDate = c.CreatedDate,
+                Point = c.Point,
+                Description = c.Description,
+                CommentId = c.Id,
+                HelpfulCount = c.LikeCount,
+                IsLiked = c.Likes != null && c.Likes.Any(l => l.UserId == userId),
+                ProfileImageUrl = c.User.UserDetail.ProfileImageUrl,
 
             }).ToList();
             return new ServiceResponse<List<GetAllCommentForEventQueryResponseDTO>> {
