@@ -63,5 +63,12 @@ namespace UniTrack.WebAPI.Controllers.Public
         {
             return await mediator.Send(command);
         }
+
+        [Authorize]
+        [HttpGet("GetUniversityOpportunities")]
+        public async Task<ServiceResponse<IPagingExecutionResult<GetAllOpportunityResponseDTO>>> GetUniversityOpportunities([FromQuery] GetUniversityOpportunityQuery query)
+        {
+            return await mediator.Send(query);
+        }
     }
 }

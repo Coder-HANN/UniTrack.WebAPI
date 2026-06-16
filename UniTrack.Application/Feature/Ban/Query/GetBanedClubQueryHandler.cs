@@ -45,7 +45,7 @@ namespace UniTrack.Application.Feature.Ban.Query
                 };
             }
 
-            var list = await banRepository.GetAllAsync();
+            var list = await banRepository.GetBannedClubInUniversityAsync(currentUserServices.UniversityId());
             if (list == null)
             {
                 return new ServiceResponse<List<GetBanedClubOrUserQueryResponseDTO>> {
@@ -63,6 +63,8 @@ namespace UniTrack.Application.Feature.Ban.Query
                     Id = b.Id,
                     Role = b.Club.Role,
                     ClubId = b.ClubId,
+                    Name = b.Club.Name,
+                    Description = b.Description,
                     CreatedDate = b.CreatedDate,
                     LastDate = b.LastDate
                 

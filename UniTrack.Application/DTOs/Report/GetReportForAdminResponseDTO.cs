@@ -2,7 +2,7 @@
 
 namespace UniTrack.Application.DTOs.Report
 {
-    public class GetAllReportResponseDTO
+    public class GetReportForAdminResponseDTO
     {
         public Guid Id { get; set; }
         public Guid ReporterUserId { get; set; }
@@ -12,7 +12,9 @@ namespace UniTrack.Application.DTOs.Report
         public ReportReasonType Reason { get; set; }
         public string Description { get; set; }
         public ReportStatus Status { get; set; }
-
+        public string ReporterUserName { get; set; }
+        public string TargetName { get; set; }
+        public string ReporterUserSurname { get; set; }
         public string TargetDetailRoute { get; set; }
         public DateTimeOffset? ReviewedAt { get; set; }
         public DateTimeOffset? CreatedDate { get;set; }

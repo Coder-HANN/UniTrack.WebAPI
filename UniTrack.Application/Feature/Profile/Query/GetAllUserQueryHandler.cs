@@ -64,13 +64,12 @@ namespace UniTrack.Application.Feature.Profile.Query
 
             var responses = users.Select(u => new GetAllUserQueryResponseDTO
             {
-               
                     UserId = u.Id,
                     Name = u.UserDetail.Name,
                     Surname = u.UserDetail.Surname,
                     Email = u.Email,
-                    UniversityId = u.UserDetail.UniverstiyId,
-                    DepartmentId = u.UserDetail.DepartmentId,
+                    UniversityId = u.UserDetail.UniverstiyId.Value,
+                    DepartmentId = u.UserDetail.DepartmentId.Value,
                 
             }).ToList();
 

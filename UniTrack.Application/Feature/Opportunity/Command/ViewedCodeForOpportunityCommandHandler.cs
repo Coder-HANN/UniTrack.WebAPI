@@ -56,6 +56,7 @@ namespace UniTrack.Application.Feature.Opportunity.Command
                 // OpportunityUser kaydı yoksa yeni oluştur
                 opportunityUser = new Domain.Entities.OpportunityUser
                 {
+                    Id = Guid.NewGuid(),
                     UserId = userId.Value,
                     OpportunityId = opportunity.Id,
                     Viewed = true,

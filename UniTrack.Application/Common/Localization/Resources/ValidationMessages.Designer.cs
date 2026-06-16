@@ -133,6 +133,15 @@ namespace UniTrack.Application.Common.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Club already banned.
+        /// </summary>
+        public static string ClubAlreadyBanned {
+            get {
+                return ResourceManager.GetString("ClubAlreadyBanned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Club already verified.
         /// </summary>
         public static string ClubAlreadyVerified {

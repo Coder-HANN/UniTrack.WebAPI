@@ -21,7 +21,7 @@ namespace UniTrack.WebAPI.Middleware
             var path = context.Request.Path.Value?.ToLower();
 
             // Giriş/Kayıt yollarını atla
-            if (path != null && (path.Contains("register") || path.Contains("login")))
+            if (path != null && (path.Contains("login") || (path.Contains("register") && !path.Contains("adminregister"))))
             {
                 Console.WriteLine($"⏭️ UserMiddleware atlandı: {path}");
             }
@@ -63,6 +63,13 @@ namespace UniTrack.WebAPI.Middleware
                         {
                             context.Items["role"] = role;
                         }
+                    }
+
+                    var universityIdClaim = context.User.Claims.FirstOrDefault(c =>
+                        c.Type.Equals("universityId", StringComparison.OrdinalIgnoreCase));
+                    if (universityIdClaim != null && Guid.TryParse(universityIdClaim.Value, out var universityId))
+                    {
+                        context.Items["universityId"] = universityId;
                     }
                 }
                 else

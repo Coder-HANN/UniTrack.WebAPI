@@ -6,16 +6,16 @@ using UniTrack.Domain.Enums;
 
 namespace UniTrack.Application.Feature.Report.Query
 {
-    public class GetAllReportQueryCommand : IRequest<ServiceResponse<IPagingExecutionResult<GetAllReportResponseDTO>>>
+    public class GetReportForAdminQueryCommand : IRequest<ServiceResponse<IPagingExecutionResult<GetReportForAdminResponseDTO>>>
     {
         public int PageSize { get; set; }
         public int Page { get; set; }
 
-        public GetAllReportQueryCommand(int pageSize, int page)
+        public GetReportForAdminQueryCommand(int pageSize, int page)
         {
             PageSize = pageSize;
             Page = page;
         }
-        public GetAllReportQueryCommand() { }
+        public GetReportForAdminQueryCommand() { }
     }
 }

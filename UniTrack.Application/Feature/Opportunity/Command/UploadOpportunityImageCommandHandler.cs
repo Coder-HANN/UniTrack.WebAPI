@@ -30,7 +30,7 @@ namespace UniTrack.Application.Feature.OpportunityImage.Command
         {
             // Admin rol kontrolü
             var isAdmin = _currentUserServices.Role();
-            if (isAdmin != Role.Admin)
+            if (isAdmin != Role.Admin && isAdmin != Role.SuperAdmin)
                 return ServiceResponse<UploadProfileImageResponseDTO>.Fail(await _localizationService.Get(ValidationKeys.NotAuthorized));
 
             try

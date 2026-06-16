@@ -9,7 +9,7 @@ using UniTrack.Application.Feature.Report.Query;
 namespace UniTrack.WebAPI.Controllers.Admin
 {
     [ApiController]
-    [Route("api/[controller]/[action]")]
+    [Route("api/admin/[controller]")]
     [ApiExplorerSettings(GroupName = "Admin")]
     public class ReportController : Controller
     {
@@ -21,7 +21,7 @@ namespace UniTrack.WebAPI.Controllers.Admin
         }
 
         [HttpGet("GetAllReport")]
-        public async Task<ServiceResponse<IPagingExecutionResult<GetAllReportResponseDTO>>>GetAllReport([FromQuery] GetAllReportQueryCommand query)
+        public async Task<ServiceResponse<IPagingExecutionResult<GetReportForAdminResponseDTO>>>GetAllReport([FromQuery] GetReportForAdminQueryCommand query)
         {
             return await mediator.Send(query);
         }

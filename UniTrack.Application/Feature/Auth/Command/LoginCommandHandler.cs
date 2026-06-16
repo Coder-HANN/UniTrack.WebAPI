@@ -83,6 +83,63 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ServiceResponse
             }
         }
 
+        // 3. ADMIN
+        if (user != null && user.Role == Role.Admin)
+        {
+            var result = userPasswordHasher.VerifyHashedPassword(user, user.Password, request.Password);
+            if (result == PasswordVerificationResult.Success)
+            {
+                string name = user.UserDetail?.Name ?? "Admin";
+                var token = GenerateJwtToken(user.Id, Role.Admin, user.Email, name,universityId: user.UserDetail?.UniverstiyId);
+
+                SetTokenCookie(token, 1);
+
+                return new ServiceResponse<LoginResponseDTO>
+                {
+                    IsSuccess = true,
+                    Data = new LoginResponseDTO
+                    {
+                        Expiration = DateTime.UtcNow.AddDays(1),
+                        Role = Role.Admin.ToString().ToLower(),
+                        UserId = user.Id.ToString(),
+                        FullName = name,
+                        Email = user.Email,
+                        UniversityId = user.UserDetail?.UniverstiyId.ToString()
+                    },
+                    Message = await localizationService.Get(ValidationKeys.LoginSuccess)
+                };
+            }
+        }
+
+        // 4. Super Admin - Sabit olarak config'den çekilebilir
+        if (user != null && user.Role == Role.SuperAdmin)
+        {
+            var result = userPasswordHasher.VerifyHashedPassword(user, user.Password, request.Password);
+
+            if (result == PasswordVerificationResult.Success)
+            {
+                string name = user.UserDetail?.Name ?? "SuperAdmin";
+                var token = GenerateJwtToken(user.Id, Role.SuperAdmin, user.Email, name);
+
+                SetTokenCookie(token, 1);
+
+                return new ServiceResponse<LoginResponseDTO>
+                {
+                    IsSuccess = true,
+                    Data = new LoginResponseDTO
+                    {
+                        Expiration = DateTime.UtcNow.AddHours(12),
+                        Role = Role.SuperAdmin.ToString().ToLower(),
+                        UserId = user.Id.ToString(),
+                        FullName = name,
+                        Email = user.Email
+                    },
+                    Message = await localizationService.Get(ValidationKeys.LoginSuccess)
+                };
+            }
+        }
+
+
         // 2. CLUB
         var club = await clubRepository.GetByEmailAsync(request.Email);
 
@@ -124,32 +181,6 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ServiceResponse
             }
         }
 
-        // 3. ADMIN
-        if (user != null && user.Role == Role.Admin)
-        {
-            var result = userPasswordHasher.VerifyHashedPassword(user, user.Password, request.Password);
-            if (result == PasswordVerificationResult.Success)
-            {
-                string name = user.UserDetail?.Name ?? "Admin";
-                var token = GenerateJwtToken(user.Id, Role.Admin, user.Email, name);
-
-                SetTokenCookie(token, 1);
-
-                return new ServiceResponse<LoginResponseDTO>
-                {
-                    IsSuccess = true,
-                    Data = new LoginResponseDTO
-                    {
-                        Expiration = DateTime.UtcNow.AddHours(1),
-                        Role = Role.Admin.ToString().ToLower(),
-                        UserId = user.Id.ToString(),
-                        FullName = name,
-                        Email = user.Email
-                    },
-                    Message = await localizationService.Get(ValidationKeys.LoginSuccess)
-                };
-            }
-        }
 
         return new ServiceResponse<LoginResponseDTO>
         {
@@ -196,6 +227,12 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, ServiceResponse
         {
             claims.Add(new Claim("clubId", id.ToString()));
             if (!string.IsNullOrEmpty(name)) claims.Add(new Claim("ClubName", name));
+        }
+        else if (role == Role.SuperAdmin)
+        {
+            claims.Add(new Claim("userId", id.ToString()));
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, id.ToString()));
+            if (!string.IsNullOrEmpty(name)) claims.Add(new Claim(ClaimTypes.Name, name));
         }
 
         var token = new JwtSecurityToken(

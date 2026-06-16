@@ -25,9 +25,10 @@ namespace UniTrack.Application.Feature.Opportunity.Command
 
         public async Task<ServiceResponse<string>> Handle(DeleteOpportunityCommand request, CancellationToken cancellationToken)
         {
-            var userId = _currentUserServices.Role();
+            var role = _currentUserServices.Role();
+            var currentUniversityId = _currentUserServices.UniversityId();
 
-            if (userId != Domain.Enums.Role.Admin)
+            if (role != Domain.Enums.Role.SuperAdmin && role != Domain.Enums.Role.Admin)
                 return ServiceResponse<string>.Fail(await _localizationService.Get(ValidationKeys.NotAuthorized));
 
             var opportunity = await _opportunityRepository.GetByIdAsync(request.Id);
@@ -35,8 +36,20 @@ namespace UniTrack.Application.Feature.Opportunity.Command
             if (opportunity == null)
                 return ServiceResponse<string>.Fail(await _localizationService.Get(ValidationKeys.OpportunityNotFound));
 
-            opportunity.IsDeleted = true;
+            // Admin sadece kendi üniversitesine ait fırsatı silebilir
+            if (role == Domain.Enums.Role.Admin)
+            {
+                if (currentUniversityId == null)
+                    return ServiceResponse<string>.Fail(await _localizationService.Get(ValidationKeys.NotAuthorized));
 
+                var belongsToUniversity = opportunity.OpportunityUniversities
+                    .Any(x => x.UniversityId == currentUniversityId.Value);
+
+                if (!belongsToUniversity)
+                    return ServiceResponse<string>.Fail(await _localizationService.Get(ValidationKeys.NotAuthorized));
+            }
+
+            opportunity.IsDeleted = true;
             await _opportunityRepository.UpdateAsync(opportunity);
 
             return ServiceResponse<string>.Success(await _localizationService.Get(ValidationKeys.OperationSuccessful));

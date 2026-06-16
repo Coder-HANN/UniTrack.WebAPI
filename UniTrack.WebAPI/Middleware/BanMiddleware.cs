@@ -57,6 +57,17 @@ public class BanMiddleware
                 return; // İstek zincirini burada sonlandır
             }
         }
+        // Admin ban kontrolü
+        if (userIdClaim != null && Guid.TryParse(userIdClaim.Value, out var adminId))
+        {
+            await banRepository.LiftBanIfExpiredAsync(adminId, Role.Admin);
+            if (await banRepository.IsBannedAsync(adminId, Role.Admin))
+            {
+                context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                await context.Response.WriteAsync("Admin hesabınız dondurulmuştur,Lütfen yetkiliyle iletişime geçiniz.");
+                return;
+            }
+        }
 
         // Ban yoksa veya kontrol edilemediyse zinciri devam ettir
         await _next(context);

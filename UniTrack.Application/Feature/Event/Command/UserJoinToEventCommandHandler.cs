@@ -93,8 +93,6 @@ namespace UniTrack.Application.Feature.Event.Command
 
             await eventRepository.UpdateAsync(eventEntity);
 
-
-
             // === SIDE EFFECT (Sheets) ===
             if (!string.IsNullOrEmpty(eventEntity.SheetsId))
             {
@@ -107,7 +105,7 @@ namespace UniTrack.Application.Feature.Event.Command
                         Surname = userDetail.Surname,
                         UniversityName = userDetail.University?.Name,
                         DepartmentName = userDetail.Department?.Name,
-                        Graduaiton_Date = userDetail.Graduaiton_Date.ToString("dd.MM.yyyy"),
+                        Graduaiton_Date = userDetail.Graduaiton_Date?.ToString("dd.MM.yyyy"),
                         JoinDate = DateTimeOffset.UtcNow
                     };
 

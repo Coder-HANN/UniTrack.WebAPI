@@ -28,5 +28,11 @@ namespace UniTrack.WebAPI.Controllers.Public
         {
             return await mediator.Send(command);
         }
+
+        [HttpPost("AdminRegister")]
+        public async Task<ServiceResponse<AdminRegisterResponseDTO>> AdminRegister([FromBody] AdminRegisterCommand command)
+        {
+            return await mediator.Send(command);
+        }
     }
 }

@@ -225,15 +225,41 @@ await using (var scope = app.Services.CreateAsyncScope())
 
     if (!string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(password))
     {
-        if (!await dbContext.Users.AnyAsync(u => u.Email == email && u.Role == UniTrack.Domain.Enums.Role.Admin))
+        if (!await dbContext.Users.AnyAsync(u => u.Email == email && u.Role == UniTrack.Domain.Enums.Role.SuperAdmin))
         {
-            dbContext.Users.Add(new User
+            var superAdminUser = new User
             {
+                Id = Guid.NewGuid(),
                 Email = email,
-                Role = UniTrack.Domain.Enums.Role.Admin,
-                Password = passwordHasher.HashPassword(null!, password),
+                Role = UniTrack.Domain.Enums.Role.SuperAdmin,
                 CreatedDate = DateTime.UtcNow
-            });
+                // Password burada YOK
+            };
+
+            // Nesne oluşturulduktan sonra hash'i ata
+            superAdminUser.Password = passwordHasher.HashPassword(null, password);
+
+            var superAdminDetail = new UserDetail
+            {
+                Id = Guid.NewGuid(),
+                UserId = superAdminUser.Id,
+                Name = "Super",
+                Surname = "Admin",
+                BirthDate = new DateOnly(2020, 1, 1),
+                Gender = UniTrack.Domain.Enums.Gender.None,
+                UniverstiyId = null,
+                CityId = null,
+                DepartmentId = null,
+                Graduaiton_Date = null,
+                ProfileImageUrl = null,
+                Faculty = null,
+                Address = null,
+                Language = "tr-TR",
+                IsNotified = true
+            };
+
+            dbContext.Users.Add(superAdminUser);
+            dbContext.UserDetails.Add(superAdminDetail);
             await dbContext.SaveChangesAsync();
         }
     }

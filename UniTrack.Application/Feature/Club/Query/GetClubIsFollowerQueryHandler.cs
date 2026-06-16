@@ -75,7 +75,7 @@ namespace UniTrack.Application.Feature.Club.Query
                     Name = fc.User.UserDetail.Name,
                     Surname = fc.User.UserDetail.Surname,
                     Department = fc.User.UserDetail.Department.Name,
-                    UniversityId = fc.User.UserDetail.UniverstiyId,
+                    UniversityId = fc.User.UserDetail.UniverstiyId.Value,
                     ImageUrl = fc.User.UserDetail.ProfileImageUrl  // Kontrol et
             }).ToList();
 

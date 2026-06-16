@@ -30,15 +30,29 @@ namespace UniTrack.Application.Feature.Opportunity.Command
         public async Task<ServiceResponse<string>> Handle(UpdateOpportunityCommand request, CancellationToken cancellationToken)
         {
             var role = _currentUserServices.Role();
-            if (role != Domain.Enums.Role.Admin)
+            var currentUniversityId = _currentUserServices.UniversityId();
+
+            if (role != Domain.Enums.Role.SuperAdmin && role != Domain.Enums.Role.Admin)
                 return ServiceResponse<string>.Fail(await _localizationService.Get(ValidationKeys.NotAuthorized));
 
             var opportunity = await _opportunityRepository.GetByIdAsync(request.Id);
             if (opportunity is null)
                 return ServiceResponse<string>.Fail(await _localizationService.Get(ValidationKeys.OpportunityNotFound));
 
-            _transaction.Begin();
+            // Admin sadece kendi üniversitesine ait fırsatı güncelleyebilir
+            if (role == Domain.Enums.Role.Admin)
+            {
+                if (currentUniversityId == null)
+                    return ServiceResponse<string>.Fail(await _localizationService.Get(ValidationKeys.NotAuthorized));
 
+                var belongsToUniversity = opportunity.OpportunityUniversities
+                    .Any(x => x.UniversityId == currentUniversityId.Value);
+
+                if (!belongsToUniversity)
+                    return ServiceResponse<string>.Fail(await _localizationService.Get(ValidationKeys.NotAuthorized));
+            }
+
+            _transaction.Begin();
             try
             {
                 opportunity.CompanyName = request.CompanyName;

@@ -40,8 +40,19 @@ public class CurrentUserServices : ICurrentUserServices
         if (httpContextAccessor.HttpContext?.Items["role"] is Role role)
             return role;
 
-        var roleClaim = httpContextAccessor.HttpContext?.User?.Claims.FirstOrDefault(c => c.Type == "role");
-        if (roleClaim != null && Enum.TryParse<Role>(roleClaim.Value, out var parsedRole))
+        var allClaims = httpContextAccessor.HttpContext?.User?.Claims
+            .Select(c => $"{c.Type} = {c.Value}")
+            .ToList();
+
+        Console.WriteLine("=== ALL CLAIMS ===");
+        allClaims?.ForEach(c => Console.WriteLine(c));
+
+        var roleClaim = httpContextAccessor.HttpContext?.User?.Claims
+            .FirstOrDefault(c => c.Type == "role");
+
+        Console.WriteLine($"=== ROLE CLAIM VALUE: '{roleClaim?.Value}' ===");
+
+        if (roleClaim != null && Enum.TryParse<Role>(roleClaim.Value, ignoreCase: true, out var parsedRole))
             return parsedRole;
 
         return null;
@@ -65,12 +76,15 @@ public class CurrentUserServices : ICurrentUserServices
         if (httpContextAccessor.HttpContext?.Items["universityId"] is Guid id)
             return id;
 
+        httpContextAccessor.HttpContext?.User?.Claims
+            .ToList()
+            .ForEach(c => Console.WriteLine($"{c.Type} = {c.Value}"));
+
         var claim = httpContextAccessor.HttpContext?.User?
             .Claims.FirstOrDefault(c => c.Type == "universityId");
 
         if (claim != null && Guid.TryParse(claim.Value, out var universityId))
             return universityId;
-
         return null;
     }
 

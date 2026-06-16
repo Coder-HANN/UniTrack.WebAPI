@@ -35,7 +35,7 @@ namespace UniTrack.Persistence.Repositories
             if (departmentIds != null && departmentIds.Any())
             {
                 query = query.Where(u =>
-                    departmentIds.Contains(u.UserDetail.DepartmentId));
+                    departmentIds.Contains(u.UserDetail.DepartmentId.Value));
             }
 
             return await query.CountAsync();

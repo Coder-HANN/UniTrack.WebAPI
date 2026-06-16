@@ -141,6 +141,9 @@
   <data name="CheckInSuccess" xml:space="preserve">
     <value>Etkinliğe başarılı bir şekilde giriş yapıldı.</value>
   </data>
+  <data name="ClubAlreadyBanned" xml:space="preserve">
+    <value>Kulüp zaten banlandı</value>
+  </data>
   <data name="ClubAlreadyVerified" xml:space="preserve">
     <value>Kulüp zaten doğrulandı.</value>
   </data>

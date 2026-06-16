@@ -24,7 +24,7 @@ namespace UniTrack.Domain.Entities
         public Guid UniversityId { get; set; }
         public ICollection<EventUser> EventUsers { get; set; }
         public ICollection<Comment> Comments { get; set; }
-        public Ban Ban { get; set; }
+        public ICollection<Ban> Bans { get; set; }
         public City City { get; set; }
         public University University { get; set; }
         public string? SheetsId { get; set; }

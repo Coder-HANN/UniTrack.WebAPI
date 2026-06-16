@@ -33,9 +33,9 @@ namespace UniTrack.Persistence.Repositories
             var query = context.UserDetails
                 .AsNoTracking()
                 .Where(u =>
-                    (cityIds == null || cityIds.Contains(u.CityId)) &&
-                    (universityIds == null || universityIds.Contains(u.UniverstiyId)) &&
-                    (departmentIds == null || departmentIds.Contains(u.DepartmentId))
+                    (cityIds == null || cityIds.Contains(u.CityId.Value)) &&
+                    (universityIds == null || universityIds.Contains(u.UniverstiyId.Value)) &&
+                    (departmentIds == null || departmentIds.Contains(u.DepartmentId.Value))
                 );
 
             if (clubIds != null && clubIds.Any())

@@ -49,7 +49,7 @@ public class CreateClubReportCommandHandler : IRequestHandler<CreateClubReportCo
         {
             Id = Guid.NewGuid(),
             ReporterUserId = userId.Value,
-            TargetType = ReportTargetType.Event,
+            TargetType = ReportTargetType.Club,
             ClubId = request.ClubId,
             Reason = request.Reason,
             Description = request.Description,

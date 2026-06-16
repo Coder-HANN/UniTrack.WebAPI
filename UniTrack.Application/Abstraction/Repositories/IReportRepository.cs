@@ -7,5 +7,6 @@ namespace UniTrack.Application.Abstraction.Repositories
         Task<Report> GetByIdAsync(Guid reportId);
         Task<bool> GetReportClubAsync(Guid userId, Guid clubId);
         Task<bool> GetReportEventAsync(Guid userId, Guid eventId);
+        Task<IEnumerable<Report>> GetReportForAdminAsync(Guid? universityId);
     }
 }

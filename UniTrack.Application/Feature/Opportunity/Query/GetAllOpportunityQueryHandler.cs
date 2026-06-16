@@ -6,6 +6,7 @@ using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
 using UniTrack.Application.Common.Constants;
 using UniTrack.Application.DTOs.Opportunity;
+using UniTrack.Domain.Enums;
 
 namespace UniTrack.Application.Feature.Opportunity.Query
 {
@@ -35,7 +36,7 @@ namespace UniTrack.Application.Feature.Opportunity.Query
 
             var isAuthenticated = userId.HasValue || clubId.HasValue;
 
-            var opportunities = await opportunityRepository.GetAllOpportunityAsync();
+            var opportunities = await opportunityRepository.GetAllOpportunityAsync(OpportunityScope.Global);
 
             if (opportunities == null || opportunities.Count == 0)
             {

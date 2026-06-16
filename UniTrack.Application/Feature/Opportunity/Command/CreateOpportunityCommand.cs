@@ -14,5 +14,7 @@ namespace UniTrack.Application.Feature.Opportunity.Command
         public Category Category { get; set; }
         public DateTimeOffset LastDate { get; set; }
         public string? Code { get; set; }
+        public OpportunityScope Scope { get; set; }
+        public List<Guid>? UniversityIds { get; set; } // Sadece SuperAdmin kullanır
     }
 }

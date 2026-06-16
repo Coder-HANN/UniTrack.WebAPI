@@ -12,6 +12,7 @@ namespace UniTrack.WebAPI.Extensions
                 c.SwaggerDoc("Admin", new OpenApiInfo { Title = "Admin API", Version = "v1" });
                 c.SwaggerDoc("Public", new OpenApiInfo { Title = "Public API", Version = "v1" });
                 c.SwaggerDoc("Club", new OpenApiInfo { Title = "Club API", Version = "v1" });
+                c.SwaggerDoc("SuperAdmin", new OpenApiInfo { Title = "SuperAdmin API", Version = "v1" });
 
                 // 1. Bearer Şemasını Tanımla (Security Definition)
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme

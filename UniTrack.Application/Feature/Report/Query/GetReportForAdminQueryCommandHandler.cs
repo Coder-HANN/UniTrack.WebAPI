@@ -10,14 +10,14 @@ using UniTrack.Domain.Enums;
 
 namespace UniTrack.Application.Feature.Report.Query
 {
-    public class GetAllReportQueryCommandHandler : IRequestHandler<GetAllReportQueryCommand, ServiceResponse<IPagingExecutionResult<GetAllReportResponseDTO>>>
+    public class GetReportForAdminQueryCommandHandler : IRequestHandler<GetReportForAdminQueryCommand, ServiceResponse<IPagingExecutionResult<GetReportForAdminResponseDTO>>>
     {
         private readonly ICurrentUserServices currentUserServices;
         private readonly ILocalizationService localizationService;
         private readonly IReportRepository reportRepository;
         private readonly IBaseEntityRepository<Domain.Entities.Report> baseEntityRepository;
 
-        public GetAllReportQueryCommandHandler(
+        public GetReportForAdminQueryCommandHandler(
             ICurrentUserServices currentUserServices,
             ILocalizationService localizationService,
             IReportRepository reportRepository,
@@ -29,23 +29,24 @@ namespace UniTrack.Application.Feature.Report.Query
             this.baseEntityRepository = baseEntityRepository;
         }
 
-        public async Task<ServiceResponse<IPagingExecutionResult<GetAllReportResponseDTO>>> Handle(GetAllReportQueryCommand request,CancellationToken cancellationToken)
+        public async Task<ServiceResponse<IPagingExecutionResult<GetReportForAdminResponseDTO>>> Handle(GetReportForAdminQueryCommand request,CancellationToken cancellationToken)
         {
             var adminId = currentUserServices.CurrentUser();
+            var universityId = currentUserServices.UniversityId();
 
             if (adminId == null || currentUserServices.Role() != Role.Admin)
             {
-                return ServiceResponse<IPagingExecutionResult<GetAllReportResponseDTO>>.Fail(await localizationService.Get(ValidationKeys.NotAuthorized));
+                return ServiceResponse<IPagingExecutionResult<GetReportForAdminResponseDTO>>.Fail(await localizationService.Get(ValidationKeys.NotAuthorized));
             }
 
-            var reports = await reportRepository.GetAllAsync();
+            var reports = await reportRepository.GetReportForAdminAsync(universityId);
 
             if (!reports.Any())
             {
-                return ServiceResponse<IPagingExecutionResult<GetAllReportResponseDTO>>.Success(await localizationService.Get(ValidationKeys.NoComplaintsAtTheMoment));
+                return ServiceResponse<IPagingExecutionResult<GetReportForAdminResponseDTO>>.Success(await localizationService.Get(ValidationKeys.NoComplaintsAtTheMoment));
             }
 
-            var query = reports.Select(x => new GetAllReportResponseDTO
+            var query = reports.Select(x => new GetReportForAdminResponseDTO
             {
                 Id = x.Id,
                 ReporterUserId = x.ReporterUserId,
@@ -57,6 +58,9 @@ namespace UniTrack.Application.Feature.Report.Query
                 Status = x.Status,
                 CreatedDate = x.CreatedDate,
                 ReviewedAt = x.ReviewedAt,
+                ReporterUserName = x.User.UserDetail.Name,
+                ReporterUserSurname = x.User.UserDetail.Surname,
+                TargetName = x.Club != null ? x.Club.Name : x.Event.Title,
 
                 TargetDetailRoute = x.TargetType switch
                 {
@@ -74,7 +78,7 @@ namespace UniTrack.Application.Feature.Report.Query
                 cancellationToken: cancellationToken
             );
 
-            return ServiceResponse<IPagingExecutionResult<GetAllReportResponseDTO>>.Success(null,result);
+            return ServiceResponse<IPagingExecutionResult<GetReportForAdminResponseDTO>>.Success(null,result);
         }
 
     }

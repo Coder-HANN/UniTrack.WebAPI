@@ -101,17 +101,11 @@ namespace UniTrack.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClubId")
-                        .IsUnique()
-                        .HasFilter("[ClubId] IS NOT NULL");
+                    b.HasIndex("ClubId");
 
-                    b.HasIndex("EventId")
-                        .IsUnique()
-                        .HasFilter("[EventId] IS NOT NULL");
+                    b.HasIndex("EventId");
 
-                    b.HasIndex("UserId")
-                        .IsUnique()
-                        .HasFilter("[UserId] IS NOT NULL");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Bans");
                 });
@@ -813,6 +807,9 @@ namespace UniTrack.Persistence.Migrations
                     b.Property<string>("Link")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Scope")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -825,10 +822,33 @@ namespace UniTrack.Persistence.Migrations
                     b.ToTable("Opportunitys");
                 });
 
-            modelBuilder.Entity("UniTrack.Domain.Entities.OpportunityUser", b =>
+            modelBuilder.Entity("UniTrack.Domain.Entities.OpportunityUniversity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OpportunityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UniversityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OpportunityId");
+
+                    b.HasIndex("UniversityId");
+
+                    b.ToTable("OpportunityUniversities");
+                });
+
+            modelBuilder.Entity("UniTrack.Domain.Entities.OpportunityUser", b =>
+                {
+                    b.Property<Guid>("OpportunityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset>("CreatedDate")
@@ -837,27 +857,22 @@ namespace UniTrack.Persistence.Migrations
                     b.Property<DateTimeOffset?>("DeletedDate")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsVerified")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("OpportunityId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTimeOffset>("UpdatedDate")
                         .HasColumnType("datetimeoffset");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Viewed")
                         .HasColumnType("bit");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("OpportunityId");
+                    b.HasKey("OpportunityId", "UserId");
 
                     b.HasIndex("UserId");
 
@@ -1160,13 +1175,12 @@ namespace UniTrack.Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly>("BirthDate")
+                    b.Property<DateOnly?>("BirthDate")
                         .HasColumnType("date");
 
-                    b.Property<int>("CityId")
+                    b.Property<int?>("CityId")
                         .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("CreatedDate")
@@ -1175,17 +1189,16 @@ namespace UniTrack.Persistence.Migrations
                     b.Property<DateTimeOffset?>("DeletedDate")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<int>("DepartmentId")
+                    b.Property<int?>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Faculty")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Gender")
+                    b.Property<int?>("Gender")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Graduaiton_Date")
+                    b.Property<DateTime?>("Graduaiton_Date")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
@@ -1213,10 +1226,10 @@ namespace UniTrack.Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<long>("TcNo")
+                    b.Property<long?>("TcNo")
                         .HasColumnType("bigint");
 
-                    b.Property<Guid>("UniverstiyId")
+                    b.Property<Guid?>("UniverstiyId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset>("UpdatedDate")
@@ -1284,18 +1297,18 @@ namespace UniTrack.Persistence.Migrations
             modelBuilder.Entity("UniTrack.Domain.Entities.Ban", b =>
                 {
                     b.HasOne("UniTrack.Domain.Entities.Club", "Club")
-                        .WithOne("Ban")
-                        .HasForeignKey("UniTrack.Domain.Entities.Ban", "ClubId")
+                        .WithMany("Bans")
+                        .HasForeignKey("ClubId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("UniTrack.Domain.Entities.Event", "Event")
-                        .WithOne("Ban")
-                        .HasForeignKey("UniTrack.Domain.Entities.Ban", "EventId")
+                        .WithMany("Bans")
+                        .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("UniTrack.Domain.Entities.User", "User")
-                        .WithOne("Ban")
-                        .HasForeignKey("UniTrack.Domain.Entities.Ban", "UserId")
+                        .WithMany("Bans")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Club");
@@ -1520,6 +1533,25 @@ namespace UniTrack.Persistence.Migrations
                     b.Navigation("Notification");
                 });
 
+            modelBuilder.Entity("UniTrack.Domain.Entities.OpportunityUniversity", b =>
+                {
+                    b.HasOne("UniTrack.Domain.Entities.Opportunity", "Opportunity")
+                        .WithMany("OpportunityUniversities")
+                        .HasForeignKey("OpportunityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("UniTrack.Domain.Entities.University", "University")
+                        .WithMany("OpportunityUniversities")
+                        .HasForeignKey("UniversityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Opportunity");
+
+                    b.Navigation("University");
+                });
+
             modelBuilder.Entity("UniTrack.Domain.Entities.OpportunityUser", b =>
                 {
                     b.HasOne("UniTrack.Domain.Entities.Opportunity", "Opportunity")
@@ -1686,20 +1718,17 @@ namespace UniTrack.Persistence.Migrations
                     b.HasOne("UniTrack.Domain.Entities.City", "City")
                         .WithMany("UserDetails")
                         .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("UniTrack.Domain.Entities.Department", "Department")
                         .WithMany("UserDetails")
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("UniTrack.Domain.Entities.University", "University")
                         .WithMany("UserDetails")
                         .HasForeignKey("UniverstiyId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("UniTrack.Domain.Entities.User", "User")
                         .WithOne("UserDetail")
@@ -1750,8 +1779,7 @@ namespace UniTrack.Persistence.Migrations
 
             modelBuilder.Entity("UniTrack.Domain.Entities.Club", b =>
                 {
-                    b.Navigation("Ban")
-                        .IsRequired();
+                    b.Navigation("Bans");
 
                     b.Navigation("ClubNotifications");
 
@@ -1786,8 +1814,7 @@ namespace UniTrack.Persistence.Migrations
 
             modelBuilder.Entity("UniTrack.Domain.Entities.Event", b =>
                 {
-                    b.Navigation("Ban")
-                        .IsRequired();
+                    b.Navigation("Bans");
 
                     b.Navigation("Comments");
 
@@ -1818,6 +1845,8 @@ namespace UniTrack.Persistence.Migrations
 
             modelBuilder.Entity("UniTrack.Domain.Entities.Opportunity", b =>
                 {
+                    b.Navigation("OpportunityUniversities");
+
                     b.Navigation("OpportunityUsers");
                 });
 
@@ -1838,6 +1867,8 @@ namespace UniTrack.Persistence.Migrations
 
                     b.Navigation("Events");
 
+                    b.Navigation("OpportunityUniversities");
+
                     b.Navigation("TargetNotificationUniversities");
 
                     b.Navigation("UserDetails");
@@ -1845,8 +1876,7 @@ namespace UniTrack.Persistence.Migrations
 
             modelBuilder.Entity("UniTrack.Domain.Entities.User", b =>
                 {
-                    b.Navigation("Ban")
-                        .IsRequired();
+                    b.Navigation("Bans");
 
                     b.Navigation("ClubTeam")
                         .IsRequired();

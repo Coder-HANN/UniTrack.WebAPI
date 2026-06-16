@@ -46,16 +46,12 @@ namespace UniTrack.WebAPI.Extensions
                     OnAuthenticationFailed = context =>
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine($"************** TOKEN HATASI **************");
-                        Console.WriteLine($"Hata Nedeni: {context.Exception.Message}");
-                        Console.WriteLine($"******************************************");
                         Console.ResetColor();
                         return Task.CompletedTask;
                     },
                     OnTokenValidated = context =>
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine(">>> Token Başarıyla Doğrulandı! <<<");
                         Console.ResetColor();
                         return Task.CompletedTask;
                     }

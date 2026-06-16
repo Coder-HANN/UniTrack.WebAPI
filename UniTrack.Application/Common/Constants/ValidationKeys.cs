@@ -198,5 +198,7 @@
         public static string OperationFailed = "OperationFailed";
 
         public static string ClubNotVerified = "ClubNotVerified";
+
+        public static string ClubAlreadyBanned = "ClubAlreadyBanned";
     }
 }

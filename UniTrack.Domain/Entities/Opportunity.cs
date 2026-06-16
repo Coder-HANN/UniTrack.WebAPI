@@ -11,8 +11,10 @@ namespace UniTrack.Domain.Entities
         public string Description { get; set; }
         public string? Link { get; set; }
         public Category Category { get; set; }
+        public OpportunityScope Scope { get; set; }
         public DateTimeOffset LastDate { get; set; }
         public string? Code { get; set; }
         public ICollection<OpportunityUser> OpportunityUsers { get; set; }
+        public ICollection<OpportunityUniversity> OpportunityUniversities { get; set; }
     }
 }

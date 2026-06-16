@@ -43,6 +43,7 @@ namespace UniTrack.Persistence.Context
         public DbSet<EventQuestionAnswer> EventQuestionAnswers { get; set; }
         public DbSet<Opportunity> Opportunitys { get; set; }
         public DbSet<OpportunityUser> OpportunityUsers { get; set; }
+        public DbSet<OpportunityUniversity> OpportunityUniversities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -353,10 +354,10 @@ namespace UniTrack.Persistence.Context
                 builder.HasKey(ud => ud.Id);
                 builder.Property(ud => ud.Name).IsRequired().HasMaxLength(50);
                 builder.Property(ud => ud.Surname).IsRequired().HasMaxLength(50);
-                builder.Property(ud => ud.BirthDate).IsRequired();
-                builder.Property(ud => ud.Gender).IsRequired();
                 builder.Property(ud => ud.ProfileImageUrl).IsRequired(false);
-                builder.Property(ud => ud.Graduaiton_Date).IsRequired();
+                builder.Property(ud => ud.BirthDate).IsRequired(false);
+                builder.Property(ud => ud.Gender).IsRequired(false);  
+                builder.Property(ud => ud.Graduaiton_Date).IsRequired(false);
                 builder.Property(ud => ud.IsNotified).IsRequired();
                 builder.Property(ud => ud.Language);
                 builder.Property(ud => ud.TcNo);
@@ -473,20 +474,21 @@ namespace UniTrack.Persistence.Context
                 builder.Property(b => b.Description);
 
                 builder.HasOne(b => b.User)
-                       .WithOne(u => u.Ban)
-                       .HasForeignKey<Ban>(b => b.UserId)
-                       .OnDelete(DeleteBehavior.Cascade);
+                           .WithMany(U=> U.Bans) 
+                           .HasForeignKey(b => b.UserId) 
+                           .OnDelete(DeleteBehavior.Cascade);
 
                 builder.HasOne(b => b.Club)
-                          .WithOne(c => c.Ban)
-                          .HasForeignKey<Ban>(b => b.ClubId)
-                          .OnDelete(DeleteBehavior.Cascade);
+                       .WithMany(c=> c.Bans) // Bir kulübün birden fazla ban kaydı olabilir
+                       .HasForeignKey(b => b.ClubId)
+                       .OnDelete(DeleteBehavior.Cascade);
 
                 builder.HasOne(b => b.Event)
-                            .WithOne(e => e.Ban)
-                            .HasForeignKey<Ban>(b => b.EventId)
-                            .OnDelete(DeleteBehavior.Cascade);
+                       .WithMany(e=> e.Bans) // Bir etkinliğin birden fazla ban kaydı olabilir
+                       .HasForeignKey(b => b.EventId)
+                       .OnDelete(DeleteBehavior.Cascade);
             });
+        
 
             modelBuilder.Entity<University>(builder =>
             {
@@ -556,6 +558,36 @@ namespace UniTrack.Persistence.Context
                 builder.HasMany(o => o.OpportunityUsers)
                     .WithOne(ou => ou.Opportunity)
                     .HasForeignKey(ou => ou.OpportunityId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+            });
+
+            modelBuilder.Entity<OpportunityUser>(builder => {
+                builder.HasKey(ou => new { ou.OpportunityId, ou.UserId });
+
+                builder.HasOne(ou => ou.Opportunity)
+                    .WithMany(o => o.OpportunityUsers)
+                    .HasForeignKey(ou => ou.OpportunityId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                builder.HasOne(ou => ou.User)
+                    .WithMany(u => u.OpportunityUsers)
+                    .HasForeignKey(ou => ou.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<OpportunityUniversity>(builder => {
+
+                builder.HasKey(ou => ou.Id);
+
+                builder.HasOne(ou => ou.Opportunity)
+                    .WithMany(o => o.OpportunityUniversities)
+                    .HasForeignKey(ou => ou.OpportunityId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                builder.HasOne(ou => ou.University)
+                    .WithMany(u => u.OpportunityUniversities)
+                    .HasForeignKey(ou => ou.UniversityId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
 

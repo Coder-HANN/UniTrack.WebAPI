@@ -30,7 +30,7 @@ namespace UniTrack.Domain.Entities
         public ICollection<UserClub> UserClubs { get; set; } 
         public ICollection<Comment> Comments { get; set; }
         public University University { get; set; }
-        public Ban Ban { get; set; }
+        public ICollection<Ban> Bans { get; set; }
         public City City { get; set; }
         public ICollection<ClubTeam> ClubTeams { get; set; }
         public ICollection<Like> Likes { get; set; }

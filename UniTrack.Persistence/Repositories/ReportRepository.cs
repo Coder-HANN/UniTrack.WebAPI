@@ -39,5 +39,15 @@ namespace UniTrack.Persistence.Repositories
             );
         }
 
+        async Task<IEnumerable<Report>> IReportRepository.GetReportForAdminAsync(Guid? universityId)
+        {
+            return await context.Reports
+                .Include(r => r.User)
+                    .ThenInclude(u => u.UserDetail)
+                .Include(r => r.Club)
+                .Include(r => r.Event)
+                .Where(r => r.Event.UniversityId == universityId || r.Club.UniversityId == universityId  && r.IsDeleted == false)
+                .ToListAsync();
+        }
     }
 }

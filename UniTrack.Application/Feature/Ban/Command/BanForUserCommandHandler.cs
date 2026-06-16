@@ -1,7 +1,10 @@
 ﻿using MediatR;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Common;
+using UniTrack.Application.Common.Constants;
+using UniTrack.Domain.Entities;
 using UniTrack.Domain.Enums;
 
 namespace UniTrack.Application.Feature.Ban.Command
@@ -11,14 +14,17 @@ namespace UniTrack.Application.Feature.Ban.Command
         private readonly ICurrentUserServices currentUserServices;
         private readonly IUserRepository userRepository;
         private readonly IBanRepository banRepository;
+        private readonly ILocalizationService localizationService;
         public BanForUserCommandHandler(
             ICurrentUserServices currentUserServices,
             IUserRepository userRepository,
-            IBanRepository banRepository)
+            IBanRepository banRepository,
+            ILocalizationService localizationService)
         {
             this.currentUserServices = currentUserServices;
             this.userRepository = userRepository;
             this.banRepository = banRepository;
+            this.localizationService = localizationService;
         }
 
         public async Task<ServiceResponse<string>> Handle(BanForUserCommand request, CancellationToken cancellationToken)
@@ -29,7 +35,7 @@ namespace UniTrack.Application.Feature.Ban.Command
                 return new ServiceResponse<string>
                 {
                     IsSuccess = false,
-                    Message = "Unauthorized",
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized),
                     Data = null
                 };
             }
@@ -40,7 +46,7 @@ namespace UniTrack.Application.Feature.Ban.Command
                 {
                     IsSuccess = false,
                     Data = null,
-                    Message = "Yetkisiz kullanıcı"
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized),
                 };
             }
             var user = await userRepository.GetByIdAsync(request.UserId);
@@ -49,7 +55,18 @@ namespace UniTrack.Application.Feature.Ban.Command
                 return new ServiceResponse<string>
                 {
                     IsSuccess = false,
-                    Message = "User not found",
+                    Message = await localizationService.Get(ValidationKeys.UserNotFound),
+                    Data = null
+                };
+            }
+
+
+            if (user.UserDetail.UniverstiyId != currentUserServices.UniversityId())
+            {
+                return new ServiceResponse<string>
+                {
+                    IsSuccess = false,
+                    Message = await localizationService.Get(ValidationKeys.NotAuthorized),
                     Data = null
                 };
             }
@@ -66,7 +83,7 @@ namespace UniTrack.Application.Feature.Ban.Command
             return new ServiceResponse<string>
             {
                 IsSuccess = true,
-                Message = "User banned successfully",
+                Message = await localizationService.Get(ValidationKeys.OperationSuccessful),
                 Data = null
             };
 

@@ -31,6 +31,7 @@ namespace UniTrack.Application.Feature.Event.Command
 
         public async Task<ServiceResponse<DeleteEventResponseDTO>> Handle(DeleteEventCommand request, CancellationToken cancellationToken)
         {
+
             var clubId = currentUserServices.CurrentClub();
             if (clubId == null)
             {

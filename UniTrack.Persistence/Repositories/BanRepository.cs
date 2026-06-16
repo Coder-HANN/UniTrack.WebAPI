@@ -11,6 +11,33 @@ namespace UniTrack.Persistence.Repositories
         public BanRepository(UniTrackDbContext context) : base(context)
         {}
 
+        public async Task<Ban> GetActiveBanForClubAsync(Guid clubId)
+        {
+            return await context.Bans
+                .Include(b => b.Club)
+                .Where(b => b.ClubId == clubId && b.Role == Role.Club && b.IsBanned && b.IsDeleted == false)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<Ban>> GetBannedClubInUniversityAsync(Guid? UniversityId)
+        {
+            return await context.Bans
+                .Include(b => b.Club)
+                .Where(b => b.Role == Role.Club && b.IsBanned && b.Club.UniversityId == UniversityId && b.IsDeleted == false)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Ban>> GetBannedUserInUniversityAsync(Guid? UniversityId)
+        {
+            return await context.Bans
+                .Include(b=>b.User)
+                    .ThenInclude(u=>u.UserDetail)
+                .Include(b=>b.User.UserClubs)
+
+                .Where(b => b.Role == Role.User && b.IsBanned && b.User.UserDetail.UniverstiyId == UniversityId && b.IsDeleted == false)
+                .ToListAsync();
+        }
+
         public async Task<Ban> GetByIdAsync(Guid banId)
         {
             return await dbSet.FirstOrDefaultAsync(b => b.Id == banId);
