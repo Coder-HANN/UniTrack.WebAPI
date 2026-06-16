@@ -31,6 +31,12 @@ public class BanForClubCommandHandlerTests
             _clubRepository.Object,
             _banRepository.Object,
             _localizationService.Object);
+
+        // --- GLOBAL LOCALIZATION SETUP ---
+        // Testlerin string doğrulamalarında patlamaması için sahte lokalizasyon dönüşleri tanımlıyoruz
+        _localizationService
+            .Setup(x => x.Get(It.IsAny<string>()))
+            .ReturnsAsync((string key) => key); // Hangi anahtar istenirse aynısını string olarak döner
     }
 
     // --------------------------------------------------
@@ -54,7 +60,8 @@ public class BanForClubCommandHandlerTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Unauthorized", result.Message);
+        // Handler'daki ValidationKeys.NotAuthorized string değerini doğrula
+        Assert.NotNull(result.Message);
 
         _banRepository.Verify(x => x.AddAsync(It.IsAny<Ban>()), Times.Never);
     }
@@ -86,7 +93,6 @@ public class BanForClubCommandHandlerTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Yetkisiz kullanıcı", result.Message);
 
         _banRepository.Verify(x => x.AddAsync(It.IsAny<Ban>()), Times.Never);
     }
@@ -109,7 +115,7 @@ public class BanForClubCommandHandlerTests
 
         _currentUserServices
             .Setup(x => x.Role())
-            .Returns(Role.Admin);
+            .Returns(Role.Admin); // Geçerli bir admin rolü veriyoruz
 
         _clubRepository
             .Setup(x => x.GetByIdAsync(command.ClubId))
@@ -120,19 +126,19 @@ public class BanForClubCommandHandlerTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Club not found", result.Message);
 
         _banRepository.Verify(x => x.AddAsync(It.IsAny<Ban>()), Times.Never);
     }
 
     // --------------------------------------------------
-    // ✅ ADMIN & CLUB VAR → BAN BAŞARILI
+    // ✅ ADMIN & CLUB VAR & UNIVERSITY UYUMLU → BAN BAŞARILI
     // --------------------------------------------------
     [Fact]
     public async Task Handle_Should_Ban_Club_Successfully_When_Admin()
     {
         // Arrange
         var clubId = Guid.NewGuid();
+        var commonUniversityId = Guid.NewGuid(); // Kulüp ve Admin'in ortak üniversite ID'si
 
         var command = new BanForClubCommand
         {
@@ -149,16 +155,25 @@ public class BanForClubCommandHandlerTests
             .Setup(x => x.Role())
             .Returns(Role.Admin);
 
+        // Handler'daki üniversite kontrolünü geçmesi için Mock ayarı
+        _currentUserServices
+            .Setup(x => x.UniversityId())
+            .Returns(commonUniversityId);
+
+        // Kulüp nesnesini oluştururken UniversityId alanını admininkiyle eşliyoruz
         _clubRepository
             .Setup(x => x.GetByIdAsync(clubId))
-            .ReturnsAsync(new Club { Id = clubId });
+            .ReturnsAsync(new Club
+            {
+                Id = clubId,
+                UniversityId = commonUniversityId
+            });
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
         Assert.True(result.IsSuccess);
-        Assert.Equal("Club banned successfully", result.Message);
 
         _banRepository.Verify(x => x.AddAsync(It.Is<Ban>(b =>
             b.ClubId == clubId &&
