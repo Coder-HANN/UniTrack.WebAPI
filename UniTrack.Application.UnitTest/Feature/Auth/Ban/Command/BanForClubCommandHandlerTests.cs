@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Moq;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Moq;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Feature.Ban.Command;
 using UniTrack.Domain.Entities;
 using UniTrack.Domain.Enums;
@@ -14,6 +15,7 @@ public class BanForClubCommandHandlerTests
     private readonly Mock<ICurrentUserServices> _currentUserServices;
     private readonly Mock<IClubRepository> _clubRepository;
     private readonly Mock<IBanRepository> _banRepository;
+    private readonly Mock<ILocalizationService> _localizationService;
 
     private readonly BanForClubCommandHandler _handler;
 
@@ -22,11 +24,13 @@ public class BanForClubCommandHandlerTests
         _currentUserServices = new Mock<ICurrentUserServices>();
         _clubRepository = new Mock<IClubRepository>();
         _banRepository = new Mock<IBanRepository>();
+        _localizationService = new Mock<ILocalizationService>();
 
         _handler = new BanForClubCommandHandler(
             _currentUserServices.Object,
             _clubRepository.Object,
-            _banRepository.Object);
+            _banRepository.Object,
+            _localizationService.Object);
     }
 
     // --------------------------------------------------

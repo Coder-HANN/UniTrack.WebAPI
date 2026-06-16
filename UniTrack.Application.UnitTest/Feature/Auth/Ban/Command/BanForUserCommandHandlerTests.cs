@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Moq;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.Feature.Ban.Command;
 using UniTrack.Domain.Entities;
 using UniTrack.Domain.Enums;
@@ -14,6 +15,7 @@ public class BanForUserCommandHandlerTests
     private readonly Mock<ICurrentUserServices> _currentUserServices;
     private readonly Mock<IUserRepository> _userRepository;
     private readonly Mock<IBanRepository> _banRepository;
+    private readonly Mock<ILocalizationService> _localizationService;
 
     private readonly BanForUserCommandHandler _handler;
 
@@ -22,11 +24,13 @@ public class BanForUserCommandHandlerTests
         _currentUserServices = new Mock<ICurrentUserServices>();
         _userRepository = new Mock<IUserRepository>();
         _banRepository = new Mock<IBanRepository>();
+        _localizationService = new Mock<ILocalizationService>();
 
         _handler = new BanForUserCommandHandler(
             _currentUserServices.Object,
             _userRepository.Object,
-            _banRepository.Object);
+            _banRepository.Object,
+            _localizationService.Object);
     }
 
     // --------------------------------------------------

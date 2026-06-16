@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Moq;
 using UniTrack.Application.Abstraction.Repositories;
 using UniTrack.Application.Abstraction.Services.CurrentUserServices;
+using UniTrack.Application.Abstraction.Services.Localization;
 using UniTrack.Application.DTOs.Ban;
 using UniTrack.Application.Feature.Ban.Query;
 using UniTrack.Domain.Entities;
@@ -15,6 +16,7 @@ public class GetBanedUserQueryHandlerTests
 {
     private readonly Mock<ICurrentUserServices> _currentUserServices;
     private readonly Mock<IBanRepository> _banRepository;
+    private readonly Mock<ILocalizationService> _localization;
 
     private readonly GetBanedUserQueryHandler _handler;
 
@@ -22,10 +24,12 @@ public class GetBanedUserQueryHandlerTests
     {
         _currentUserServices = new Mock<ICurrentUserServices>();
         _banRepository = new Mock<IBanRepository>();
+        _localization = new Mock<ILocalizationService>();
 
         _handler = new GetBanedUserQueryHandler(
             _currentUserServices.Object,
-            _banRepository.Object);
+            _banRepository.Object,
+            _localization.Object);
     }
 
     // --------------------------------------------------
