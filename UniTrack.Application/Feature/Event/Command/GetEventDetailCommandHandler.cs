@@ -54,7 +54,7 @@ namespace UniTrack.Application.Feature.Event.Command
                     .OrderBy(i => i.Order)
                     .Select(i => i.ImageUrl)
                     .ToArray() ?? Array.Empty<string>(),
-                IsJoined = eventDetails.EventUsers.Any(eu => eu.UserId == userId),
+                IsJoined = eventDetails.EventUsers.Any(eu => eu.UserId == userId && eu.IsJoined),
                 EventTag = eventDetails.EventTag,
                 Status = eventDetails.Status,
                 ContectMail = eventDetails.Club.ContectEmail,
